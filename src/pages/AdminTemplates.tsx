@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { templates as mockTemplates } from '@/data/mockData';
 import type { ChecklistTemplate, EmployeeRole, ChecklistSection } from '@/types/onboarding';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { Save, Plus, Trash2, LayoutTemplate, Library, Plug } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const adminUser = {
   id: 'u-admin',
@@ -24,6 +25,12 @@ const sectionLabels: Record<ChecklistSection, string> = {
   Week1: 'Week 1 Activities',
   Week2Plus: 'Week 2+ Activities',
 };
+
+const navItems = [
+  { key: 'templates' as const, label: 'Role Templates', icon: LayoutTemplate },
+  { key: 'activities' as const, label: 'Activities Library', icon: Library },
+  { key: 'integrations' as const, label: 'Integrations', icon: Plug },
+];
 
 export default function AdminTemplates() {
   const [selectedRole, setSelectedRole] = useState<EmployeeRole>('Developer');
@@ -55,23 +62,25 @@ export default function AdminTemplates() {
     setItems((prev) => [...prev, newItem]);
   };
 
+  const handleSave = () => {
+    toast({ title: 'Templates saved', description: `${roleItems.length} items saved for ${selectedRole} role.` });
+  };
+
   return (
     <AppLayout user={adminUser}>
-      <div className="flex h-[calc(100vh-53px)]">
+      <div className="flex h-[calc(100vh-56px)]">
         {/* Sidebar */}
-        <div className="w-56 border-r bg-muted/30 p-4 space-y-1">
-          {[
-            { key: 'templates' as const, label: 'Role Templates' },
-            { key: 'activities' as const, label: 'Activities Library' },
-            { key: 'integrations' as const, label: 'Access Integrations' },
-          ].map(({ key, label }) => (
+        <div className="w-56 border-r bg-muted/20 p-3 space-y-1">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">Admin Console</p>
+          {navItems.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setActiveNav(key)}
-              className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                activeNav === key ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              className={`flex items-center gap-2 w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                activeNav === key ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
+              <Icon className="w-4 h-4" />
               {label}
             </button>
           ))}
@@ -81,10 +90,12 @@ export default function AdminTemplates() {
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-5xl">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-semibold text-foreground">Role Templates</h1>
-              <Button>
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Role Templates</h1>
+                <p className="text-sm text-muted-foreground mt-0.5">Configure onboarding checklists by role</p>
+              </div>
+              <Button onClick={handleSave} className="gap-2">
+                <Save className="w-4 h-4" /> Save Changes
               </Button>
             </div>
 
@@ -106,40 +117,31 @@ export default function AdminTemplates() {
               return (
                 <div key={section} className="mb-6">
                   <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-medium text-foreground">{sectionLabels[section]}</h2>
-                    <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => addItem(section)}>
-                      <Plus className="w-3 h-3 mr-1" /> Add Item
+                    <h2 className="text-sm font-semibold text-foreground">{sectionLabels[section]}</h2>
+                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1" onClick={() => addItem(section)}>
+                      <Plus className="w-3 h-3" /> Add Item
                     </Button>
                   </div>
-                  <div className="bg-card border rounded-lg overflow-hidden">
-                    {/* Header */}
-                    <div className="grid grid-cols-12 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
+                  <div className="bg-card border rounded-xl overflow-hidden">
+                    <div className="grid grid-cols-12 gap-2 px-3 py-2.5 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
                       <div className="col-span-3">Title</div>
                       <div className="col-span-3">Description</div>
                       <div className="col-span-1">Type</div>
-                      <div className="col-span-1">Mandatory</div>
+                      <div className="col-span-1">Required</div>
                       <div className="col-span-2">Owner</div>
                       <div className="col-span-1">Day</div>
                       <div className="col-span-1"></div>
                     </div>
                     {sectionItems.length === 0 && (
-                      <div className="px-3 py-4 text-xs text-muted-foreground text-center">No items in this section.</div>
+                      <div className="px-3 py-6 text-xs text-muted-foreground text-center">No items in this section.</div>
                     )}
                     {sectionItems.map((item) => (
-                      <div key={item.id} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm border-b last:border-b-0 items-center">
+                      <div key={item.id} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors">
                         <div className="col-span-3">
-                          <Input
-                            value={item.title}
-                            onChange={(e) => updateItem(item.id, 'title', e.target.value)}
-                            className="h-7 text-xs"
-                          />
+                          <Input value={item.title} onChange={(e) => updateItem(item.id, 'title', e.target.value)} className="h-7 text-xs" />
                         </div>
                         <div className="col-span-3">
-                          <Input
-                            value={item.description}
-                            onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                            className="h-7 text-xs"
-                          />
+                          <Input value={item.description} onChange={(e) => updateItem(item.id, 'description', e.target.value)} className="h-7 text-xs" />
                         </div>
                         <div className="col-span-1">
                           <Select value={item.type} onValueChange={(v) => updateItem(item.id, 'type', v)}>
@@ -152,25 +154,13 @@ export default function AdminTemplates() {
                           </Select>
                         </div>
                         <div className="col-span-1 flex justify-center">
-                          <Switch
-                            checked={item.mandatory}
-                            onCheckedChange={(v) => updateItem(item.id, 'mandatory', v)}
-                          />
+                          <Switch checked={item.mandatory} onCheckedChange={(v) => updateItem(item.id, 'mandatory', v)} />
                         </div>
                         <div className="col-span-2">
-                          <Input
-                            value={item.defaultOwner}
-                            onChange={(e) => updateItem(item.id, 'defaultOwner', e.target.value)}
-                            className="h-7 text-xs"
-                          />
+                          <Input value={item.defaultOwner} onChange={(e) => updateItem(item.id, 'defaultOwner', e.target.value)} className="h-7 text-xs" />
                         </div>
                         <div className="col-span-1">
-                          <Input
-                            type="number"
-                            value={item.targetDay}
-                            onChange={(e) => updateItem(item.id, 'targetDay', parseInt(e.target.value) || 1)}
-                            className="h-7 text-xs"
-                          />
+                          <Input type="number" value={item.targetDay} onChange={(e) => updateItem(item.id, 'targetDay', parseInt(e.target.value) || 1)} className="h-7 text-xs" />
                         </div>
                         <div className="col-span-1">
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={() => deleteItem(item.id)}>
