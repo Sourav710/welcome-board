@@ -124,9 +124,11 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <NotificationBell />
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
-            <HelpCircle className="w-4 h-4" />
-          </Button>
+          <Link to="/help">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+          </Link>
           {onSwitchRole && (
             <button
               onClick={onSwitchRole}
