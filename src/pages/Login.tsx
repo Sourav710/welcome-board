@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { projects, locations, managers } from '@/data/mockData';
 import type { EmployeeRole } from '@/types/onboarding';
-import { Shield, ChevronRight } from 'lucide-react';
+import { Shield, ChevronRight, CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
 
@@ -20,6 +24,7 @@ export default function LoginPage() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [setupStep, setSetupStep] = useState(0);
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date('2026-02-16'));
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,7 +153,29 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label>Start Date</Label>
-                  <Input type="date" defaultValue="2026-02-16" />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDate}
+                        onSelect={setStartDate}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" className="flex-1" onClick={prevStep}>Back</Button>
