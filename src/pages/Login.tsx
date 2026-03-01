@@ -51,12 +51,12 @@ export default function LoginPage() {
         <div className="bg-card border rounded-2xl p-8 shadow-lg">
           <div className="text-center mb-8">
             <div className="w-12 h-12 rounded-xl bg-primary mx-auto flex items-center justify-center mb-4">
-              <span className="text-primary-foreground text-lg font-bold">O</span>
+              <span className="text-primary-foreground text-2xl">♚</span>
             </div>
-            <h1 className="text-xl font-semibold text-foreground">
-              Onboard<span className="text-muted-foreground font-normal">Hub</span>
+            <h1 className="text-xl font-bold text-foreground uppercase tracking-wide">
+              Check<span className="text-primary">mate</span>
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">Enterprise Resource Onboarding</p>
+            <p className="text-sm text-muted-foreground mt-1">Checkmate Onboarding Chaos</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
