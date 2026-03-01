@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { projects, locations, managers } from '@/data/mockData';
 import type { EmployeeRole } from '@/types/onboarding';
-import { Shield, ChevronRight } from 'lucide-react';
+import { Shield, ChevronRight, CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
 
