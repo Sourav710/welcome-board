@@ -23,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/requests" element={<MyRequests />} />
           <Route path="/item/:id" element={<ChecklistItemDetail />} />
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/admin" element={<AdminTemplates />} />
