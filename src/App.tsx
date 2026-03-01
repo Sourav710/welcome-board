@@ -9,6 +9,7 @@ import MyRequests from "./pages/MyRequests";
 import ChecklistItemDetail from "./pages/ChecklistItemDetail";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import AdminTemplates from "./pages/AdminTemplates";
+import HelpCenter from "./pages/HelpCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/item/:id" element={<ChecklistItemDetail />} />
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/admin" element={<AdminTemplates />} />
+          <Route path="/help" element={<HelpCenter />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
