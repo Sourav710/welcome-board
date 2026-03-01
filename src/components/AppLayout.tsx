@@ -36,7 +36,7 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
         <div className="flex items-center gap-8">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground text-xs font-bold">O</span>
+              <span className="text-primary-foreground text-xs font-bold">♚</span>
             </div>
             <span className="text-base font-bold tracking-tight text-foreground uppercase">
               Check<span className="text-primary font-bold">mate</span>
