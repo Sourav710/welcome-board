@@ -69,10 +69,7 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground relative">
-            <Bell className="w-4 h-4" />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-destructive rounded-full" />
-          </Button>
+          <NotificationBell />
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
             <HelpCircle className="w-4 h-4" />
           </Button>
