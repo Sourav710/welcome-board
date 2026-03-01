@@ -177,7 +177,6 @@ export default function LoginPage() {
                     </PopoverContent>
                   </Popover>
                 </div>
-                </div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" className="flex-1" onClick={prevStep}>Back</Button>
                   <Button type="button" className="flex-1" onClick={nextStep}>Continue</Button>
