@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/item/:id" element={<ChecklistItemDetail />} />
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/admin" element={<AdminTemplates />} />
+          <Route path="/help" element={<HelpCenter />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
