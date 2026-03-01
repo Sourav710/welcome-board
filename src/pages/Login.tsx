@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [setupStep, setSetupStep] = useState(0);
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date('2026-02-16'));
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
