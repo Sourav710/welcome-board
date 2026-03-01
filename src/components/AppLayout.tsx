@@ -1,8 +1,17 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User } from '@/types/onboarding';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { Bell, HelpCircle, LogOut } from 'lucide-react';
+import { Bell, HelpCircle, LogOut, ShieldAlert, CheckCircle2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
+const sampleNotifications = [
+  { id: '1', icon: ShieldAlert, title: 'VPN Access pending approval', time: '2 hours ago', read: false },
+  { id: '2', icon: CheckCircle2, title: 'Jira Access granted', time: '1 day ago', read: false },
+  { id: '3', icon: Clock, title: 'HR Orientation due tomorrow', time: '1 day ago', read: true },
+  { id: '4', icon: CheckCircle2, title: 'Confluence Access granted', time: '2 days ago', read: true },
+];
 
 interface AppLayoutProps {
   children: React.ReactNode;
