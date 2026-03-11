@@ -70,11 +70,32 @@ const emptyActivity: NewActivity = {
 };
 
 export default function AdminTemplates() {
-  const { items, addItem, removeItem } = useChecklist();
+  const { items, addItem, removeItem, updateItem } = useChecklist();
   const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDueDate, setEditDueDate] = useState<Date | undefined>();
+  const [editLinkUrl, setEditLinkUrl] = useState('');
+
+  const startEditing = (item: ChecklistItem) => {
+    setEditingId(item.id);
+    setEditDueDate(item.dueDate ? new Date(item.dueDate) : undefined);
+    setEditLinkUrl(item.linkUrl || '');
+  };
+
+  const saveEdit = (id: string) => {
+    updateItem(id, {
+      dueDate: editDueDate ? format(editDueDate, 'yyyy-MM-dd') : undefined,
+      linkUrl: editLinkUrl || undefined,
+      updatedAt: new Date().toISOString(),
+    });
+    setEditingId(null);
+    toast({ title: 'Activity updated' });
+  };
+
+  const cancelEdit = () => setEditingId(null);
 
   const filteredItems = filterSection === 'all' ? items : items.filter((i) => i.section === filterSection);
 
