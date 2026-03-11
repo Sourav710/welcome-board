@@ -115,7 +115,7 @@ export default function AdminTemplates() {
   };
 
   const deleteItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    removeItem(id);
     toast({ title: 'Activity removed' });
   };
 
