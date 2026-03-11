@@ -39,9 +39,6 @@ export default function EmployeeDashboard() {
     setActiveUser((prev) => (prev.role === 'employee' ? managerUser : currentUser));
   };
 
-  const markDone = (id: string) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status: 'complete' as const } : i)));
-  };
 
   const todaysPriorities = items
     .filter((i) => i.status !== 'complete' && i.status !== 'rejected')
