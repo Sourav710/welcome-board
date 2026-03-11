@@ -13,11 +13,11 @@ import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clo
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
   Day1: 'Day 1 Activities',
-  Week1: 'Week 1 Activities',
+  Week1: 'Secure Request',
   Week2Plus: 'Week 2+ Activities',
 };
 
-const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Week2Plus'];
+const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1'];
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
