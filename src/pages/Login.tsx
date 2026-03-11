@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { projects, locations, managers } from '@/data/mockData';
+import { projects, locations, managers, adminUser } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { EmployeeRole } from '@/types/onboarding';
 import { Shield, ChevronRight, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
