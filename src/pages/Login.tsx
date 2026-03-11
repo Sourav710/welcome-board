@@ -19,11 +19,24 @@ const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Othe
 
 const steps = ['Role', 'Details', 'Manager'];
 
+const validCredentials = [
+  // Employee login
+  { userId: 'SJHA001', password: 'password123', role: 'employee' as UserRole, user: currentUser },
+  { userId: 'SJHA002', password: 'password123', role: 'employee' as UserRole, user: teamMembers[1] },
+  { userId: 'SJHA003', password: 'password123', role: 'employee' as UserRole, user: teamMembers[2] },
+  { userId: 'SJHA004', password: 'password123', role: 'employee' as UserRole, user: teamMembers[3] },
+  // Manager login
+  { userId: 'MGR001', password: 'manager123', role: 'manager' as UserRole, user: managerUser },
+  // Admin login
+  { userId: 'ADMIN', password: 'admin123', role: 'admin' as UserRole, user: adminUser },
+];
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const [showSetup, setShowSetup] = useState(false);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [setupStep, setSetupStep] = useState(0);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date('2026-02-16'));
 
