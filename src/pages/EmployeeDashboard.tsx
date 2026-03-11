@@ -13,11 +13,11 @@ import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clo
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
   Day1: 'Day 1 Activities',
-  Week1: 'Week 1 Activities',
+  Week1: 'Secure Request',
   Week2Plus: 'Week 2+ Activities',
 };
 
-const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Week2Plus'];
+const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1'];
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
@@ -211,7 +211,7 @@ function SectionAccordion({
                     {isOverdue && <span className="ml-1">⚠</span>}
                   </div>
                   <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
-                    {item.type === 'access' && item.status !== 'complete' ? (
+                    {(item.type === 'access' || item.section === 'Week1') && item.status !== 'complete' ? (
                       <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onViewItem(item.id)}>
                         <ExternalLink className="w-3 h-3" /> Request
                       </Button>
