@@ -214,9 +214,9 @@ export default function AdminTemplates() {
                 <div className="col-span-3">Activity</div>
                 <div className="col-span-2">Section</div>
                 <div className="col-span-1">Type</div>
-                <div className="col-span-2">Owner</div>
+                <div className="col-span-1">Owner</div>
                 <div className="col-span-2">Due Date</div>
-                <div className="col-span-1">Required</div>
+                <div className="col-span-2">Link URL</div>
                 <div className="col-span-1"></div>
               </div>
               {filteredItems.length === 0 && (
