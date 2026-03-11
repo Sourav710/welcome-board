@@ -18,6 +18,7 @@ const sectionLabels: Record<ChecklistSection, string> = {
   Day1: 'Day 1',
   Week1: 'Week 1',
   Week2Plus: 'Week 2+',
+  Training: 'Training',
 };
 
 export default function ManagerDashboard() {

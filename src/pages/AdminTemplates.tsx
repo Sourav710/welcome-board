@@ -18,12 +18,13 @@ const adminUser = {
 };
 
 const roles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
-const sections: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Week2Plus'];
+const sections: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Week2Plus', 'Training'];
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
   Day1: 'Day 1 Activities',
   Week1: 'Week 1 Activities',
   Week2Plus: 'Week 2+ Activities',
+  Training: 'Trainings & Learning',
 };
 
 const navItems = [
