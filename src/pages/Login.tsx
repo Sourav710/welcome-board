@@ -42,6 +42,30 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError('');
+
+    const validUser = validCredentials.find(
+      (cred) => cred.userId.toLowerCase() === userId.toLowerCase() && cred.password === password
+    );
+
+    if (!validUser) {
+      setLoginError('Invalid User ID or Password');
+      return;
+    }
+
+    // Admin goes straight to admin page
+    if (validUser.role === 'admin') {
+      navigate('/admin');
+      return;
+    }
+
+    // Manager goes to manager dashboard
+    if (validUser.role === 'manager') {
+      navigate('/manager');
+      return;
+    }
+
+    // Employee shows setup dialog
     setShowSetup(true);
     setSetupStep(0);
   };
