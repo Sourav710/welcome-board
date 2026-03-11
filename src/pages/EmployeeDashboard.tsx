@@ -6,7 +6,8 @@ import { ProgressRing } from '@/components/ProgressRing';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { currentUser, managerUser, checklistItems } from '@/data/mockData';
+import { currentUser, managerUser } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, User } from '@/types/onboarding';
 import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle } from 'lucide-react';
 
