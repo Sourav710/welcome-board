@@ -24,6 +24,18 @@ export const managerUser: User = {
   profileComplete: true,
 };
 
+export const adminUser: User = {
+  id: 'u10',
+  name: 'Admin User',
+  email: 'admin@company.com',
+  role: 'admin',
+  employeeRole: 'Manager',
+  project: 'All Projects',
+  location: 'New York',
+  profileComplete: true,
+};
+
+
 export const teamMembers: User[] = [
   currentUser,
   { id: 'u2', name: 'Maria Garcia', email: 'maria@company.com', role: 'employee', employeeRole: 'BA', project: 'Project Phoenix', location: 'Chicago', managerId: 'u5', startDate: '2026-02-10', profileComplete: true },
