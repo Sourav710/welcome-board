@@ -84,9 +84,9 @@ export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
 // Generate items for other team members
 function generateItemsForUser(userId: string, startDate: string): ChecklistItem[] {
   const userStatuses: Record<string, ItemStatus[]> = {
-    u2: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'in_progress', 'complete', 'not_started', 'not_started'],
-    u3: ['complete', 'pending', 'not_started', 'complete', 'not_started', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
-    u4: ['not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
+    u2: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'in_progress', 'complete', 'not_started', 'not_started', 'complete', 'in_progress', 'not_started'],
+    u3: ['complete', 'pending', 'not_started', 'complete', 'not_started', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
+    u4: ['not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
   };
   return templates.map((t, i) => ({
     id: `${userId}-ci${i + 1}`,
