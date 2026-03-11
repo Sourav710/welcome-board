@@ -50,6 +50,10 @@ export const templates: ChecklistTemplate[] = [
   // Week 2+
   { id: 't13', role: 'Developer', section: 'Week2Plus', title: 'First Code Review', description: 'Submit first PR and complete code review process', type: 'activity', mandatory: true, defaultOwner: 'Employee', targetDay: 10 },
   { id: 't14', role: 'Developer', section: 'Week2Plus', title: 'Agile/Scrum Training', description: 'Complete agile methodology training module', type: 'training', mandatory: false, defaultOwner: 'Employee', defaultLinkUrl: 'https://training.company.com/agile', targetDay: 14 },
+  // Training
+  { id: 't15', role: 'Developer', section: 'Training', title: 'Security Compliance Training', description: 'Complete mandatory security compliance certification', type: 'training', mandatory: true, defaultOwner: 'Employee', defaultLinkUrl: 'https://training.company.com/security-compliance', targetDay: 5 },
+  { id: 't16', role: 'Developer', section: 'Training', title: 'Code Standards & Best Practices', description: 'Learn the team coding standards and best practices', type: 'training', mandatory: true, defaultOwner: 'Employee', defaultLinkUrl: 'https://training.company.com/code-standards', targetDay: 7 },
+  { id: 't17', role: 'Developer', section: 'Training', title: 'Cloud Infrastructure Basics', description: 'Introduction to cloud infrastructure used in the project', type: 'training', mandatory: false, defaultOwner: 'Employee', defaultLinkUrl: 'https://training.company.com/cloud-infra', targetDay: 10 },
 ];
 
 function dueDate(startDate: string, targetDay: number): string {
@@ -58,7 +62,7 @@ function dueDate(startDate: string, targetDay: number): string {
   return d.toISOString().split('T')[0];
 }
 
-const statuses: ItemStatus[] = ['complete', 'complete', 'pending', 'in_progress', 'not_started', 'not_started', 'complete', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'];
+const statuses: ItemStatus[] = ['complete', 'complete', 'pending', 'in_progress', 'not_started', 'not_started', 'complete', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'in_progress', 'not_started'];
 
 export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
   id: `ci${i + 1}`,
@@ -80,9 +84,9 @@ export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
 // Generate items for other team members
 function generateItemsForUser(userId: string, startDate: string): ChecklistItem[] {
   const userStatuses: Record<string, ItemStatus[]> = {
-    u2: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'in_progress', 'complete', 'not_started', 'not_started'],
-    u3: ['complete', 'pending', 'not_started', 'complete', 'not_started', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
-    u4: ['not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
+    u2: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'in_progress', 'complete', 'not_started', 'not_started', 'complete', 'in_progress', 'not_started'],
+    u3: ['complete', 'pending', 'not_started', 'complete', 'not_started', 'complete', 'in_progress', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
+    u4: ['not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'],
   };
   return templates.map((t, i) => ({
     id: `${userId}-ci${i + 1}`,
