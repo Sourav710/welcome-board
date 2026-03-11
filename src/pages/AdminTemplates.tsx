@@ -10,10 +10,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { StatusBadge } from '@/components/StatusBadge';
-import { checklistItems as mockItems, teamMembers } from '@/data/mockData';
+import { teamMembers } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Save, Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Edit2 } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
