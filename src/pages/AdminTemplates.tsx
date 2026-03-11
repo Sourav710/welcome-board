@@ -1,13 +1,21 @@
 import { useState } from 'react';
+import { format } from 'date-fns';
 import { AppLayout } from '@/components/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { templates as mockTemplates } from '@/data/mockData';
-import type { ChecklistTemplate, EmployeeRole, ChecklistSection } from '@/types/onboarding';
-import { Save, Plus, Trash2, LayoutTemplate, Library, Plug } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { StatusBadge } from '@/components/StatusBadge';
+import { checklistItems as mockItems, teamMembers } from '@/data/mockData';
+import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
+import { Save, Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Edit2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const adminUser = {
   id: 'u-admin',
@@ -17,54 +25,98 @@ const adminUser = {
   profileComplete: true,
 };
 
-const roles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
-const sections: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Week2Plus', 'Training'];
+const sections: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Training'];
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
   Day1: 'Day 1 Activities',
-  Week1: 'Week 1 Activities',
+  Week1: 'Secure Request',
   Week2Plus: 'Week 2+ Activities',
   Training: 'Trainings & Learning',
 };
 
+const ownerOptions = ['Employee', 'Manager', 'IT Help Desk', 'Tech Lead', 'HR', 'DevOps', 'Cloud Team'];
+const typeOptions: { value: ChecklistItemType; label: string }[] = [
+  { value: 'access', label: 'Access' },
+  { value: 'activity', label: 'Activity' },
+  { value: 'training', label: 'Training' },
+];
+
 const navItems = [
+  { key: 'activities' as const, label: 'Manage Activities', icon: Library },
   { key: 'templates' as const, label: 'Role Templates', icon: LayoutTemplate },
-  { key: 'activities' as const, label: 'Activities Library', icon: Library },
   { key: 'integrations' as const, label: 'Integrations', icon: Plug },
 ];
 
+interface NewActivity {
+  title: string;
+  description: string;
+  section: ChecklistSection;
+  type: ChecklistItemType;
+  owner: string;
+  dueDate: Date | undefined;
+  mandatory: boolean;
+  linkUrl: string;
+}
+
+const emptyActivity: NewActivity = {
+  title: '',
+  description: '',
+  section: 'Day1',
+  type: 'activity',
+  owner: 'Employee',
+  dueDate: undefined,
+  mandatory: false,
+  linkUrl: '',
+};
+
 export default function AdminTemplates() {
-  const [selectedRole, setSelectedRole] = useState<EmployeeRole>('Developer');
-  const [items, setItems] = useState<ChecklistTemplate[]>(mockTemplates);
-  const [activeNav, setActiveNav] = useState<'templates' | 'activities' | 'integrations'>('templates');
+  const [items, setItems] = useState<ChecklistItem[]>(mockItems);
+  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
+  const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
 
-  const roleItems = items.filter((i) => i.role === selectedRole);
+  const filteredItems = filterSection === 'all' ? items : items.filter((i) => i.section === filterSection);
 
-  const updateItem = (id: string, field: keyof ChecklistTemplate, value: any) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, [field]: value } : i)));
+  const handleAdd = () => {
+    if (!newActivity.title.trim()) {
+      toast({ title: 'Title required', description: 'Please enter an activity title.', variant: 'destructive' });
+      return;
+    }
+    if (!newActivity.dueDate) {
+      toast({ title: 'Due date required', description: 'Please select a due date.', variant: 'destructive' });
+      return;
+    }
+
+    const newItem: ChecklistItem = {
+      id: `ci-admin-${Date.now()}`,
+      userId: 'all',
+      templateId: '',
+      section: newActivity.section,
+      title: newActivity.title,
+      description: newActivity.description,
+      owner: newActivity.owner,
+      linkUrl: newActivity.linkUrl || undefined,
+      status: 'not_started',
+      type: newActivity.type,
+      mandatory: newActivity.mandatory,
+      dueDate: format(newActivity.dueDate, 'yyyy-MM-dd'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    setItems((prev) => [...prev, newItem]);
+    setNewActivity({ ...emptyActivity });
+    setShowAddDialog(false);
+    toast({
+      title: 'Activity added',
+      description: `"${newItem.title}" has been added for all users.`,
+    });
   };
 
   const deleteItem = (id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));
-  };
-
-  const addItem = (section: ChecklistSection) => {
-    const newItem: ChecklistTemplate = {
-      id: `t-new-${Date.now()}`,
-      role: selectedRole,
-      section,
-      title: 'New Item',
-      description: '',
-      type: 'activity',
-      mandatory: false,
-      defaultOwner: 'Employee',
-      targetDay: 1,
-    };
-    setItems((prev) => [...prev, newItem]);
-  };
-
-  const handleSave = () => {
-    toast({ title: 'Templates saved', description: `${roleItems.length} items saved for ${selectedRole} role.` });
+    toast({ title: 'Activity removed' });
   };
 
   return (
@@ -85,98 +137,243 @@ export default function AdminTemplates() {
               {label}
             </button>
           ))}
+          <div className="border-t my-3" />
+          <div className="px-3 py-2">
+            <p className="text-xs text-muted-foreground mb-2">Total Activities</p>
+            <p className="text-2xl font-bold text-foreground">{items.length}</p>
+          </div>
+          <div className="px-3 py-2">
+            <p className="text-xs text-muted-foreground mb-2">Team Members</p>
+            <p className="text-2xl font-bold text-foreground">{teamMembers.length}</p>
+          </div>
         </div>
 
         {/* Main */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-5xl">
+          <div className="max-w-6xl">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Role Templates</h1>
-                <p className="text-sm text-muted-foreground mt-0.5">Configure onboarding checklists by role</p>
+                <h1 className="text-2xl font-bold text-foreground">Manage Activities</h1>
+                <p className="text-sm text-muted-foreground mt-0.5">Add and manage onboarding activities for all employees</p>
               </div>
-              <Button onClick={handleSave} className="gap-2">
-                <Save className="w-4 h-4" /> Save Changes
+              <Button onClick={() => setShowAddDialog(true)} className="gap-2">
+                <Plus className="w-4 h-4" /> Add Activity
               </Button>
             </div>
 
-            <div className="mb-6">
-              <Select value={selectedRole} onValueChange={(v) => setSelectedRole(v as EmployeeRole)}>
-                <SelectTrigger className="w-56">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {roles.map((r) => (
-                    <SelectItem key={r} value={r}>{r === 'BA' ? 'Business Analyst' : r}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/* Filters */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-xs text-muted-foreground font-medium">Filter by section:</span>
+              <div className="flex gap-1">
+                <Button
+                  size="sm"
+                  variant={filterSection === 'all' ? 'default' : 'outline'}
+                  className="h-7 text-xs"
+                  onClick={() => setFilterSection('all')}
+                >
+                  All
+                </Button>
+                {sections.map((s) => (
+                  <Button
+                    key={s}
+                    size="sm"
+                    variant={filterSection === s ? 'default' : 'outline'}
+                    className="h-7 text-xs"
+                    onClick={() => setFilterSection(s)}
+                  >
+                    {sectionLabels[s]}
+                  </Button>
+                ))}
+              </div>
             </div>
 
-            {sections.map((section) => {
-              const sectionItems = roleItems.filter((i) => i.section === section);
-              return (
-                <div key={section} className="mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-semibold text-foreground">{sectionLabels[section]}</h2>
-                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1" onClick={() => addItem(section)}>
-                      <Plus className="w-3 h-3" /> Add Item
+            {/* Activities Table */}
+            <div className="bg-card border rounded-xl overflow-hidden">
+              <div className="grid grid-cols-12 gap-2 px-4 py-3 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
+                <div className="col-span-3">Activity</div>
+                <div className="col-span-2">Section</div>
+                <div className="col-span-1">Type</div>
+                <div className="col-span-2">Owner</div>
+                <div className="col-span-2">Due Date</div>
+                <div className="col-span-1">Required</div>
+                <div className="col-span-1"></div>
+              </div>
+              {filteredItems.length === 0 && (
+                <div className="px-4 py-8 text-sm text-muted-foreground text-center">No activities found. Click "Add Activity" to create one.</div>
+              )}
+              {filteredItems.map((item) => (
+                <div key={item.id} className="grid grid-cols-12 gap-2 px-4 py-3 text-sm border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors">
+                  <div className="col-span-3">
+                    <p className="font-medium text-foreground text-xs leading-tight">{item.title}</p>
+                    {item.description && <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>}
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-xs bg-accent px-2 py-0.5 rounded-full text-foreground">
+                      {sectionLabels[item.section]}
+                    </span>
+                  </div>
+                  <div className="col-span-1">
+                    <span className="text-xs text-muted-foreground capitalize">{item.type}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-xs text-muted-foreground">{item.owner}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-xs text-muted-foreground">{item.dueDate}</span>
+                  </div>
+                  <div className="col-span-1">
+                    {item.mandatory ? (
+                      <span className="text-xs text-destructive font-semibold">Yes</span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">No</span>
+                    )}
+                  </div>
+                  <div className="col-span-1 flex justify-end">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                      onClick={() => deleteItem(item.id)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
-                  <div className="bg-card border rounded-xl overflow-hidden">
-                    <div className="grid grid-cols-12 gap-2 px-3 py-2.5 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
-                      <div className="col-span-3">Title</div>
-                      <div className="col-span-3">Description</div>
-                      <div className="col-span-1">Type</div>
-                      <div className="col-span-1">Required</div>
-                      <div className="col-span-2">Owner</div>
-                      <div className="col-span-1">Day</div>
-                      <div className="col-span-1"></div>
-                    </div>
-                    {sectionItems.length === 0 && (
-                      <div className="px-3 py-6 text-xs text-muted-foreground text-center">No items in this section.</div>
-                    )}
-                    {sectionItems.map((item) => (
-                      <div key={item.id} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors">
-                        <div className="col-span-3">
-                          <Input value={item.title} onChange={(e) => updateItem(item.id, 'title', e.target.value)} className="h-7 text-xs" />
-                        </div>
-                        <div className="col-span-3">
-                          <Input value={item.description} onChange={(e) => updateItem(item.id, 'description', e.target.value)} className="h-7 text-xs" />
-                        </div>
-                        <div className="col-span-1">
-                          <Select value={item.type} onValueChange={(v) => updateItem(item.id, 'type', v)}>
-                            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="access">Access</SelectItem>
-                              <SelectItem value="activity">Activity</SelectItem>
-                              <SelectItem value="training">Training</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="col-span-1 flex justify-center">
-                          <Switch checked={item.mandatory} onCheckedChange={(v) => updateItem(item.id, 'mandatory', v)} />
-                        </div>
-                        <div className="col-span-2">
-                          <Input value={item.defaultOwner} onChange={(e) => updateItem(item.id, 'defaultOwner', e.target.value)} className="h-7 text-xs" />
-                        </div>
-                        <div className="col-span-1">
-                          <Input type="number" value={item.targetDay} onChange={(e) => updateItem(item.id, 'targetDay', parseInt(e.target.value) || 1)} className="h-7 text-xs" />
-                        </div>
-                        <div className="col-span-1">
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={() => deleteItem(item.id)}>
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Assigned To info */}
+            <div className="mt-4 p-4 bg-accent/30 border rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-foreground">Assigned to all employees</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {teamMembers.map((m) => (
+                  <div key={m.id} className="flex items-center gap-1.5 bg-card border rounded-full px-2.5 py-1">
+                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[9px] font-semibold text-primary">
+                      {m.name.split(' ').map((n) => n[0]).join('')}
+                    </div>
+                    <span className="text-xs text-foreground">{m.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Add Activity Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add New Activity</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Title *</Label>
+              <Input
+                value={newActivity.title}
+                onChange={(e) => setNewActivity((p) => ({ ...p, title: e.target.value }))}
+                placeholder="e.g. Complete Security Training"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Description</Label>
+              <Textarea
+                value={newActivity.description}
+                onChange={(e) => setNewActivity((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Brief description of the activity..."
+                rows={2}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>Section *</Label>
+                <Select value={newActivity.section} onValueChange={(v) => setNewActivity((p) => ({ ...p, section: v as ChecklistSection }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {sections.map((s) => (
+                      <SelectItem key={s} value={s}>{sectionLabels[s]}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Type *</Label>
+                <Select value={newActivity.type} onValueChange={(v) => setNewActivity((p) => ({ ...p, type: v as ChecklistItemType }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {typeOptions.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>Owner *</Label>
+                <Select value={newActivity.owner} onValueChange={(v) => setNewActivity((p) => ({ ...p, owner: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ownerOptions.map((o) => (
+                      <SelectItem key={o} value={o}>{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Due Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        'w-full justify-start text-left font-normal',
+                        !newActivity.dueDate && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {newActivity.dueDate ? format(newActivity.dueDate, 'PPP') : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={newActivity.dueDate}
+                      onSelect={(d) => setNewActivity((p) => ({ ...p, dueDate: d }))}
+                      initialFocus
+                      className={cn('p-3 pointer-events-auto')}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Link URL (optional)</Label>
+              <Input
+                value={newActivity.linkUrl}
+                onChange={(e) => setNewActivity((p) => ({ ...p, linkUrl: e.target.value }))}
+                placeholder="https://training.company.com/..."
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={newActivity.mandatory}
+                onCheckedChange={(v) => setNewActivity((p) => ({ ...p, mandatory: v }))}
+              />
+              <Label className="text-sm">Mandatory activity</Label>
+            </div>
+          </div>
+          <DialogFooter className="mt-2">
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+            <Button onClick={handleAdd} className="gap-2">
+              <Plus className="w-4 h-4" /> Add Activity
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
