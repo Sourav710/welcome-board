@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { teamMembers } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
