@@ -23,8 +23,12 @@ const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Training']
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
-  const [items, setItems] = useState<ChecklistItem[]>(checklistItems);
+  const { items, updateItem } = useChecklist();
   const [activeUser, setActiveUser] = useState<User>(currentUser);
+
+  const markDone = (id: string) => {
+    updateItem(id, { status: 'complete' });
+  };
 
   const completedCount = items.filter((i) => i.status === 'complete').length;
   const progress = Math.round((completedCount / items.length) * 100);
