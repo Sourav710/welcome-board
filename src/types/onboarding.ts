@@ -1,6 +1,6 @@
 export type UserRole = 'employee' | 'manager' | 'admin';
 export type EmployeeRole = 'BA' | 'Developer' | 'QA' | 'Manager' | 'Other';
-export type ChecklistSection = 'Access' | 'Day1' | 'Week1' | 'Week2Plus';
+export type ChecklistSection = 'Access' | 'Day1' | 'Week1' | 'Week2Plus' | 'Training';
 export type ChecklistItemType = 'access' | 'activity' | 'training';
 export type ItemStatus = 'not_started' | 'in_progress' | 'pending' | 'complete' | 'rejected';
 
