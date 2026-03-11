@@ -10,10 +10,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { StatusBadge } from '@/components/StatusBadge';
-import { checklistItems as mockItems, teamMembers } from '@/data/mockData';
+import { teamMembers } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Save, Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Edit2 } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -70,7 +70,7 @@ const emptyActivity: NewActivity = {
 };
 
 export default function AdminTemplates() {
-  const [items, setItems] = useState<ChecklistItem[]>(mockItems);
+  const { items, addItem, removeItem } = useChecklist();
   const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
@@ -105,7 +105,7 @@ export default function AdminTemplates() {
       updatedAt: new Date().toISOString(),
     };
 
-    setItems((prev) => [...prev, newItem]);
+    addItem(newItem);
     setNewActivity({ ...emptyActivity });
     setShowAddDialog(false);
     toast({
@@ -115,7 +115,7 @@ export default function AdminTemplates() {
   };
 
   const deleteItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    removeItem(id);
     toast({ title: 'Activity removed' });
   };
 

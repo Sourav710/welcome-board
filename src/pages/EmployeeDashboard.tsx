@@ -6,7 +6,8 @@ import { ProgressRing } from '@/components/ProgressRing';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { currentUser, managerUser, checklistItems } from '@/data/mockData';
+import { currentUser, managerUser } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, User } from '@/types/onboarding';
 import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle } from 'lucide-react';
 
@@ -22,8 +23,12 @@ const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Training']
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
-  const [items, setItems] = useState<ChecklistItem[]>(checklistItems);
+  const { items, updateItem } = useChecklist();
   const [activeUser, setActiveUser] = useState<User>(currentUser);
+
+  const markDone = (id: string) => {
+    updateItem(id, { status: 'complete' });
+  };
 
   const completedCount = items.filter((i) => i.status === 'complete').length;
   const progress = Math.round((completedCount / items.length) * 100);
@@ -34,9 +39,6 @@ export default function EmployeeDashboard() {
     setActiveUser((prev) => (prev.role === 'employee' ? managerUser : currentUser));
   };
 
-  const markDone = (id: string) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status: 'complete' as const } : i)));
-  };
 
   const todaysPriorities = items
     .filter((i) => i.status !== 'complete' && i.status !== 'rejected')
