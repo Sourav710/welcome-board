@@ -9,8 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { projects, locations, managers } from '@/data/mockData';
-import type { EmployeeRole } from '@/types/onboarding';
+import { projects, locations, managers, adminUser, currentUser, managerUser, teamMembers } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
+import type { EmployeeRole, UserRole } from '@/types/onboarding';
 import { Shield, ChevronRight, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -18,16 +19,53 @@ const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Othe
 
 const steps = ['Role', 'Details', 'Manager'];
 
+const validCredentials = [
+  // Employee login
+  { userId: 'SJHA001', password: 'password123', role: 'employee' as UserRole, user: currentUser },
+  { userId: 'SJHA002', password: 'password123', role: 'employee' as UserRole, user: teamMembers[1] },
+  { userId: 'SJHA003', password: 'password123', role: 'employee' as UserRole, user: teamMembers[2] },
+  { userId: 'SJHA004', password: 'password123', role: 'employee' as UserRole, user: teamMembers[3] },
+  // Manager login
+  { userId: 'MGR001', password: 'manager123', role: 'manager' as UserRole, user: managerUser },
+  // Admin login
+  { userId: 'ADMIN', password: 'admin123', role: 'admin' as UserRole, user: adminUser },
+];
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const [showSetup, setShowSetup] = useState(false);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [setupStep, setSetupStep] = useState(0);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date('2026-02-16'));
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError('');
+
+    const validUser = validCredentials.find(
+      (cred) => cred.userId.toLowerCase() === userId.toLowerCase() && cred.password === password
+    );
+
+    if (!validUser) {
+      setLoginError('Invalid User ID or Password');
+      return;
+    }
+
+    // Admin goes straight to admin page
+    if (validUser.role === 'admin') {
+      navigate('/admin');
+      return;
+    }
+
+    // Manager goes to manager dashboard
+    if (validUser.role === 'manager') {
+      navigate('/manager');
+      return;
+    }
+
+    // Employee shows setup dialog
     setShowSetup(true);
     setSetupStep(0);
   };
@@ -67,12 +105,15 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="userId">User ID</Label>
-              <Input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="e.g. SJHA001" className="h-10" />
+              <Input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="e.g. SJHA001, ADMIN, MGR001" className="h-10" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" className="h-10" />
             </div>
+            {loginError && (
+              <p className="text-sm text-red-500 text-center">{loginError}</p>
+            )}
             <Button type="submit" className="w-full h-10">Log in</Button>
           </form>
 
