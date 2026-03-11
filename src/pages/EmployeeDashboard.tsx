@@ -211,7 +211,7 @@ function SectionAccordion({
                     {isOverdue && <span className="ml-1">⚠</span>}
                   </div>
                   <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
-                    {item.type === 'access' && item.status !== 'complete' ? (
+                    {(item.type === 'access' || item.section === 'Week1') && item.status !== 'complete' ? (
                       <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onViewItem(item.id)}>
                         <ExternalLink className="w-3 h-3" /> Request
                       </Button>
