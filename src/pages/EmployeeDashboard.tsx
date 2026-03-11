@@ -43,7 +43,7 @@ export default function EmployeeDashboard() {
     .slice(0, 5);
 
   return (
-    <AppLayout user={activeUser} onSwitchRole={toggleRole}>
+    <AppLayout user={activeUser} onSwitchRole={activeUser.role === 'manager' ? toggleRole : undefined}>
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Hero Header */}
         <div className="bg-card border rounded-2xl p-6 mb-6">
