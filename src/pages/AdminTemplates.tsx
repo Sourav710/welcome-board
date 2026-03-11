@@ -105,7 +105,7 @@ export default function AdminTemplates() {
       updatedAt: new Date().toISOString(),
     };
 
-    setItems((prev) => [...prev, newItem]);
+    addItem(newItem);
     setNewActivity({ ...emptyActivity });
     setShowAddDialog(false);
     toast({
