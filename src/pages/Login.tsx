@@ -105,12 +105,15 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="userId">User ID</Label>
-              <Input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="e.g. SJHA001" className="h-10" />
+              <Input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="e.g. SJHA001, ADMIN, MGR001" className="h-10" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" className="h-10" />
             </div>
+            {loginError && (
+              <p className="text-sm text-red-500 text-center">{loginError}</p>
+            )}
             <Button type="submit" className="w-full h-10">Log in</Button>
           </form>
 
