@@ -70,7 +70,7 @@ const emptyActivity: NewActivity = {
 };
 
 export default function AdminTemplates() {
-  const [items, setItems] = useState<ChecklistItem[]>(mockItems);
+  const { items, addItem, removeItem } = useChecklist();
   const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
