@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { teamMembers } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -70,11 +70,32 @@ const emptyActivity: NewActivity = {
 };
 
 export default function AdminTemplates() {
-  const { items, addItem, removeItem } = useChecklist();
+  const { items, addItem, removeItem, updateItem } = useChecklist();
   const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDueDate, setEditDueDate] = useState<Date | undefined>();
+  const [editLinkUrl, setEditLinkUrl] = useState('');
+
+  const startEditing = (item: ChecklistItem) => {
+    setEditingId(item.id);
+    setEditDueDate(item.dueDate ? new Date(item.dueDate) : undefined);
+    setEditLinkUrl(item.linkUrl || '');
+  };
+
+  const saveEdit = (id: string) => {
+    updateItem(id, {
+      dueDate: editDueDate ? format(editDueDate, 'yyyy-MM-dd') : undefined,
+      linkUrl: editLinkUrl || undefined,
+      updatedAt: new Date().toISOString(),
+    });
+    setEditingId(null);
+    toast({ title: 'Activity updated' });
+  };
+
+  const cancelEdit = () => setEditingId(null);
 
   const filteredItems = filterSection === 'all' ? items : items.filter((i) => i.section === filterSection);
 
@@ -193,15 +214,17 @@ export default function AdminTemplates() {
                 <div className="col-span-3">Activity</div>
                 <div className="col-span-2">Section</div>
                 <div className="col-span-1">Type</div>
-                <div className="col-span-2">Owner</div>
+                <div className="col-span-1">Owner</div>
                 <div className="col-span-2">Due Date</div>
-                <div className="col-span-1">Required</div>
+                <div className="col-span-2">Link URL</div>
                 <div className="col-span-1"></div>
               </div>
               {filteredItems.length === 0 && (
                 <div className="px-4 py-8 text-sm text-muted-foreground text-center">No activities found. Click "Add Activity" to create one.</div>
               )}
-              {filteredItems.map((item) => (
+              {filteredItems.map((item) => {
+                const isEditing = editingId === item.id;
+                return (
                 <div key={item.id} className="grid grid-cols-12 gap-2 px-4 py-3 text-sm border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors">
                   <div className="col-span-3">
                     <p className="font-medium text-foreground text-xs leading-tight">{item.title}</p>
@@ -215,31 +238,69 @@ export default function AdminTemplates() {
                   <div className="col-span-1">
                     <span className="text-xs text-muted-foreground capitalize">{item.type}</span>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     <span className="text-xs text-muted-foreground">{item.owner}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="text-xs text-muted-foreground">{item.dueDate}</span>
-                  </div>
-                  <div className="col-span-1">
-                    {item.mandatory ? (
-                      <span className="text-xs text-destructive font-semibold">Yes</span>
+                    {isEditing ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className={cn('w-full h-7 justify-start text-left text-xs font-normal', !editDueDate && 'text-muted-foreground')}>
+                            <CalendarIcon className="mr-1 h-3 w-3" />
+                            {editDueDate ? format(editDueDate, 'MMM d, yyyy') : 'Pick date'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar mode="single" selected={editDueDate} onSelect={setEditDueDate} initialFocus className={cn('p-3 pointer-events-auto')} />
+                        </PopoverContent>
+                      </Popover>
                     ) : (
-                      <span className="text-xs text-muted-foreground">No</span>
+                      <span className="text-xs text-muted-foreground">{item.dueDate}</span>
                     )}
                   </div>
-                  <div className="col-span-1 flex justify-end">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
-                      onClick={() => deleteItem(item.id)}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
+                  <div className="col-span-2">
+                    {isEditing ? (
+                      <Input
+                        value={editLinkUrl}
+                        onChange={(e) => setEditLinkUrl(e.target.value)}
+                        placeholder="https://..."
+                        className="h-7 text-xs"
+                      />
+                    ) : (
+                      item.linkUrl ? (
+                        <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 truncate">
+                          <ExternalLink className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{item.linkUrl.replace(/^https?:\/\//, '')}</span>
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )
+                    )}
+                  </div>
+                  <div className="col-span-1 flex justify-end gap-0.5">
+                    {isEditing ? (
+                      <>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" onClick={() => saveEdit(item.id)}>
+                          <Check className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground" onClick={cancelEdit}>
+                          <X className="w-3.5 h-3.5" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-primary" onClick={() => startEditing(item)}>
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive" onClick={() => deleteItem(item.id)}>
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Assigned To info */}
