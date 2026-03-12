@@ -460,3 +460,107 @@ export default function AdminTemplates() {
     </AppLayout>
   );
 }
+
+// Audit Log Panel Component
+function AuditLogPanel({ logs }: { logs: import('@/context/AuditLogContext').AuditLogEntry[] }) {
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
+  const categories = ['all', 'auth', 'checklist', 'admin', 'access', 'system'] as const;
+  const categoryColors: Record<string, string> = {
+    auth: 'bg-info/15 text-info',
+    checklist: 'bg-success/15 text-success',
+    admin: 'bg-warning/15 text-warning',
+    access: 'bg-primary/15 text-primary',
+    system: 'bg-muted text-muted-foreground',
+  };
+
+  const filtered = logs.filter((log) => {
+    if (categoryFilter !== 'all' && log.category !== categoryFilter) return false;
+    if (search && !log.details.toLowerCase().includes(search.toLowerCase()) && !log.userName.toLowerCase().includes(search.toLowerCase()) && !log.action.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const exportLogs = () => {
+    const csv = [
+      'Timestamp,User,Role,Action,Category,Details',
+      ...filtered.map((l) => `"${l.timestamp}","${l.userName}","${l.userRole}","${l.action}","${l.category}","${l.details}"`)
+    ].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Audit Logs</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Track all actions across the platform</p>
+        </div>
+        <Button variant="outline" onClick={exportLogs} className="gap-2 text-xs">
+          <Download className="w-4 h-4" /> Export CSV
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-2.5 top-2 w-4 h-4 text-muted-foreground" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search logs..." className="h-8 text-xs pl-8" />
+        </div>
+        <div className="flex gap-1">
+          {categories.map((cat) => (
+            <Button
+              key={cat}
+              size="sm"
+              variant={categoryFilter === cat ? 'default' : 'outline'}
+              className="h-7 text-xs capitalize"
+              onClick={() => setCategoryFilter(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-card border rounded-xl overflow-hidden">
+        <div className="grid grid-cols-12 gap-2 px-4 py-3 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
+          <div className="col-span-2">Timestamp</div>
+          <div className="col-span-2">User</div>
+          <div className="col-span-1">Role</div>
+          <div className="col-span-2">Action</div>
+          <div className="col-span-1">Category</div>
+          <div className="col-span-4">Details</div>
+        </div>
+        {filtered.length === 0 && (
+          <div className="px-4 py-8 text-sm text-muted-foreground text-center">No audit logs match your filters.</div>
+        )}
+        {filtered.map((log) => (
+          <div key={log.id} className="grid grid-cols-12 gap-2 px-4 py-2.5 text-xs border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors">
+            <div className="col-span-2 text-muted-foreground font-mono">
+              {format(new Date(log.timestamp), 'MMM d, HH:mm:ss')}
+            </div>
+            <div className="col-span-2 font-medium text-foreground">{log.userName}</div>
+            <div className="col-span-1">
+              <span className="capitalize text-muted-foreground">{log.userRole}</span>
+            </div>
+            <div className="col-span-2">
+              <span className="font-mono text-foreground">{log.action}</span>
+            </div>
+            <div className="col-span-1">
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium capitalize ${categoryColors[log.category] || ''}`}>
+                {log.category}
+              </span>
+            </div>
+            <div className="col-span-4 text-muted-foreground truncate">{log.details}</div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground mt-3">{filtered.length} entries shown</p>
+    </>
+  );
+}
