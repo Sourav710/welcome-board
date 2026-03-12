@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { currentUser, checklistItems, accessRequests, notes as mockNotes } from '@/data/mockData';
+import { currentUser, accessRequests, notes as mockNotes } from '@/data/mockData';
 import { useAuditLog } from '@/context/AuditLogContext';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
 import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus } from 'lucide-react';
 
