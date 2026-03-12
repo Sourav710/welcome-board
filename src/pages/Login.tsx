@@ -121,6 +121,10 @@ export default function LoginPage() {
       navigate('/manager');
       return;
     }
+    if (validUser.user.profileComplete) {
+      navigate('/dashboard');
+      return;
+    }
     setShowSetup(true);
     setSetupStep(0);
   };
