@@ -74,7 +74,8 @@ const emptyActivity: NewActivity = {
 
 export default function AdminTemplates() {
   const { items, addItem, removeItem, updateItem } = useChecklist();
-  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'integrations'>('activities');
+  const { logs, addLog } = useAuditLog();
+  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'audit' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
