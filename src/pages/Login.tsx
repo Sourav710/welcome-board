@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { projects, locations, managers, adminUser, currentUser, managerUser, teamMembers } from '@/data/mockData';
-import { useChecklist } from '@/context/ChecklistContext';
+import { useAuditLog } from '@/context/AuditLogContext';
 import type { EmployeeRole, UserRole } from '@/types/onboarding';
-import { Shield, ChevronRight, CalendarIcon } from 'lucide-react';
+import { Shield, ChevronRight, CalendarIcon, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
