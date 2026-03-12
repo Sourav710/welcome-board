@@ -26,6 +26,7 @@ const App = () => (
       <TooltipProvider>
         <ChecklistProvider>
           <AuditLogProvider>
+          <NotesProvider>
             <SkipNav />
             <Toaster />
             <Sonner />
