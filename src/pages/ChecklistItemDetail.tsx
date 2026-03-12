@@ -32,7 +32,8 @@ export default function ChecklistItemDetail() {
   const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
     accessRequests.filter((r) => r.checklistItemId === id)
   );
-  const [itemNotes, setItemNotes] = useState<Note[]>(mockNotes.filter((n) => n.checklistItemId === id));
+  const { addNote: addNoteToCtx, getNotesForItem } = useNotes();
+  const itemNotes = getNotesForItem(id || '');
   const [newNote, setNewNote] = useState('');
 
   const status = item?.status || 'not_started';
