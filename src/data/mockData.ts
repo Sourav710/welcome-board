@@ -88,7 +88,7 @@ export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
   status: statuses[i],
   type: t.type,
   mandatory: t.mandatory,
-  dueDate: dueDate('2026-02-16', t.targetDay),
+  dueDate: dueDate(currentUser.startDate || '2026-03-12', t.targetDay),
   createdAt: '2026-02-16T09:00:00Z',
   updatedAt: '2026-02-18T14:00:00Z',
 }));
