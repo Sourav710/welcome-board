@@ -9,7 +9,7 @@ export const currentUser: User = {
   project: 'DMS',
   location: 'Noida',
   managerId: 'u5',
-  startDate: '2025-07-06',
+  startDate: '2026-03-12',
   profileComplete: true,
 };
 
