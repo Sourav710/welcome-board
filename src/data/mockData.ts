@@ -2,25 +2,25 @@ import { User, ChecklistTemplate, ChecklistItem, AccessRequest, Note, ItemStatus
 
 export const currentUser: User = {
   id: 'u1',
-  name: 'Alex Johnson',
-  email: 'alex.johnson@company.com',
+  name: 'Sourav',
+  email: 'souarv_402@optum.com',
   role: 'employee',
-  employeeRole: 'Developer',
-  project: 'Project Phoenix',
-  location: 'New York',
+  employeeRole: 'BA',
+  project: 'DMS',
+  location: 'Noida',
   managerId: 'u5',
-  startDate: '2026-02-16',
+  startDate: '2025-07-06',
   profileComplete: true,
 };
 
 export const managerUser: User = {
   id: 'u5',
-  name: 'Sarah Chen',
-  email: 'sarah.chen@company.com',
+  name: 'Gourav Banathia',
+  email: 'Gourav.banatia@optum.com',
   role: 'manager',
   employeeRole: 'Manager',
-  project: 'Project Phoenix',
-  location: 'New York',
+  project: 'DMS',
+  location: 'Noida',
   profileComplete: true,
 };
 
@@ -134,14 +134,14 @@ export const accessRequests: AccessRequest[] = [
 
 export const notes: Note[] = [
   { id: 'n1', checklistItemId: 'ci3', authorId: 'u1', authorRole: 'employee', authorName: 'Alex Johnson', text: 'Submitted GitHub access request via help desk portal.', createdAt: '2026-02-16T10:15:00Z' },
-  { id: 'n2', checklistItemId: 'ci3', authorId: 'u5', authorRole: 'manager', authorName: 'Sarah Chen', text: 'Approved. Waiting for IT to provision.', createdAt: '2026-02-17T09:30:00Z' },
+  { id: 'n2', checklistItemId: 'ci3', authorId: 'u5', authorRole: 'manager', authorName: 'Gourav Banathia', text: 'Approved. Waiting for IT to provision.', createdAt: '2026-02-17T09:30:00Z' },
   { id: 'n3', checklistItemId: 'ci4', authorId: 'u1', authorRole: 'employee', authorName: 'Alex Johnson', text: 'VPN client installed. Awaiting credentials.', createdAt: '2026-02-17T11:00:00Z' },
 ];
 
-export const projects = ['Project Phoenix', 'Project Atlas', 'Project Titan', 'Project Nova'];
-export const locations = ['New York', 'Chicago', 'San Francisco', 'Remote', 'London'];
+export const projects = ['DMS', 'Project Atlas', 'Project Titan', 'Project Nova'];
+export const locations = ['Noida', 'Gurugram', 'Hyderabad', 'Remote', 'Banagalore'];
 export const managers = [
-  { id: 'u5', name: 'Sarah Chen' },
-  { id: 'u6', name: 'Michael Brown' },
-  { id: 'u7', name: 'Lisa Wang' },
+  { id: 'u5', name: 'Gourav Banathia' },
+  { id: 'u6', name: 'Aastha Sharma' },
+  { id: 'u7', name: 'Deepankur Khanna' },
 ];
