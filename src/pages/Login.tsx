@@ -167,9 +167,14 @@ export default function LoginPage() {
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" className="h-10" />
             </div>
             {loginError && (
-              <p className="text-sm text-red-500 text-center">{loginError}</p>
+              <div className={`text-sm text-center p-2.5 rounded-lg ${isLocked ? 'bg-destructive/10 text-destructive' : 'text-destructive'}`}>
+                {isLocked && <Lock className="w-4 h-4 inline mr-1" aria-hidden="true" />}
+                {loginError}
+              </div>
             )}
-            <Button type="submit" className="w-full h-10">Log in</Button>
+            <Button type="submit" className="w-full h-10" disabled={isLocked}>
+              {isLocked ? `Locked (${lockCountdown}s)` : 'Log in'}
+            </Button>
           </form>
 
           <div className="relative my-6">
