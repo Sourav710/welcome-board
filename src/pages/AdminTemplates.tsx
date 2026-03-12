@@ -345,7 +345,6 @@ export default function AdminTemplates() {
           </div>
         </div>
       </div>
-      </div>
 
       {/* Add Activity Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
