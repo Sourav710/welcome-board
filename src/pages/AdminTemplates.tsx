@@ -46,6 +46,7 @@ const typeOptions: { value: ChecklistItemType; label: string }[] = [
 const navItems = [
   { key: 'activities' as const, label: 'Manage Activities', icon: Library },
   { key: 'templates' as const, label: 'Role Templates', icon: LayoutTemplate },
+  { key: 'audit' as const, label: 'Audit Logs', icon: ScrollText },
   { key: 'integrations' as const, label: 'Integrations', icon: Plug },
 ];
 
