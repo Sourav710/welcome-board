@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { currentUser, checklistItems, accessRequests, notes as mockNotes } from '@/data/mockData';
+import { currentUser, accessRequests, notes as mockNotes } from '@/data/mockData';
 import { useAuditLog } from '@/context/AuditLogContext';
+import { useChecklist } from '@/context/ChecklistContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
 import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus } from 'lucide-react';
 
@@ -24,13 +25,18 @@ export default function ChecklistItemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addLog } = useAuditLog();
-  const item = checklistItems.find((i) => i.id === id);
+  const { items, updateItem } = useChecklist();
+  const item = items.find((i) => i.id === id);
   const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
     accessRequests.filter((r) => r.checklistItemId === id)
   );
   const [itemNotes, setItemNotes] = useState<Note[]>(mockNotes.filter((n) => n.checklistItemId === id));
   const [newNote, setNewNote] = useState('');
-  const [status, setStatus] = useState<ItemStatus>(item?.status || 'not_started');
+
+  const status = item?.status || 'not_started';
+  const setStatus = (newStatus: ItemStatus) => {
+    if (id) updateItem(id, { status: newStatus, updatedAt: new Date().toISOString() });
+  };
 
   // Ticket capture dialog
   const [showTicketDialog, setShowTicketDialog] = useState(false);
