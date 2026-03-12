@@ -31,8 +31,12 @@ const validCredentials = [
   { userId: 'ADMIN', password: 'admin123', role: 'admin' as UserRole, user: adminUser },
 ];
 
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 60 * 1000; // 1 minute lockout
+
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { addLog } = useAuditLog();
   const [showSetup, setShowSetup] = useState(false);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -40,32 +44,83 @@ export default function LoginPage() {
   const [setupStep, setSetupStep] = useState(0);
   const [startDate, setStartDate] = useState<Date | undefined>(new Date('2026-02-16'));
 
+  // Lockout state
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [lockCountdown, setLockCountdown] = useState(0);
+
+  const isLocked = lockedUntil !== null && Date.now() < lockedUntil;
+
+  useEffect(() => {
+    if (!lockedUntil) return;
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+      setLockCountdown(remaining);
+      if (remaining <= 0) {
+        setLockedUntil(null);
+        setFailedAttempts(0);
+        setLoginError('');
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockedUntil]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+
+    if (isLocked) {
+      setLoginError(`Account locked. Try again in ${lockCountdown}s.`);
+      return;
+    }
 
     const validUser = validCredentials.find(
       (cred) => cred.userId.toLowerCase() === userId.toLowerCase() && cred.password === password
     );
 
     if (!validUser) {
-      setLoginError('Invalid User ID or Password');
+      const attempts = failedAttempts + 1;
+      setFailedAttempts(attempts);
+
+      addLog({
+        userId: userId || 'unknown',
+        userName: userId || 'Unknown',
+        userRole: 'unknown',
+        action: 'LOGIN_FAILED',
+        category: 'auth',
+        details: `Failed login attempt ${attempts}/${MAX_ATTEMPTS} for user ID "${userId}"`,
+      });
+
+      if (attempts >= MAX_ATTEMPTS) {
+        const lockTime = Date.now() + LOCKOUT_DURATION_MS;
+        setLockedUntil(lockTime);
+        setLockCountdown(Math.ceil(LOCKOUT_DURATION_MS / 1000));
+        setLoginError(`Account locked after ${MAX_ATTEMPTS} failed attempts. Try again in 60s.`);
+      } else {
+        setLoginError(`Invalid credentials. ${MAX_ATTEMPTS - attempts} attempts remaining.`);
+      }
       return;
     }
 
-    // Admin goes straight to admin page
+    // Successful login
+    setFailedAttempts(0);
+    addLog({
+      userId: validUser.user.id,
+      userName: validUser.user.name,
+      userRole: validUser.role,
+      action: 'LOGIN',
+      category: 'auth',
+      details: `${validUser.user.name} logged in as ${validUser.role}`,
+    });
+
     if (validUser.role === 'admin') {
       navigate('/admin');
       return;
     }
-
-    // Manager goes to manager dashboard
     if (validUser.role === 'manager') {
       navigate('/manager');
       return;
     }
-
-    // Employee shows setup dialog
     setShowSetup(true);
     setSetupStep(0);
   };
