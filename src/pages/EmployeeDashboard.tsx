@@ -19,7 +19,7 @@ const sectionLabels: Record<ChecklistSection, string> = {
   Training: 'Trainings & Learning',
 };
 
-const sectionOrder: ChecklistSection[] = ['Access', 'Day1', 'Week1', 'Training'];
+const sectionOrder: ChecklistSection[] = ['Access', 'Week1', 'Day1', 'Training'];
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
