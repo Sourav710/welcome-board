@@ -25,13 +25,18 @@ export default function ChecklistItemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addLog } = useAuditLog();
-  const item = checklistItems.find((i) => i.id === id);
+  const { items, updateItem } = useChecklist();
+  const item = items.find((i) => i.id === id);
   const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
     accessRequests.filter((r) => r.checklistItemId === id)
   );
   const [itemNotes, setItemNotes] = useState<Note[]>(mockNotes.filter((n) => n.checklistItemId === id));
   const [newNote, setNewNote] = useState('');
-  const [status, setStatus] = useState<ItemStatus>(item?.status || 'not_started');
+
+  const status = item?.status || 'not_started';
+  const setStatus = (newStatus: ItemStatus) => {
+    if (id) updateItem(id, { status: newStatus, updatedAt: new Date().toISOString() });
+  };
 
   // Ticket capture dialog
   const [showTicketDialog, setShowTicketDialog] = useState(false);
