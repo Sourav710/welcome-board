@@ -276,6 +276,82 @@ export default function ChecklistItemDetail() {
 
           {/* Right column */}
           <div className="space-y-4">
+            {/* Update Status card */}
+            <div className="bg-card border rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <RotateCcw className="w-4 h-4 text-primary" aria-hidden="true" />
+                <h3 className="text-sm font-semibold text-foreground">Update Status</h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Change the status when you receive confirmation or encounter a blocker.
+              </p>
+              <Select
+                value={status}
+                onValueChange={(val: ItemStatus) => {
+                  setStatus(val);
+                  addLog({
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    userRole: currentUser.role,
+                    action: 'STATUS_CHANGE',
+                    category: 'checklist',
+                    details: `Changed "${item.title}" status to ${val}`,
+                  });
+                }}
+              >
+                <SelectTrigger className="w-full mb-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="not_started">Not Started</SelectItem>
+                  <SelectItem value="pending">Submitted / Pending</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="complete">Completed</SelectItem>
+                  <SelectItem value="rejected">Blocked / Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="flex-1 gap-1.5"
+                  disabled={status === 'complete'}
+                  onClick={() => {
+                    setStatus('complete');
+                    addLog({
+                      userId: currentUser.id,
+                      userName: currentUser.name,
+                      userRole: currentUser.role,
+                      action: 'STATUS_CHANGE',
+                      category: 'checklist',
+                      details: `Marked "${item.title}" as complete`,
+                    });
+                  }}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Mark Complete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 gap-1.5"
+                  disabled={status === 'rejected'}
+                  onClick={() => {
+                    setStatus('rejected');
+                    addLog({
+                      userId: currentUser.id,
+                      userName: currentUser.name,
+                      userRole: currentUser.role,
+                      action: 'STATUS_CHANGE',
+                      category: 'checklist',
+                      details: `Marked "${item.title}" as blocked`,
+                    });
+                  }}
+                >
+                  <Ban className="w-3.5 h-3.5" aria-hidden="true" /> Mark Blocked
+                </Button>
+              </div>
+            </div>
+
             {/* SLA card */}
             <div className="bg-card border rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
