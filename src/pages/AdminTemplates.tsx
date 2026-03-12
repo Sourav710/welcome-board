@@ -340,8 +340,11 @@ export default function AdminTemplates() {
                 ))}
               </div>
             </div>
+            </>
+            )}
           </div>
         </div>
+      </div>
       </div>
 
       {/* Add Activity Dialog */}
