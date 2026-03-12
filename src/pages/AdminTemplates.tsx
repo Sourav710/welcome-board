@@ -146,8 +146,14 @@ export default function AdminTemplates() {
   };
 
   const deleteItem = (id: string) => {
+    const item = items.find(i => i.id === id);
     removeItem(id);
     toast({ title: 'Activity removed' });
+    addLog({
+      userId: 'u10', userName: 'Admin User', userRole: 'admin',
+      action: 'TEMPLATE_DELETE', category: 'admin',
+      details: `Deleted activity "${item?.title || id}"`,
+    });
   };
 
   return (
