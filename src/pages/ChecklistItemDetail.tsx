@@ -82,7 +82,7 @@ export default function ChecklistItemDetail() {
       text: newNote.trim(),
       createdAt: new Date().toISOString(),
     };
-    setItemNotes((prev) => [...prev, note]);
+    addNoteToCtx(note);
     setNewNote('');
     addLog({
       userId: currentUser.id,
