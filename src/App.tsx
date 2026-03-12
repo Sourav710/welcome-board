@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ChecklistProvider } from "@/context/ChecklistContext";
 import { AuditLogProvider } from "@/context/AuditLogContext";
+import { NotesProvider } from "@/context/NotesContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SkipNav } from "@/components/SkipNav";
 import { SessionTimeoutProvider } from "@/components/SessionTimeout";
@@ -25,6 +26,7 @@ const App = () => (
       <TooltipProvider>
         <ChecklistProvider>
           <AuditLogProvider>
+          <NotesProvider>
             <SkipNav />
             <Toaster />
             <Sonner />
@@ -43,6 +45,7 @@ const App = () => (
                 </Routes>
               </SessionTimeoutProvider>
             </BrowserRouter>
+          </NotesProvider>
           </AuditLogProvider>
         </ChecklistProvider>
       </TooltipProvider>

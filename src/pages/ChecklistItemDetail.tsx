@@ -8,9 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { currentUser, accessRequests, notes as mockNotes } from '@/data/mockData';
+import { currentUser, accessRequests } from '@/data/mockData';
 import { useAuditLog } from '@/context/AuditLogContext';
 import { useChecklist } from '@/context/ChecklistContext';
+import { useNotes } from '@/context/NotesContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
 import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Play, Ban, RotateCcw } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -31,7 +32,8 @@ export default function ChecklistItemDetail() {
   const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
     accessRequests.filter((r) => r.checklistItemId === id)
   );
-  const [itemNotes, setItemNotes] = useState<Note[]>(mockNotes.filter((n) => n.checklistItemId === id));
+  const { addNote: addNoteToCtx, getNotesForItem } = useNotes();
+  const itemNotes = getNotesForItem(id || '');
   const [newNote, setNewNote] = useState('');
 
   const status = item?.status || 'not_started';
@@ -80,7 +82,7 @@ export default function ChecklistItemDetail() {
       text: newNote.trim(),
       createdAt: new Date().toISOString(),
     };
-    setItemNotes((prev) => [...prev, note]);
+    addNoteToCtx(note);
     setNewNote('');
     addLog({
       userId: currentUser.id,
