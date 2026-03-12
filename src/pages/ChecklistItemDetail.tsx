@@ -12,7 +12,8 @@ import { currentUser, accessRequests, notes as mockNotes } from '@/data/mockData
 import { useAuditLog } from '@/context/AuditLogContext';
 import { useChecklist } from '@/context/ChecklistContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
-import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Play, Ban, RotateCcw } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'not_started', label: 'Not Started' },
