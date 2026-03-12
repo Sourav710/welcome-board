@@ -45,6 +45,7 @@ const App = () => (
                 </Routes>
               </SessionTimeoutProvider>
             </BrowserRouter>
+          </NotesProvider>
           </AuditLogProvider>
         </ChecklistProvider>
       </TooltipProvider>
