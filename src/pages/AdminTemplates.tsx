@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { AppLayout } from '@/components/AppLayout';
+import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,8 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Textarea } from '@/components/ui/textarea';
 import { teamMembers } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
+import { useAuditLog } from '@/context/AuditLogContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X, ScrollText, Search, Download } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
