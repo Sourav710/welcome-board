@@ -187,6 +187,15 @@ export default function ChecklistItemDetail() {
                   </div>
                 ))}
               </div>
+              {item.linkUrl && (
+                <div className="mt-4 bg-accent/30 rounded-lg p-3">
+                  <span className="text-muted-foreground text-xs block mb-1">Service URL</span>
+                  <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    {item.linkUrl}
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Status timeline */}
