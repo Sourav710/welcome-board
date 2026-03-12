@@ -90,6 +90,7 @@ export default function AdminTemplates() {
   };
 
   const saveEdit = (id: string) => {
+    const item = items.find(i => i.id === id);
     updateItem(id, {
       dueDate: editDueDate ? format(editDueDate, 'yyyy-MM-dd') : undefined,
       linkUrl: editLinkUrl || undefined,
@@ -97,6 +98,11 @@ export default function AdminTemplates() {
     });
     setEditingId(null);
     toast({ title: 'Activity updated' });
+    addLog({
+      userId: 'u10', userName: 'Admin User', userRole: 'admin',
+      action: 'TEMPLATE_EDIT', category: 'admin',
+      details: `Updated "${item?.title || id}" — due date & link URL`,
+    });
   };
 
   const cancelEdit = () => setEditingId(null);
