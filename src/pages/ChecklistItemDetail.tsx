@@ -36,7 +36,17 @@ export default function ChecklistItemDetail() {
 
   const status = item?.status || 'not_started';
   const setStatus = (newStatus: ItemStatus) => {
-    if (id) updateItem(id, { status: newStatus, updatedAt: new Date().toISOString() });
+    if (id) {
+      updateItem(id, { status: newStatus, updatedAt: new Date().toISOString() });
+      // Sync related tickets with the new status
+      setLocalRequests((prev) =>
+        prev.map((req) => ({
+          ...req,
+          status: newStatus,
+          updatedAt: new Date().toISOString(),
+        }))
+      );
+    }
   };
 
   // Ticket capture dialog
