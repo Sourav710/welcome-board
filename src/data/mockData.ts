@@ -133,9 +133,9 @@ export const accessRequests: AccessRequest[] = [
 ];
 
 export const notes: Note[] = [
-  { id: 'n1', checklistItemId: 'ci3', authorId: 'u1', authorRole: 'employee', authorName: 'Alex Johnson', text: 'Submitted GitHub access request via help desk portal.', createdAt: '2026-02-16T10:15:00Z' },
-  { id: 'n2', checklistItemId: 'ci3', authorId: 'u5', authorRole: 'manager', authorName: 'Gourav Banathia', text: 'Approved. Waiting for IT to provision.', createdAt: '2026-02-17T09:30:00Z' },
-  { id: 'n3', checklistItemId: 'ci4', authorId: 'u1', authorRole: 'employee', authorName: 'Alex Johnson', text: 'VPN client installed. Awaiting credentials.', createdAt: '2026-02-17T11:00:00Z' },
+  { id: 'n1', checklistItemId: 'ci3', authorId: 'u1', authorRole: 'employee', authorName: 'Sourav', text: 'Submitted GitHub access request via help desk portal.', createdAt: '2026-03-13T10:15:00Z' },
+  { id: 'n2', checklistItemId: 'ci3', authorId: 'u5', authorRole: 'manager', authorName: 'Gourav Banathia', text: 'Approved. Waiting for IT to provision.', createdAt: '2026-03-14T09:30:00Z' },
+  { id: 'n3', checklistItemId: 'ci4', authorId: 'u1', authorRole: 'employee', authorName: 'Sourav', text: 'VPN client installed. Awaiting credentials.', createdAt: '2026-03-14T11:00:00Z' },
 ];
 
 export const projects = ['DMS', 'Project Atlas', 'Project Titan', 'Project Nova'];
