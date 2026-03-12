@@ -4,8 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ChecklistProvider } from "@/context/ChecklistContext";
+import { AuditLogProvider } from "@/context/AuditLogContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SkipNav } from "@/components/SkipNav";
+import { SessionTimeoutProvider } from "@/components/SessionTimeout";
 import Login from "./pages/Login";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import MyRequests from "./pages/MyRequests";
@@ -22,22 +24,26 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ChecklistProvider>
-          <SkipNav />
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<EmployeeDashboard />} />
-              <Route path="/requests" element={<MyRequests />} />
-              <Route path="/item/:id" element={<ChecklistItemDetail />} />
-              <Route path="/manager" element={<ManagerDashboard />} />
-              <Route path="/admin" element={<AdminTemplates />} />
-              <Route path="/help" element={<HelpCenter />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <AuditLogProvider>
+            <SkipNav />
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <SessionTimeoutProvider>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/login" replace />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/dashboard" element={<EmployeeDashboard />} />
+                  <Route path="/requests" element={<MyRequests />} />
+                  <Route path="/item/:id" element={<ChecklistItemDetail />} />
+                  <Route path="/manager" element={<ManagerDashboard />} />
+                  <Route path="/admin" element={<AdminTemplates />} />
+                  <Route path="/help" element={<HelpCenter />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SessionTimeoutProvider>
+            </BrowserRouter>
+          </AuditLogProvider>
         </ChecklistProvider>
       </TooltipProvider>
     </QueryClientProvider>

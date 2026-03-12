@@ -1,12 +1,17 @@
 import { useState } from 'react';
+import { format } from 'date-fns';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { currentUser, checklistItems, accessRequests, notes as mockNotes } from '@/data/mockData';
-import type { Note, ItemStatus } from '@/types/onboarding';
-import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer } from 'lucide-react';
+import { useAuditLog } from '@/context/AuditLogContext';
+import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
+import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus } from 'lucide-react';
 
 const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'not_started', label: 'Not Started' },
@@ -18,11 +23,19 @@ const statusSteps: { key: ItemStatus; label: string }[] = [
 export default function ChecklistItemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addLog } = useAuditLog();
   const item = checklistItems.find((i) => i.id === id);
-  const relatedRequests = accessRequests.filter((r) => r.checklistItemId === id);
+  const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
+    accessRequests.filter((r) => r.checklistItemId === id)
+  );
   const [itemNotes, setItemNotes] = useState<Note[]>(mockNotes.filter((n) => n.checklistItemId === id));
   const [newNote, setNewNote] = useState('');
   const [status, setStatus] = useState<ItemStatus>(item?.status || 'not_started');
+
+  // Ticket capture dialog
+  const [showTicketDialog, setShowTicketDialog] = useState(false);
+  const [ticketId, setTicketId] = useState('');
+  const [ticketSystem, setTicketSystem] = useState('');
 
   if (!item) {
     return (
@@ -52,23 +65,85 @@ export default function ChecklistItemDetail() {
     };
     setItemNotes((prev) => [...prev, note]);
     setNewNote('');
+    addLog({
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userRole: currentUser.role,
+      action: 'NOTE_ADDED',
+      category: 'checklist',
+      details: `Added note on "${item.title}"`,
+    });
   };
 
-  const requestAccess = () => setStatus('pending');
+  const openServiceNow = () => {
+    // Build pre-populated URL with employee details
+    const params = new URLSearchParams({
+      employee_name: encodeURIComponent(currentUser.name),
+      employee_id: encodeURIComponent(currentUser.id),
+      employee_email: encodeURIComponent(currentUser.email),
+      request_type: encodeURIComponent(item.title),
+      project: encodeURIComponent(currentUser.project || ''),
+      manager: encodeURIComponent(currentUser.managerId || ''),
+    });
+    const url = item.linkUrl
+      ? `${item.linkUrl}?${params.toString()}`
+      : `https://servicenow.company.com/request?${params.toString()}`;
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setStatus('pending');
+
+    addLog({
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userRole: currentUser.role,
+      action: 'ACCESS_REQUEST',
+      category: 'access',
+      details: `Opened access request form for "${item.title}"`,
+    });
+
+    // Show ticket capture dialog after a brief delay
+    setTimeout(() => setShowTicketDialog(true), 1000);
+  };
+
+  const captureTicket = () => {
+    if (!ticketId.trim()) return;
+    const newReq: AccessRequest = {
+      id: `ar-${Date.now()}`,
+      checklistItemId: id!,
+      externalTicketId: ticketId.trim().toUpperCase(),
+      systemName: ticketSystem || item.title.split(' ')[0],
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setLocalRequests((prev) => [...prev, newReq]);
+    setShowTicketDialog(false);
+    setTicketId('');
+    setTicketSystem('');
+
+    addLog({
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userRole: currentUser.role,
+      action: 'TICKET_CAPTURED',
+      category: 'access',
+      details: `Captured ticket ${newReq.externalTicketId} for "${item.title}"`,
+    });
+  };
 
   return (
     <AppLayout user={currentUser}>
       <div className="max-w-6xl mx-auto px-6 py-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4" aria-label="Breadcrumb">
           <button onClick={() => navigate('/dashboard')} className="hover:text-foreground flex items-center gap-1 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" /> My Onboarding
+            <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> My Onboarding
           </button>
-          <span className="text-border">/</span>
+          <span className="text-border" aria-hidden="true">/</span>
           <span>{sectionLabel}</span>
-          <span className="text-border">/</span>
+          <span className="text-border" aria-hidden="true">/</span>
           <span className="text-foreground font-medium">{item.title}</span>
-        </div>
+        </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column */}
@@ -108,11 +183,11 @@ export default function ChecklistItemDetail() {
                         i <= currentStepIndex
                           ? 'bg-primary text-primary-foreground border-primary shadow-sm'
                           : 'bg-muted text-muted-foreground border-border'
-                      }`}>
+                      }`} aria-label={`Step ${i + 1}: ${step.label} - ${i <= currentStepIndex ? 'completed' : 'pending'}`}>
                         {i < currentStepIndex ? (
-                          <CheckCircle2 className="w-4 h-4" />
+                          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
                         ) : i === currentStepIndex ? (
-                          <Clock className="w-4 h-4" />
+                          <Clock className="w-4 h-4" aria-hidden="true" />
                         ) : (
                           i + 1
                         )}
@@ -122,12 +197,50 @@ export default function ChecklistItemDetail() {
                       </span>
                     </div>
                     {i < statusSteps.length - 1 && (
-                      <div className={`flex-1 h-0.5 mx-2 mt-[-1.25rem] rounded-full ${i < currentStepIndex ? 'bg-primary' : 'bg-border'}`} />
+                      <div className={`flex-1 h-0.5 mx-2 mt-[-1.25rem] rounded-full ${i < currentStepIndex ? 'bg-primary' : 'bg-border'}`} aria-hidden="true" />
                     )}
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Tickets Timeline */}
+            {item.type === 'access' && localRequests.length > 0 && (
+              <div className="bg-card border rounded-xl p-6">
+                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Ticket className="w-4 h-4 text-primary" aria-hidden="true" />
+                  Related Tickets Timeline
+                </h3>
+                <div className="relative">
+                  <div className="absolute left-4 top-0 bottom-0 w-px bg-border" aria-hidden="true" />
+                  <div className="space-y-4">
+                    {localRequests
+                      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                      .map((req) => (
+                        <div key={req.id} className="relative pl-10">
+                          <div className={`absolute left-2.5 top-2 w-3 h-3 rounded-full border-2 ${
+                            req.status === 'complete' ? 'bg-success border-success' :
+                            req.status === 'in_progress' ? 'bg-primary border-primary' :
+                            req.status === 'pending' ? 'bg-warning border-warning' :
+                            'bg-muted border-border'
+                          }`} aria-hidden="true" />
+                          <div className="bg-accent/30 border rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-mono font-semibold text-foreground">{req.externalTicketId}</span>
+                              <StatusBadge status={req.status} />
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span>{req.systemName}</span>
+                              <span>Created {format(new Date(req.createdAt), 'MMM d, yyyy h:mm a')}</span>
+                              <span>Updated {format(new Date(req.updatedAt), 'MMM d, yyyy h:mm a')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Activity notes */}
             <div className="bg-card border rounded-xl p-6">
@@ -159,7 +272,7 @@ export default function ChecklistItemDetail() {
             {/* SLA card */}
             <div className="bg-card border rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Timer className="w-4 h-4 text-primary" />
+                <Timer className="w-4 h-4 text-primary" aria-hidden="true" />
                 <h3 className="text-sm font-semibold text-foreground">SLA Tracker</h3>
               </div>
               <div className={`text-center py-4 rounded-lg ${daysUntilDue < 0 ? 'bg-destructive/10' : daysUntilDue <= 2 ? 'bg-warning/10' : 'bg-success/10'}`}>
@@ -174,28 +287,34 @@ export default function ChecklistItemDetail() {
             {item.type === 'access' && (
               <div className="bg-card border rounded-xl p-5">
                 <div className="flex items-start gap-2 mb-3">
-                  <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5" />
-                  <p className="text-sm text-muted-foreground">Raise access request in the external system.</p>
+                  <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                  <p className="text-sm text-muted-foreground">Raise access request via ServiceNow / Jira.</p>
                 </div>
-                {item.linkUrl && (
-                  <Button
-                    variant="default"
-                    className="w-full mb-4 gap-2"
-                    onClick={() => { window.open(item.linkUrl, '_blank'); requestAccess(); }}
-                  >
-                    <ExternalLink className="w-4 h-4" /> Open Access Request Form
-                  </Button>
-                )}
-                {!item.linkUrl && status === 'not_started' && (
-                  <Button variant="default" className="w-full mb-4" onClick={requestAccess}>Submit Request</Button>
-                )}
+
+                {/* Request Access opens in new tab */}
+                <Button
+                  variant="default"
+                  className="w-full mb-3 gap-2"
+                  onClick={openServiceNow}
+                >
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" /> Request Access
+                </Button>
+
+                {/* Manual ticket entry */}
+                <Button
+                  variant="outline"
+                  className="w-full mb-4 gap-2 text-xs"
+                  onClick={() => setShowTicketDialog(true)}
+                >
+                  <Plus className="w-3.5 h-3.5" aria-hidden="true" /> Enter Ticket ID Manually
+                </Button>
 
                 <h4 className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Related Tickets</h4>
-                {relatedRequests.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">No tickets yet.</p>
+                {localRequests.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">No tickets yet. Click "Request Access" to get started.</p>
                 ) : (
                   <div className="space-y-2">
-                    {relatedRequests.map((req) => (
+                    {localRequests.map((req) => (
                       <div key={req.id} className="p-3 border rounded-lg bg-accent/30">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-mono font-medium text-foreground">{req.externalTicketId}</span>
@@ -213,6 +332,46 @@ export default function ChecklistItemDetail() {
           </div>
         </div>
       </div>
+
+      {/* Ticket Capture Dialog */}
+      <Dialog open={showTicketDialog} onOpenChange={setShowTicketDialog}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ticket className="w-5 h-5 text-primary" aria-hidden="true" />
+              Capture Ticket ID
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Enter the ticket ID from ServiceNow or Jira to track this request.
+            </p>
+            <div className="space-y-1.5">
+              <Label htmlFor="ticket-id">Ticket ID *</Label>
+              <Input
+                id="ticket-id"
+                value={ticketId}
+                onChange={(e) => setTicketId(e.target.value)}
+                placeholder="e.g. HELP-1046, JIRA-2345"
+                className="font-mono"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="ticket-system">System Name</Label>
+              <Input
+                id="ticket-system"
+                value={ticketSystem}
+                onChange={(e) => setTicketSystem(e.target.value)}
+                placeholder="e.g. ServiceNow, Jira"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowTicketDialog(false)}>Cancel</Button>
+            <Button onClick={captureTicket} disabled={!ticketId.trim()}>Save Ticket</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
