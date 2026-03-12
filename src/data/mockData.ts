@@ -45,8 +45,8 @@ export const teamMembers: User[] = [
 
 export const templates: ChecklistTemplate[] = [
   // Access
-  { id: 't1', role: 'Developer', section: 'Access', title: 'Jira Access', description: 'Request access to Jira project boards', type: 'access', mandatory: true, defaultOwner: 'IT Help Desk', defaultLinkUrl: 'https://helpdesk.company.com/jira', targetDay: 1 },
-  { id: 't2', role: 'Developer', section: 'Access', title: 'Confluence Access', description: 'Request access to Confluence knowledge base', type: 'access', mandatory: true, defaultOwner: 'IT Help Desk', defaultLinkUrl: 'https://helpdesk.company.com/confluence', targetDay: 1 },
+  { id: 't1', role: 'Developer', section: 'Access', title: 'Jira Access', description: 'Request access to Jira project boards', type: 'access', mandatory: true, defaultOwner: 'IT Help Desk', defaultLinkUrl: 'https://secure.uhc.com', targetDay: 1 },
+  { id: 't2', role: 'Developer', section: 'Access', title: 'Confluence Access', description: 'Request access to Confluence knowledge base', type: 'access', mandatory: true, defaultOwner: 'IT Help Desk', defaultLinkUrl: 'https://secure.uhc.com', targetDay: 1 },
   { id: 't3', role: 'Developer', section: 'Access', title: 'GitHub Repository Access', description: 'Request access to project repositories', type: 'access', mandatory: true, defaultOwner: 'Tech Lead', defaultLinkUrl: 'https://helpdesk.company.com/github', targetDay: 1 },
   { id: 't4', role: 'Developer', section: 'Access', title: 'VPN Setup', description: 'Configure and test VPN connection', type: 'access', mandatory: true, defaultOwner: 'IT Help Desk', defaultLinkUrl: 'https://helpdesk.company.com/vpn', targetDay: 1 },
   { id: 't5', role: 'Developer', section: 'Access', title: 'AWS Console Access', description: 'Request AWS console access for dev environment', type: 'access', mandatory: false, defaultOwner: 'Cloud Team', defaultLinkUrl: 'https://helpdesk.company.com/aws', targetDay: 3 },
