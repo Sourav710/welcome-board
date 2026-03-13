@@ -392,7 +392,7 @@ export default function ChecklistItemDetail() {
               <div className="bg-card border rounded-xl p-5">
                 <div className="flex items-start gap-2 mb-3">
                   <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5" aria-hidden="true" />
-                  <p className="text-sm text-muted-foreground">Raise access request via ServiceNow / Jira.</p>
+                  <p className="text-sm text-muted-foreground">Raise access request.</p>
                 </div>
 
                 {/* Request Access opens in new tab */}

@@ -127,7 +127,7 @@ export default function EmployeeDashboard() {
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary">SC</div>
                   <div>
-                    <p className="font-medium text-foreground">Sarah Chen</p>
+                    <p className="font-medium text-foreground">Gourav Banathia</p>
                     <p className="text-muted-foreground">Manager</p>
                   </div>
                 </div>
