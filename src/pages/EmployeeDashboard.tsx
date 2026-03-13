@@ -214,20 +214,12 @@ function SectionAccordion({
                     {isOverdue && <span className="ml-1">⚠</span>}
                   </div>
                   <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
-                    {item.section === 'Training' && item.status !== 'complete' ? (
-                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => item.linkUrl ? window.open(item.linkUrl, '_blank') : onViewItem(item.id)}>
-                        <ExternalLink className="w-3 h-3" /> Go to Training
-                      </Button>
-                    ) : (item.type === 'access' || item.section === 'Week1') && item.status !== 'complete' ? (
-                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onViewItem(item.id)}>
-                        <ExternalLink className="w-3 h-3" /> Request
-                      </Button>
-                    ) : item.status !== 'complete' ? (
-                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onMarkDone(item.id)}>
-                        Mark Done
-                      </Button>
-                    ) : (
+                    {item.status === 'complete' ? (
                       <span className="text-xs text-success font-medium">✓ Done</span>
+                    ) : (
+                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onViewItem(item.id)}>
+                        <ExternalLink className="w-3 h-3" /> Request Access
+                      </Button>
                     )}
                   </div>
                 </div>
