@@ -388,7 +388,7 @@ export default function ChecklistItemDetail() {
             </div>
 
             {/* Access request card */}
-            {item.type === 'access' && (
+            {(item.type === 'access' || item.section === 'Week1') && (
               <div className="bg-card border rounded-xl p-5">
                 <div className="flex items-start gap-2 mb-3">
                   <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5" aria-hidden="true" />
