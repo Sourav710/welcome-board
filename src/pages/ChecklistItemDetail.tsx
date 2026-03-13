@@ -233,7 +233,7 @@ export default function ChecklistItemDetail() {
             </div>
 
             {/* Tickets Timeline */}
-            {item.type === 'access' && localRequests.length > 0 && (
+            {(item.type === 'access' || item.section === 'Week1') && localRequests.length > 0 && (
               <div className="bg-card border rounded-xl p-6">
                 <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Ticket className="w-4 h-4 text-primary" aria-hidden="true" />
