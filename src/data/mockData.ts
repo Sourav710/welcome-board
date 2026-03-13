@@ -93,7 +93,7 @@ function dueDate(startDate: string, targetDay: number): string {
   return d.toISOString().split('T')[0];
 }
 
-const statuses: ItemStatus[] = ['not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'];
+const statuses: ItemStatus[] = templates.map(() => 'not_started' as ItemStatus);
 
 export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
   id: `ci${i + 1}`,

@@ -9,7 +9,7 @@ const statusConfig: Record<ItemStatus, { label: string; className: string; dot: 
 };
 
 export function StatusBadge({ status }: { status: ItemStatus }) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] ?? statusConfig.not_started;
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
