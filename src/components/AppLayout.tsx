@@ -38,16 +38,23 @@ const adminNav = [
   { label: 'Admin Templates', path: '/admin' },
 ];
 
-function NotificationBell() {
-  const [notifications, setNotifications] = useState(sampleNotifications);
+function NotificationBell({ user }: { user: User }) {
+  const dynamicNotifications = useNotifications(user);
+  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+
+  const notifications = dynamicNotifications.map(n => ({
+    ...n,
+    read: n.read || readIds.has(n.id),
+  }));
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setReadIds(new Set(notifications.map(n => n.id)));
   };
 
   const markRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    setReadIds(prev => new Set(prev).add(id));
   };
 
   return (
@@ -72,20 +79,27 @@ function NotificationBell() {
           )}
         </div>
         <div className="max-h-72 overflow-y-auto">
-          {notifications.map(n => (
-            <div
-              key={n.id}
-              className={`flex items-start gap-3 px-4 py-3 border-b last:border-b-0 cursor-pointer transition-colors hover:bg-accent/50 ${!n.read ? 'bg-primary/5' : ''}`}
-              onClick={() => markRead(n.id)}
-            >
-              <n.icon className={`w-4 h-4 mt-0.5 shrink-0 ${!n.read ? 'text-primary' : 'text-muted-foreground'}`} />
-              <div className="flex-1 min-w-0">
-                <p className={`text-xs leading-tight ${!n.read ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>{n.title}</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{n.time}</p>
-              </div>
-              {!n.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
-            </div>
-          ))}
+          {notifications.length === 0 ? (
+            <div className="px-4 py-6 text-center text-sm text-muted-foreground">No notifications</div>
+          ) : (
+            notifications.map(n => {
+              const Icon = notificationIcons[n.type] || Bell;
+              return (
+                <div
+                  key={n.id}
+                  className={`flex items-start gap-3 px-4 py-3 border-b last:border-b-0 cursor-pointer transition-colors hover:bg-accent/50 ${!n.read ? 'bg-primary/5' : ''}`}
+                  onClick={() => markRead(n.id)}
+                >
+                  <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${!n.read ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-xs leading-tight ${!n.read ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>{n.title}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{n.time}</p>
+                  </div>
+                  {!n.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
+                </div>
+              );
+            })
+          )}
         </div>
       </PopoverContent>
     </Popover>
