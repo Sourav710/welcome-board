@@ -80,7 +80,7 @@ export default function EmployeeDashboard() {
           <StatsCard title="Total Tasks" value={items.length} icon={ListChecks} subtitle={`${completedCount} completed`} />
           <StatsCard title="Pending Access" value={pendingAccess} icon={ShieldAlert} subtitle="awaiting approval" />
           <StatsCard title="Overdue" value={overdueItems} icon={AlertTriangle} subtitle="need attention" trend={overdueItems > 0 ? { value: `${overdueItems} items`, positive: false } : undefined} />
-          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(currentUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" />
+          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(activeUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
