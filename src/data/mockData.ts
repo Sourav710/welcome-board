@@ -21,6 +21,7 @@ export const managerUser: User = {
   employeeRole: 'Manager',
   project: 'DMS',
   location: 'Noida',
+  startDate: '2025-01-15',
   profileComplete: true,
 };
 
