@@ -104,6 +104,8 @@ export default function LoginPage() {
 
     // Successful login
     setFailedAttempts(0);
+    localStorage.setItem('loggedInUser', JSON.stringify(validUser.user));
+    localStorage.setItem('loggedInRole', validUser.role);
     addLog({
       userId: validUser.user.id,
       userName: validUser.user.name,
