@@ -24,7 +24,16 @@ const sectionOrder: ChecklistSection[] = ['Access', 'Week1', 'Day1', 'Training']
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
   const { items, updateItem } = useChecklist();
-  const [activeUser, setActiveUser] = useState<User>(currentUser);
+
+  const getLoggedInUser = (): User => {
+    try {
+      const stored = localStorage.getItem('loggedInUser');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return currentUser;
+  };
+
+  const [activeUser, setActiveUser] = useState<User>(getLoggedInUser);
 
   const markDone = (id: string) => {
     updateItem(id, { status: 'complete' });
@@ -54,12 +63,12 @@ export default function EmployeeDashboard() {
             <div className="flex items-center gap-6">
               <ProgressRing value={progress} label="complete" />
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Welcome, {currentUser.name.split(' ')[0]}!</h1>
+                <h1 className="text-2xl font-bold text-foreground">Welcome, {activeUser.name.split(' ')[0]}!</h1>
                 <p className="text-sm text-muted-foreground mt-1">Your onboarding checklist is {progress}% complete</p>
                 <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="bg-accent px-2 py-0.5 rounded-full">{currentUser.employeeRole}</span>
-                  <span>{currentUser.project}</span>
-                  <span>Started {currentUser.startDate}</span>
+                  <span className="bg-accent px-2 py-0.5 rounded-full">{activeUser.employeeRole}</span>
+                  <span>{activeUser.project}</span>
+                  <span>Started {activeUser.startDate}</span>
                 </div>
               </div>
             </div>
@@ -71,7 +80,7 @@ export default function EmployeeDashboard() {
           <StatsCard title="Total Tasks" value={items.length} icon={ListChecks} subtitle={`${completedCount} completed`} />
           <StatsCard title="Pending Access" value={pendingAccess} icon={ShieldAlert} subtitle="awaiting approval" />
           <StatsCard title="Overdue" value={overdueItems} icon={AlertTriangle} subtitle="need attention" trend={overdueItems > 0 ? { value: `${overdueItems} items`, positive: false } : undefined} />
-          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(currentUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" />
+          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(activeUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
