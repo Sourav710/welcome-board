@@ -63,12 +63,12 @@ export default function EmployeeDashboard() {
             <div className="flex items-center gap-6">
               <ProgressRing value={progress} label="complete" />
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Welcome, {currentUser.name.split(' ')[0]}!</h1>
+                <h1 className="text-2xl font-bold text-foreground">Welcome, {activeUser.name.split(' ')[0]}!</h1>
                 <p className="text-sm text-muted-foreground mt-1">Your onboarding checklist is {progress}% complete</p>
                 <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="bg-accent px-2 py-0.5 rounded-full">{currentUser.employeeRole}</span>
-                  <span>{currentUser.project}</span>
-                  <span>Started {currentUser.startDate}</span>
+                  <span className="bg-accent px-2 py-0.5 rounded-full">{activeUser.employeeRole}</span>
+                  <span>{activeUser.project}</span>
+                  <span>Started {activeUser.startDate}</span>
                 </div>
               </div>
             </div>
