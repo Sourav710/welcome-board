@@ -24,7 +24,16 @@ const sectionOrder: ChecklistSection[] = ['Access', 'Week1', 'Day1', 'Training']
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
   const { items, updateItem } = useChecklist();
-  const [activeUser, setActiveUser] = useState<User>(currentUser);
+
+  const getLoggedInUser = (): User => {
+    try {
+      const stored = localStorage.getItem('loggedInUser');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return currentUser;
+  };
+
+  const [activeUser, setActiveUser] = useState<User>(getLoggedInUser);
 
   const markDone = (id: string) => {
     updateItem(id, { status: 'complete' });
