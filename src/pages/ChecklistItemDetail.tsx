@@ -375,9 +375,9 @@ export default function ChecklistItemDetail() {
                   onClick={() => {
                     setStatus('rejected');
                     addLog({
-                      userId: currentUser.id,
-                      userName: currentUser.name,
-                      userRole: currentUser.role,
+                      userId: activeUser.id,
+                      userName: activeUser.name,
+                      userRole: activeUser.role,
                       action: 'STATUS_CHANGE',
                       category: 'checklist',
                       details: `Marked "${item.title}" as blocked`,
