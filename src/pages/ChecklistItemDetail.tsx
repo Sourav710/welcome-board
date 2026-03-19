@@ -113,12 +113,12 @@ export default function ChecklistItemDetail() {
   const openServiceNow = () => {
     // Build pre-populated URL with employee details
     const params = new URLSearchParams({
-      employee_name: encodeURIComponent(currentUser.name),
-      employee_id: encodeURIComponent(currentUser.id),
-      employee_email: encodeURIComponent(currentUser.email),
+      employee_name: encodeURIComponent(activeUser.name),
+      employee_id: encodeURIComponent(activeUser.id),
+      employee_email: encodeURIComponent(activeUser.email),
       request_type: encodeURIComponent(item.title),
-      project: encodeURIComponent(currentUser.project || ''),
-      manager: encodeURIComponent(currentUser.managerId || ''),
+      project: encodeURIComponent(activeUser.project || ''),
+      manager: encodeURIComponent(activeUser.managerId || ''),
     });
     const url = item.linkUrl
       ? `${item.linkUrl}?${params.toString()}`
