@@ -34,6 +34,7 @@ export default function EmployeeDashboard() {
   };
 
   const [activeUser, setActiveUser] = useState<User>(getLoggedInUser);
+  const items = allItems.filter((i) => i.userId === activeUser.id);
 
   const markDone = (id: string) => {
     updateItem(id, { status: 'complete' });
