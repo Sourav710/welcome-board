@@ -92,9 +92,9 @@ export default function ChecklistItemDetail() {
     const note: Note = {
       id: `n${Date.now()}`,
       checklistItemId: id!,
-      authorId: currentUser.id,
-      authorRole: 'employee',
-      authorName: currentUser.name,
+      authorId: activeUser.id,
+      authorRole: activeUser.role,
+      authorName: activeUser.name,
       text: newNote.trim(),
       createdAt: new Date().toISOString(),
     };
