@@ -23,7 +23,7 @@ const sectionOrder: ChecklistSection[] = ['Access', 'Week1', 'Day1', 'Training']
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
-  const { items, updateItem } = useChecklist();
+  const { items: allItems, updateItem } = useChecklist();
 
   const getLoggedInUser = (): User => {
     try {
