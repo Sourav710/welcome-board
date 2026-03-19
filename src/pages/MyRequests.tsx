@@ -23,7 +23,7 @@ export default function MyRequests() {
   const activeUser = getLoggedInUser();
 
   const userItems = items.filter((i) => i.userId === activeUser.id);
-  const accessItems = userItems.filter((i) => i.type === 'access');
+  const accessItems = userItems.filter((i) => i.type === 'access' || i.type === 'activity' || i.type === 'training');
   const requests = accessItems.map((item) => {
     const tickets = accessRequests.filter((r) => r.checklistItemId === item.id);
     return { item, tickets };
@@ -34,7 +34,7 @@ export default function MyRequests() {
   );
 
   return (
-    <AppLayout user={currentUser}>
+    <AppLayout user={activeUser}>
       <div className="max-w-5xl mx-auto px-6 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">My Requests</h1>
