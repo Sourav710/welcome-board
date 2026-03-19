@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { checklistItems as initialItems } from '@/data/mockData';
+import { allChecklistItems as initialItems } from '@/data/mockData';
 import type { ChecklistItem } from '@/types/onboarding';
 
 interface ChecklistContextType {
