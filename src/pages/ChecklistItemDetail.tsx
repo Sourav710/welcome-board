@@ -101,9 +101,9 @@ export default function ChecklistItemDetail() {
     addNoteToCtx(note);
     setNewNote('');
     addLog({
-      userId: currentUser.id,
-      userName: currentUser.name,
-      userRole: currentUser.role,
+      userId: activeUser.id,
+      userName: activeUser.name,
+      userRole: activeUser.role,
       action: 'NOTE_ADDED',
       category: 'checklist',
       details: `Added note on "${item.title}"`,
