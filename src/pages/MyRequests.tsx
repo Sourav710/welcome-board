@@ -34,7 +34,7 @@ export default function MyRequests() {
   );
 
   return (
-    <AppLayout user={currentUser}>
+    <AppLayout user={activeUser}>
       <div className="max-w-5xl mx-auto px-6 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">My Requests</h1>
