@@ -2,16 +2,28 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { currentUser, checklistItems, accessRequests } from '@/data/mockData';
+import { currentUser, accessRequests } from '@/data/mockData';
+import { useChecklist } from '@/context/ChecklistContext';
 import { ExternalLink, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
+function getLoggedInUser() {
+  try {
+    const stored = localStorage.getItem('loggedInUser');
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return currentUser;
+}
+
 export default function MyRequests() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const { items } = useChecklist();
+  const activeUser = getLoggedInUser();
 
-  const accessItems = checklistItems.filter((i) => i.type === 'access');
+  const userItems = items.filter((i) => i.userId === activeUser.id);
+  const accessItems = userItems.filter((i) => i.type === 'access');
   const requests = accessItems.map((item) => {
     const tickets = accessRequests.filter((r) => r.checklistItemId === item.id);
     return { item, tickets };
