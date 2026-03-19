@@ -74,7 +74,7 @@ export default function ChecklistItemDetail() {
 
   if (!item) {
     return (
-      <AppLayout user={currentUser}>
+      <AppLayout user={activeUser}>
         <div className="max-w-3xl mx-auto px-6 py-12 text-center">
           <p className="text-muted-foreground">Item not found.</p>
           <Button variant="outline" className="mt-4" onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
