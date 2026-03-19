@@ -23,7 +23,7 @@ export default function MyRequests() {
   const activeUser = getLoggedInUser();
 
   const userItems = items.filter((i) => i.userId === activeUser.id);
-  const accessItems = userItems.filter((i) => i.type === 'access');
+  const accessItems = userItems.filter((i) => i.type === 'access' || i.type === 'activity' || i.type === 'training');
   const requests = accessItems.map((item) => {
     const tickets = accessRequests.filter((r) => r.checklistItemId === item.id);
     return { item, tickets };
