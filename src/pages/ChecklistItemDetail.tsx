@@ -128,9 +128,9 @@ export default function ChecklistItemDetail() {
     setStatus('pending');
 
     addLog({
-      userId: currentUser.id,
-      userName: currentUser.name,
-      userRole: currentUser.role,
+      userId: activeUser.id,
+      userName: activeUser.name,
+      userRole: activeUser.role,
       action: 'ACCESS_REQUEST',
       category: 'access',
       details: `Opened access request form for "${item.title}"`,
