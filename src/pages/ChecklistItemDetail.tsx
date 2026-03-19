@@ -157,9 +157,9 @@ export default function ChecklistItemDetail() {
     setTicketSystem('');
 
     addLog({
-      userId: currentUser.id,
-      userName: currentUser.name,
-      userRole: currentUser.role,
+      userId: activeUser.id,
+      userName: activeUser.name,
+      userRole: activeUser.role,
       action: 'TICKET_CAPTURED',
       category: 'access',
       details: `Captured ticket ${newReq.externalTicketId} for "${item.title}"`,
