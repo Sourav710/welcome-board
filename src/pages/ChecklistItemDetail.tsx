@@ -327,9 +327,9 @@ export default function ChecklistItemDetail() {
                 onValueChange={(val: ItemStatus) => {
                   setStatus(val);
                   addLog({
-                    userId: currentUser.id,
-                    userName: currentUser.name,
-                    userRole: currentUser.role,
+                    userId: activeUser.id,
+                    userName: activeUser.name,
+                    userRole: activeUser.role,
                     action: 'STATUS_CHANGE',
                     category: 'checklist',
                     details: `Changed "${item.title}" status to ${val}`,
