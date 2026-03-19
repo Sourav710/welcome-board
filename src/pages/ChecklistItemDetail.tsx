@@ -23,15 +23,31 @@ const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'complete', label: 'Approved' },
 ];
 
+function getLoggedInUser() {
+  try {
+    const stored = localStorage.getItem('loggedInUser');
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return currentUser;
+}
+
 export default function ChecklistItemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addLog } = useAuditLog();
   const { items, updateItem } = useChecklist();
   const item = items.find((i) => i.id === id);
-  const [localRequests, setLocalRequests] = useState<AccessRequest[]>(
-    accessRequests.filter((r) => r.checklistItemId === id)
-  );
+  const activeUser = getLoggedInUser();
+
+  // Initialize local requests and sync their status with the checklist item status
+  const [localRequests, setLocalRequests] = useState<AccessRequest[]>(() => {
+    const reqs = accessRequests.filter((r) => r.checklistItemId === id);
+    if (item) {
+      return reqs.map((r) => ({ ...r, status: item.status === 'rejected' ? 'pending' : item.status }));
+    }
+    return reqs;
+  });
+
   const { addNote: addNoteToCtx, getNotesForItem } = useNotes();
   const itemNotes = getNotesForItem(id || '');
   const [newNote, setNewNote] = useState('');
@@ -44,7 +60,7 @@ export default function ChecklistItemDetail() {
       setLocalRequests((prev) =>
         prev.map((req) => ({
           ...req,
-          status: newStatus,
+          status: newStatus === 'rejected' ? 'pending' : newStatus,
           updatedAt: new Date().toISOString(),
         }))
       );
