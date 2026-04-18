@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SkipNav } from "@/components/SkipNav";
 import { SessionTimeoutProvider } from "@/components/SessionTimeout";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import MyRequests from "./pages/MyRequests";
 import ChecklistItemDetail from "./pages/ChecklistItemDetail";
@@ -35,6 +36,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Navigate to="/login" replace />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/home" element={<Home />} />
                   <Route path="/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/requests" element={<MyRequests />} />
                   <Route path="/item/:id" element={<ChecklistItemDetail />} />
