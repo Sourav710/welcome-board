@@ -150,8 +150,9 @@ export default function EmployeeDashboard() {
           </div>
 
           {/* Right panel */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="relative overflow-hidden bg-card border rounded-xl p-4 sticky top-20 hover:shadow-lg transition-shadow">
+          <div className="lg:col-span-1">
+            <div className="space-y-4 sticky top-20">
+            <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
               <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 opacity-20 blur-2xl" />
               <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
                 <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center shadow-md">
@@ -209,6 +210,7 @@ export default function EmployeeDashboard() {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>
