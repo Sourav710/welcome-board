@@ -81,10 +81,15 @@ export function useOrgChart() {
       try {
         const override = localStorage.getItem(STORAGE_KEY);
         if (override) {
-          const parsed = JSON.parse(override);
-          if (validate(parsed)) {
-            if (!cancelled) setData(parsed);
-            return;
+          try {
+            const parsed = JSON.parse(override);
+            if (validate(parsed)) {
+              if (!cancelled) setData(parsed);
+              return;
+            }
+            localStorage.removeItem(STORAGE_KEY);
+          } catch {
+            localStorage.removeItem(STORAGE_KEY);
           }
         }
         const res = await fetch('/orgChart.json', { cache: 'no-store' });
