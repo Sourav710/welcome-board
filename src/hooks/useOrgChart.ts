@@ -38,6 +38,7 @@ export interface PodInfo {
   name: string;
   emoji: string;
   owner: string;
+  accentClass: string;
   focus: string;
   tech: string[];
 }
