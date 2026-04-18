@@ -124,20 +124,55 @@ function ManagerCard({ m }: { m: ManagerInfo }) {
 }
 
 function PodCard({ p }: { p: PodInfo }) {
+  const [expanded, setExpanded] = useState(false);
   return (
-    <div className="rounded-2xl bg-card border shadow-md hover:shadow-xl transition-all hover:-translate-y-0.5 p-5">
-      <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center text-2xl mb-3">
-        {p.emoji}
-      </div>
-      <h4 className="text-sm font-bold text-foreground">{p.name}</h4>
-      <p className="text-[11px] text-muted-foreground mt-0.5">Led by {p.owner}</p>
-      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">{p.focus}</p>
-      <div className="flex flex-wrap gap-1.5 mt-3">
-        {p.tech.map((t) => (
-          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-            {t}
-          </span>
-        ))}
+    <div
+      className="group relative rounded-2xl bg-card border-2 border-transparent shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden cursor-pointer"
+      onClick={() => setExpanded((v) => !v)}
+    >
+      {/* Colored gradient halo on hover */}
+      <div className={`absolute inset-0 ${p.accentClass} opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none`} />
+      {/* Top accent bar grows on hover */}
+      <div className={`h-2 w-full ${p.accentClass} group-hover:h-3 transition-all duration-300`} />
+      {/* Decorative blob */}
+      <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full ${p.accentClass} opacity-10 blur-2xl group-hover:opacity-30 group-hover:scale-125 transition-all duration-500`} />
+
+      <div className="relative p-5">
+        {/* Emoji avatar with animated gradient ring */}
+        <div className="relative w-16 h-16 mb-3">
+          <div className={`absolute inset-0 ${p.accentClass} rounded-2xl blur-md opacity-50 group-hover:opacity-80 group-hover:blur-lg transition-all duration-300`} />
+          <div className={`relative w-16 h-16 rounded-2xl p-1 ${p.accentClass} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+            <div className="w-full h-full rounded-xl bg-card flex items-center justify-center text-2xl">
+              {p.emoji}
+            </div>
+          </div>
+        </div>
+
+        <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">{p.name}</h4>
+
+        <span className={`mt-2 inline-block px-3 py-0.5 rounded-full ${p.accentClass} text-white text-[10px] font-semibold shadow-sm`}>
+          Led by {p.owner}
+        </span>
+
+        <p className={`text-xs text-muted-foreground mt-3 leading-relaxed transition-all duration-300 ${expanded ? '' : 'line-clamp-3'}`}>
+          {p.focus}
+        </p>
+
+        {/* Gradient tech pills */}
+        <div className="flex flex-wrap gap-1.5 mt-4">
+          {p.tech.map((t) => (
+            <span
+              key={t}
+              className={`text-[10px] px-2.5 py-1 rounded-full ${p.accentClass} text-white font-semibold shadow-sm hover:scale-105 transition-transform`}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-4 text-[10px] text-muted-foreground italic opacity-70 group-hover:opacity-100 transition-opacity">
+          {expanded ? 'Click to collapse' : 'Click for more'}
+        </div>
       </div>
     </div>
   );
