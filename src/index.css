@@ -133,3 +133,13 @@
     @apply bg-card/80 backdrop-blur-sm border shadow-sm;
   }
 }
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.5; }
+  50% { transform: translateY(-30px) translateX(15px); opacity: 0.9; }
+}
