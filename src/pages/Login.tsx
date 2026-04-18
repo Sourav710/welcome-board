@@ -124,7 +124,7 @@ export default function LoginPage() {
       return;
     }
     if (validUser.user.profileComplete) {
-      navigate('/dashboard');
+      navigate('/home');
       return;
     }
     setShowSetup(true);
@@ -133,7 +133,7 @@ export default function LoginPage() {
 
   const handleSetupComplete = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    navigate('/home');
   };
 
   const nextStep = () => setSetupStep((s) => Math.min(s + 1, steps.length - 1));
