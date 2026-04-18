@@ -74,7 +74,8 @@
       "name": "Testing Centre of Excellence",
       "emoji": "🧪",
       "owner": "Subhransu Das",
-      "focus": "Manual, functional and regression testing across all release trains.",
+      "accentClass": "bg-gradient-to-r from-orange-400 to-orange-500",
+      "focus": "Manual, functional and regression testing across all release trains. Owns end-to-end test plans, defect triage, UAT coordination, and release sign-offs.",
       "tech": ["JIRA", "Zephyr", "Postman", "TestRail"]
     },
     {
@@ -82,7 +83,8 @@
       "name": "Product Management COE",
       "emoji": "📦",
       "owner": "Dheeraj Mishra",
-      "focus": "Roadmap, discovery, backlog grooming and stakeholder communication.",
+      "accentClass": "bg-gradient-to-r from-pink-500 to-fuchsia-500",
+      "focus": "Roadmap, discovery, backlog grooming and stakeholder communication. Drives product vision, OKRs, market research and go-to-market readiness.",
       "tech": ["Aha!", "Confluence", "Figma", "Mixpanel"]
     },
     {
@@ -90,7 +92,8 @@
       "name": "Workflow Development",
       "emoji": "🤖",
       "owner": "Dharmendra Bhardwaj",
-      "focus": "Workflow engines, BPM, integrations and process automation.",
+      "accentClass": "bg-gradient-to-r from-sky-400 to-blue-500",
+      "focus": "Workflow engines, BPM, integrations and process automation. Builds resilient services, event pipelines and low-code orchestration for enterprise flows.",
       "tech": ["Camunda", "Java", "Spring Boot", "Kafka"]
     },
     {
@@ -98,7 +101,8 @@
       "name": "Automation & AI POD",
       "emoji": "📊",
       "owner": "Rohit Garg",
-      "focus": "Selenium/Playwright automation, AI test generation, CI/CD quality.",
+      "accentClass": "bg-gradient-to-r from-indigo-500 to-purple-600",
+      "focus": "Selenium/Playwright automation, AI test generation, CI/CD quality. Embeds GenAI into QA, expands coverage, and shortens release cycles.",
       "tech": ["Playwright", "Selenium", "Python", "GenAI"]
     }
   ]
