@@ -19,6 +19,14 @@ const sectionLabels: Record<ChecklistSection, string> = {
   Training: 'Trainings & Learning',
 };
 
+const sectionThemes: Record<ChecklistSection, { gradient: string; emoji: string }> = {
+  Access: { gradient: 'from-indigo-500 to-purple-600', emoji: '🔐' },
+  Day1: { gradient: 'from-emerald-400 to-teal-500', emoji: '🚀' },
+  Week1: { gradient: 'from-amber-400 to-orange-500', emoji: '🛡️' },
+  Week2Plus: { gradient: 'from-sky-400 to-blue-500', emoji: '📈' },
+  Training: { gradient: 'from-pink-500 to-fuchsia-500', emoji: '🎓' },
+};
+
 const sectionOrder: ChecklistSection[] = ['Access', 'Week1', 'Day1', 'Training'];
 
 export default function EmployeeDashboard() {
@@ -133,6 +141,7 @@ export default function EmployeeDashboard() {
                   key={section}
                   title={sectionLabels[section]}
                   items={sectionItems}
+                  theme={sectionThemes[section]}
                   onMarkDone={markDone}
                   onViewItem={(id) => navigate(`/item/${id}`)}
                 />
@@ -142,25 +151,32 @@ export default function EmployeeDashboard() {
 
           {/* Right panel */}
           <div className="lg:col-span-1 space-y-4">
-            <div className="bg-card border rounded-xl p-4 sticky top-20">
-              <h3 className="font-semibold text-sm text-foreground mb-3 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
-                Today's Priorities
+            <div className="relative overflow-hidden bg-card border rounded-xl p-4 sticky top-20 hover:shadow-lg transition-shadow">
+              <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 opacity-20 blur-2xl" />
+              <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
+                <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center shadow-md">
+                  <Clock className="w-4 h-4 text-white" />
+                </span>
+                <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">Today's Priorities</span>
               </h3>
-              <div className="space-y-2">
+              <div className="relative space-y-2">
                 {todaysPriorities.map((item) => {
                   const isOverdue = new Date(item.dueDate) < new Date();
                   return (
                     <div
                       key={item.id}
-                      className="flex items-start gap-2 p-2.5 rounded-lg bg-accent/50 cursor-pointer hover:bg-accent transition-colors"
+                      className={`group/p flex items-start gap-2 p-2.5 rounded-lg border cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${
+                        isOverdue
+                          ? 'bg-gradient-to-r from-rose-500/10 to-red-500/5 border-rose-500/30 hover:border-rose-500/50'
+                          : 'bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-border hover:border-indigo-500/40'
+                      }`}
                       onClick={() => navigate(`/item/${item.id}`)}
                     >
-                      <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isOverdue ? 'bg-destructive' : 'bg-primary'}`} />
-                      <div>
-                        <p className="text-xs font-medium text-foreground leading-tight">{item.title}</p>
-                        <p className={`text-xs mt-0.5 ${isOverdue ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                          {isOverdue ? 'Overdue' : `Due: ${item.dueDate}`}
+                      <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isOverdue ? 'bg-rose-500 animate-pulse' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-foreground leading-tight group-hover/p:text-primary transition-colors">{item.title}</p>
+                        <p className={`text-xs mt-0.5 ${isOverdue ? 'text-rose-500 font-medium' : 'text-muted-foreground'}`}>
+                          {isOverdue ? '⚠️ Overdue' : `📅 Due: ${item.dueDate}`}
                         </p>
                       </div>
                     </div>
@@ -169,20 +185,26 @@ export default function EmployeeDashboard() {
               </div>
             </div>
 
-            <div className="bg-card border rounded-xl p-4">
-              <h3 className="font-semibold text-sm text-foreground mb-3">Quick Contacts</h3>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary">SC</div>
+            <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
+              <div className="absolute -left-6 -bottom-6 w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-20 blur-2xl" />
+              <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
+                <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md">
+                  <Users className="w-4 h-4 text-white" />
+                </span>
+                <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent font-bold">Quick Contacts</span>
+              </h3>
+              <div className="relative space-y-2 text-xs">
+                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">GB</div>
                   <div>
-                    <p className="font-medium text-foreground">Gourav Banathia</p>
+                    <p className="font-semibold text-foreground">Gourav Banathia</p>
                     <p className="text-muted-foreground">Manager</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary">IT</div>
+                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">IT</div>
                   <div>
-                    <p className="font-medium text-foreground">IT Help Desk</p>
+                    <p className="font-semibold text-foreground">IT Help Desk</p>
                     <p className="text-muted-foreground">helpdesk@company.com</p>
                   </div>
                 </div>
