@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { currentUser, managerUser } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, User } from '@/types/onboarding';
-import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle, Users } from 'lucide-react';
 
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
@@ -220,11 +220,13 @@ export default function EmployeeDashboard() {
 function SectionAccordion({
   title,
   items,
+  theme,
   onMarkDone,
   onViewItem,
 }: {
   title: string;
   items: ChecklistItem[];
+  theme: { gradient: string; emoji: string };
   onMarkDone: (id: string) => void;
   onViewItem: (id: string) => void;
 }) {
@@ -234,24 +236,35 @@ function SectionAccordion({
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <div className="bg-card border rounded-xl overflow-hidden">
-        <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-accent/50 transition-colors">
+      <div className="group/sec relative bg-card border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
+        {/* Top accent bar */}
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${theme.gradient}`} />
+        {/* Decorative blob */}
+        <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full bg-gradient-to-br ${theme.gradient} opacity-10 blur-3xl group-hover/sec:opacity-20 transition-opacity duration-500`} />
+
+        <CollapsibleTrigger className="relative w-full px-4 py-3.5 flex items-center justify-between hover:bg-accent/30 transition-colors">
           <div className="flex items-center gap-3">
-            {open ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
-            <span className="font-semibold text-sm text-foreground">{title}</span>
+            <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center text-lg shadow-md group-hover/sec:scale-110 group-hover/sec:rotate-6 transition-transform duration-300`}>
+              {theme.emoji}
+            </span>
+            <div className="text-left">
+              <span className={`font-bold text-sm bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>{title}</span>
+              <p className="text-xs text-muted-foreground">{completed} of {items.length} complete</p>
+            </div>
+            {open ? <ChevronDown className="w-4 h-4 text-muted-foreground ml-1" /> : <ChevronRight className="w-4 h-4 text-muted-foreground ml-1" />}
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${sectionProgress}%` }} />
+            <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+              <div className={`h-full bg-gradient-to-r ${theme.gradient} rounded-full transition-all duration-700`} style={{ width: `${sectionProgress}%` }} />
             </div>
-            <span className="text-xs text-muted-foreground font-medium w-16 text-right">
-              {completed}/{items.length}
+            <span className={`text-xs font-bold w-12 text-right bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
+              {sectionProgress}%
             </span>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="border-t">
-            <div className="grid grid-cols-12 px-4 py-2 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
+          <div className="border-t relative">
+            <div className="grid grid-cols-12 px-4 py-2 text-xs font-semibold text-muted-foreground bg-muted/30 border-b uppercase tracking-wider">
               <div className="col-span-4">Activity</div>
               <div className="col-span-2">Status</div>
               <div className="col-span-2">Owner</div>
@@ -263,14 +276,14 @@ function SectionAccordion({
               return (
                 <div
                   key={item.id}
-                  className={`grid grid-cols-12 px-4 py-2.5 text-sm border-b last:border-b-0 items-center hover:bg-accent/30 transition-colors cursor-pointer ${
-                    isOverdue ? 'bg-destructive/5' : ''
+                  className={`grid grid-cols-12 px-4 py-3 text-sm border-b last:border-b-0 items-center hover:bg-accent/40 transition-all cursor-pointer hover:translate-x-1 ${
+                    isOverdue ? 'bg-rose-500/5' : ''
                   }`}
                   onClick={() => onViewItem(item.id)}
                 >
                   <div className="col-span-4 flex items-center gap-2">
-                    {item.status === 'complete' && <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />}
-                    <span className={`text-foreground ${item.status === 'complete' ? 'line-through text-muted-foreground' : ''}`}>
+                    {item.status === 'complete' && <CheckCircle2 className="w-4 h-4 text-success shrink-0" />}
+                    <span className={`${item.status === 'complete' ? 'line-through text-muted-foreground' : 'text-foreground font-medium'}`}>
                       {item.title}
                     </span>
                     {item.mandatory && <span className="text-xs text-destructive font-bold">*</span>}
@@ -279,16 +292,20 @@ function SectionAccordion({
                     <StatusBadge status={item.status} />
                   </div>
                   <div className="col-span-2 text-muted-foreground text-xs">{item.owner}</div>
-                  <div className={`col-span-2 text-xs ${isOverdue ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                  <div className={`col-span-2 text-xs ${isOverdue ? 'text-rose-500 font-semibold' : 'text-muted-foreground'}`}>
                     {item.dueDate}
-                    {isOverdue && <span className="ml-1">⚠</span>}
+                    {isOverdue && <span className="ml-1">⚠️</span>}
                   </div>
                   <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
                     {item.status === 'complete' ? (
-                      <span className="text-xs text-success font-medium">✓ Done</span>
+                      <span className="inline-flex items-center gap-1 text-xs text-success font-bold bg-success/10 px-2 py-1 rounded-full">✓ Done</span>
                     ) : (
-                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onViewItem(item.id)}>
-                        <ExternalLink className="w-3 h-3" /> Request Access
+                      <Button
+                        size="sm"
+                        className={`h-7 text-xs gap-1 bg-gradient-to-r ${theme.gradient} text-white border-0 hover:opacity-90 hover:scale-105 transition-all shadow-md`}
+                        onClick={() => onViewItem(item.id)}
+                      >
+                        <ExternalLink className="w-3 h-3" /> Request
                       </Button>
                     )}
                   </div>
