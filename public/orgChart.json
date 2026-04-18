@@ -1,46 +1,105 @@
 {
-  "id": "ceo",
-  "name": "David Wichmann",
-  "title": "Chief Executive Officer",
-  "department": "Executive Office",
-  "email": "david.wichmann@optum.com",
-  "initials": "DW",
-  "reports": [
+  "leader": {
+    "id": "leader",
+    "name": "Sanjeet Singh",
+    "title": "Leader",
+    "department": "Business Enablement & Testing",
+    "email": "sanjeet.singh@optum.com",
+    "initials": "SS",
+    "bio": "Heads the Business Enablement & Testing org across 5 global locations, driving quality engineering, automation, and product enablement at scale."
+  },
+  "headcount": {
+    "total": 289,
+    "locations": [
+      { "name": "Philippines", "count": 17 },
+      { "name": "Hyderabad", "count": 82 },
+      { "name": "Gurgaon", "count": 29 },
+      { "name": "Noida", "count": 155 },
+      { "name": "Bangalore", "count": 6 }
+    ]
+  },
+  "managers": [
+    {
+      "id": "m1",
+      "name": "Subhransu Das",
+      "title": "Senior Manager",
+      "team": "Testing Centre of Excellence",
+      "email": "subhransu.das@optum.com",
+      "initials": "SD",
+      "accentClass": "bg-gradient-to-r from-orange-400 to-orange-500",
+      "responsibilities": "Leads QA strategy, manual & functional testing, and test governance across DMS and Global Health platforms.",
+      "headcount": 64,
+      "location": "Noida"
+    },
+    {
+      "id": "m2",
+      "name": "Dheeraj Mishra",
+      "title": "Senior Manager",
+      "team": "Product Management COE",
+      "email": "dheeraj.mishra@optum.com",
+      "initials": "DM",
+      "accentClass": "bg-gradient-to-r from-pink-500 to-fuchsia-500",
+      "responsibilities": "Drives product discovery, roadmap planning and stakeholder enablement for the Rx and Health platforms.",
+      "headcount": 38,
+      "location": "Hyderabad"
+    },
+    {
+      "id": "m3",
+      "name": "Dharmendra Bhardwaj",
+      "title": "Senior Manager",
+      "team": "Workflow Development",
+      "email": "dharmendra.bhardwaj@optum.com",
+      "initials": "DB",
+      "accentClass": "bg-gradient-to-r from-sky-400 to-blue-500",
+      "responsibilities": "Owns workflow engineering, low-code automation and integration delivery for enterprise business processes.",
+      "headcount": 72,
+      "location": "Noida"
+    },
+    {
+      "id": "m4",
+      "name": "Rohit Garg",
+      "title": "Senior Manager",
+      "team": "Automation & AI POD",
+      "email": "rohit.garg@optum.com",
+      "initials": "RG",
+      "accentClass": "bg-gradient-to-r from-indigo-500 to-purple-600",
+      "responsibilities": "Leads test automation frameworks, CI/CD quality gates and AI-assisted QA innovations across the org.",
+      "headcount": 45,
+      "location": "Gurgaon"
+    }
+  ],
+  "pods": [
     {
       "id": "p1",
-      "name": "Amar Desai",
-      "title": "President, Optum Health",
-      "department": "Optum Health",
-      "email": "amar.desai@optum.com",
-      "initials": "AD",
-      "reports": [
-        { "id": "p1a", "name": "Linda Park", "title": "VP Healthcare Operations", "department": "Optum Health", "email": "linda.park@optum.com", "initials": "LP" },
-        { "id": "p1b", "name": "Marcus Lee", "title": "VP Care Delivery", "department": "Optum Health", "email": "marcus.lee@optum.com", "initials": "ML" }
-      ]
+      "name": "Testing Centre of Excellence",
+      "emoji": "🧪",
+      "owner": "Subhransu Das",
+      "focus": "Manual, functional and regression testing across all release trains.",
+      "tech": ["JIRA", "Zephyr", "Postman", "TestRail"]
     },
     {
       "id": "p2",
-      "name": "Roger Connor",
-      "title": "President, Optum Insight",
-      "department": "Optum Insight",
-      "email": "roger.connor@optum.com",
-      "initials": "RC",
-      "reports": [
-        { "id": "p2a", "name": "Gourav Banathia", "title": "VP Technology Services", "department": "Optum Insight", "email": "gourav.banatia@optum.com", "initials": "GB" },
-        { "id": "p2b", "name": "Aisha Khan", "title": "VP Analytics & Data", "department": "Optum Insight", "email": "aisha.khan@optum.com", "initials": "AK" }
-      ]
+      "name": "Product Management COE",
+      "emoji": "📦",
+      "owner": "Dheeraj Mishra",
+      "focus": "Roadmap, discovery, backlog grooming and stakeholder communication.",
+      "tech": ["Aha!", "Confluence", "Figma", "Mixpanel"]
     },
     {
       "id": "p3",
-      "name": "John Prince",
-      "title": "President, Optum Rx",
-      "department": "Optum Rx",
-      "email": "john.prince@optum.com",
-      "initials": "JP",
-      "reports": [
-        { "id": "p3a", "name": "Sara Ito", "title": "VP Pharmacy Operations", "department": "Optum Rx", "email": "sara.ito@optum.com", "initials": "SI" },
-        { "id": "p3b", "name": "Daniel Cruz", "title": "VP Clinical Programs", "department": "Optum Rx", "email": "daniel.cruz@optum.com", "initials": "DC" }
-      ]
+      "name": "Workflow Development",
+      "emoji": "🤖",
+      "owner": "Dharmendra Bhardwaj",
+      "focus": "Workflow engines, BPM, integrations and process automation.",
+      "tech": ["Camunda", "Java", "Spring Boot", "Kafka"]
+    },
+    {
+      "id": "p4",
+      "name": "Automation & AI POD",
+      "emoji": "📊",
+      "owner": "Rohit Garg",
+      "focus": "Selenium/Playwright automation, AI test generation, CI/CD quality.",
+      "tech": ["Playwright", "Selenium", "Python", "GenAI"]
     }
   ]
 }
