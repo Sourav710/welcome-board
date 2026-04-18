@@ -3,7 +3,8 @@ import { Tree, TreeNode } from 'react-organizational-chart';
 import { Search, ZoomIn, ZoomOut, Mail, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { orgChart, OrgNode } from '@/data/companyData';
+import { OrgNode } from '@/data/companyData';
+import { useOrgChart } from '@/hooks/useOrgChart';
 
 function LeaderCard({
   node,
@@ -76,6 +77,7 @@ export function OrgChartSection() {
   const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
   const [zoom, setZoom] = useState(1);
   const [query, setQuery] = useState('');
+  const { data: orgChart, loading, error } = useOrgChart();
 
   const toggle = (id: string) =>
     setCollapsedIds((prev) => {
@@ -115,19 +117,25 @@ export function OrgChartSection() {
       </div>
 
       <div className="rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-pink-50 dark:from-indigo-950/30 dark:via-card dark:to-pink-950/30 border shadow-xl p-6 overflow-auto">
-        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s' }} className="inline-block min-w-full">
-          <Tree
-            lineWidth="2px"
-            lineColor="hsl(var(--primary))"
-            lineBorderRadius="12px"
-            label={renderNode(orgChart, collapsedIds, toggle, query)}
-          >
-            {!collapsedIds.has(orgChart.id) &&
-              orgChart.reports?.map((r) => (
-                <TreeNode key={r.id} label={renderNode(r, collapsedIds, toggle, query)} />
-              ))}
-          </Tree>
-        </div>
+        {loading && <div className="text-center py-12 text-muted-foreground">Loading org chart…</div>}
+        {error && !orgChart && (
+          <div className="text-center py-12 text-destructive">Failed to load org chart: {error}</div>
+        )}
+        {orgChart && (
+          <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s' }} className="inline-block min-w-full">
+            <Tree
+              lineWidth="2px"
+              lineColor="hsl(var(--primary))"
+              lineBorderRadius="12px"
+              label={renderNode(orgChart, collapsedIds, toggle, query)}
+            >
+              {!collapsedIds.has(orgChart.id) &&
+                orgChart.reports?.map((r) => (
+                  <TreeNode key={r.id} label={renderNode(r, collapsedIds, toggle, query)} />
+                ))}
+            </Tree>
+          </div>
+        )}
       </div>
     </section>
   );

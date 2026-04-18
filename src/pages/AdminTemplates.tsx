@@ -15,9 +15,10 @@ import { teamMembers } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useAuditLog } from '@/context/AuditLogContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X, ScrollText, Search, Download } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X, ScrollText, Search, Download, Network } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { OrgChartAdminPanel } from '@/components/admin/OrgChartAdminPanel';
 
 const adminUser = {
   id: 'u-admin',
@@ -46,6 +47,7 @@ const typeOptions: { value: ChecklistItemType; label: string }[] = [
 const navItems = [
   { key: 'activities' as const, label: 'Manage Activities', icon: Library },
   { key: 'templates' as const, label: 'Role Templates', icon: LayoutTemplate },
+  { key: 'orgchart' as const, label: 'Org Chart', icon: Network },
   { key: 'audit' as const, label: 'Audit Logs', icon: ScrollText },
   { key: 'integrations' as const, label: 'Integrations', icon: Plug },
 ];
@@ -75,7 +77,7 @@ const emptyActivity: NewActivity = {
 export default function AdminTemplates() {
   const { items, addItem, removeItem, updateItem } = useChecklist();
   const { logs, addLog } = useAuditLog();
-  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'audit' | 'integrations'>('activities');
+  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'orgchart' | 'audit' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
@@ -190,6 +192,8 @@ export default function AdminTemplates() {
           <div className="max-w-6xl">
             {activeNav === 'audit' ? (
               <AuditLogPanel logs={logs} />
+            ) : activeNav === 'orgchart' ? (
+              <OrgChartAdminPanel />
             ) : (
             <>
             <div className="flex items-center justify-between mb-6">
