@@ -55,33 +55,71 @@ export default function EmployeeDashboard() {
     .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
     .slice(0, 5);
 
+  // Motivational message based on progress
+  const motivation =
+    progress === 100 ? "🎉 Amazing! You've completed your onboarding!" :
+    progress >= 75 ? "🚀 You're almost there — keep going!" :
+    progress >= 40 ? "💪 Great momentum — you're on a roll!" :
+    progress > 0 ? "✨ Nice start! Every step counts." :
+    "👋 Welcome aboard — let's get started!";
+
   return (
     <AppLayout user={activeUser} onSwitchRole={activeUser.role === 'manager' ? toggleRole : undefined}>
       <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Hero Header */}
-        <div className="bg-card border rounded-2xl p-6 mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Vibrant Hero Header */}
+        <div className="relative overflow-hidden rounded-2xl p-6 mb-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 animate-fade-in">
+          {/* Floating particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span
+                key={i}
+                className="absolute rounded-full bg-white/20 animate-[float_8s_ease-in-out_infinite]"
+                style={{
+                  width: `${8 + (i % 4) * 6}px`,
+                  height: `${8 + (i % 4) * 6}px`,
+                  left: `${(i * 47) % 100}%`,
+                  top: `${(i * 31) % 100}%`,
+                  animationDelay: `${i * 0.5}s`,
+                }}
+              />
+            ))}
+          </div>
+          <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 opacity-30 blur-3xl" />
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 opacity-30 blur-3xl" />
+
+          <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-white">
             <div className="flex items-center gap-6">
-              <ProgressRing value={progress} label="complete" />
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-white/30 blur-xl animate-pulse" />
+                <div className="relative bg-white/15 backdrop-blur-md rounded-full p-2 border border-white/30">
+                  <ProgressRing value={progress} label="complete" />
+                </div>
+              </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Welcome, {activeUser.name.split(' ')[0]}!</h1>
-                <p className="text-sm text-muted-foreground mt-1">Your onboarding checklist is {progress}% complete</p>
-                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="bg-accent px-2 py-0.5 rounded-full">{activeUser.employeeRole}</span>
-                  <span>{activeUser.project}</span>
-                  <span>Started {activeUser.startDate}</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Active Onboarding
+                </div>
+                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-pink-100 to-orange-100 bg-clip-text text-transparent">
+                  Welcome, {activeUser.name.split(' ')[0]}! 👋
+                </h1>
+                <p className="text-sm md:text-base text-white/90 mt-1 font-medium">{motivation}</p>
+                <div className="flex flex-wrap items-center gap-2 mt-3 text-xs">
+                  <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">🎯 {activeUser.employeeRole}</span>
+                  <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">📁 {activeUser.project}</span>
+                  <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">📅 {activeUser.startDate}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats cards */}
+        {/* Colorful Stats cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <StatsCard title="Total Tasks" value={items.length} icon={ListChecks} subtitle={`${completedCount} completed`} />
-          <StatsCard title="Pending Access" value={pendingAccess} icon={ShieldAlert} subtitle="awaiting approval" />
-          <StatsCard title="Overdue" value={overdueItems} icon={AlertTriangle} subtitle="need attention" trend={overdueItems > 0 ? { value: `${overdueItems} items`, positive: false } : undefined} />
-          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(activeUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" />
+          <StatsCard title="Total Tasks" value={items.length} icon={ListChecks} subtitle={`${completedCount} completed`} gradient="from-indigo-500 to-purple-600" />
+          <StatsCard title="Pending Access" value={pendingAccess} icon={ShieldAlert} subtitle="awaiting approval" gradient="from-amber-400 to-orange-500" />
+          <StatsCard title="Overdue" value={overdueItems} icon={AlertTriangle} subtitle="need attention" gradient="from-rose-500 to-red-600" trend={overdueItems > 0 ? { value: `${overdueItems} items`, positive: false } : undefined} />
+          <StatsCard title="Days Active" value={Math.max(1, Math.floor((Date.now() - new Date(activeUser.startDate || '').getTime()) / 86400000))} icon={Clock} subtitle="since start" gradient="from-emerald-400 to-teal-500" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
