@@ -150,9 +150,7 @@ export default function LoginPage() {
   };
 
   const handleStartRegistration = () => {
-    setIsRegistration(true);
-    setSetupStep(0);
-    setShowSetup(true);
+    navigate('/auth/register');
   };
 
   const handleSetupComplete = (e: React.FormEvent) => {
