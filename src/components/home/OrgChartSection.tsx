@@ -58,29 +58,66 @@ function HeadcountBar({ hc }: { hc: { total: number; locations: { name: string; 
 }
 
 function ManagerCard({ m }: { m: ManagerInfo }) {
+  const [expanded, setExpanded] = useState(false);
   return (
-    <div className="group relative rounded-2xl bg-card border shadow-md hover:shadow-2xl transition-all hover:-translate-y-1 overflow-hidden">
-      <div className={`h-1.5 w-full ${m.accentClass}`} />
-      <div className="p-5 flex flex-col items-center text-center">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted-foreground/20 flex items-center justify-center text-xl font-bold text-foreground shadow-md mb-3">
-          {m.initials}
+    <div
+      className="group relative rounded-2xl bg-card border-2 border-transparent shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden cursor-pointer"
+      onClick={() => setExpanded((v) => !v)}
+    >
+      {/* Colored gradient halo on hover */}
+      <div className={`absolute inset-0 ${m.accentClass} opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none`} />
+      {/* Top accent bar grows on hover */}
+      <div className={`h-2 w-full ${m.accentClass} group-hover:h-3 transition-all duration-300`} />
+      {/* Decorative blob */}
+      <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full ${m.accentClass} opacity-10 blur-2xl group-hover:opacity-30 group-hover:scale-125 transition-all duration-500`} />
+
+      <div className="relative p-5 flex flex-col items-center text-center">
+        {/* Avatar with animated gradient ring */}
+        <div className="relative mb-3">
+          <div className={`absolute inset-0 ${m.accentClass} rounded-full blur-md opacity-50 group-hover:opacity-80 group-hover:blur-lg transition-all duration-300`} />
+          <div className={`relative w-20 h-20 rounded-full p-1 ${m.accentClass} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+            <div className="w-full h-full rounded-full bg-card flex items-center justify-center text-xl font-bold text-foreground">
+              {m.initials}
+            </div>
+          </div>
         </div>
-        <h4 className="text-base font-bold text-foreground">{m.name}</h4>
+
+        <h4 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+          {m.name}
+        </h4>
         <p className="text-xs text-muted-foreground mt-0.5">{m.title}</p>
-        <Badge variant="secondary" className="mt-3 text-[11px]">{m.team}</Badge>
-        <p className="text-xs text-muted-foreground mt-3 leading-relaxed line-clamp-3">
+
+        <span className={`mt-3 inline-block px-3 py-1 rounded-full ${m.accentClass} text-white text-[11px] font-semibold shadow-sm`}>
+          {m.team}
+        </span>
+
+        <p className={`text-xs text-muted-foreground mt-3 leading-relaxed transition-all duration-300 ${expanded ? '' : 'line-clamp-3'}`}>
           {m.responsibilities}
         </p>
-        <div className="flex items-center gap-3 mt-4 text-[11px] text-muted-foreground">
-          <span className="inline-flex items-center gap-1"><Users className="w-3 h-3" />{m.headcount} FTEs</span>
-          <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{m.location}</span>
+
+        {/* Stat pills with color */}
+        <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full ${m.accentClass} bg-opacity-15 text-[11px] font-semibold text-white shadow-sm`}>
+            <Users className="w-3 h-3" />{m.headcount} FTEs
+          </span>
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-[11px] font-semibold text-foreground">
+            <MapPin className="w-3 h-3" />{m.location}
+          </span>
         </div>
-        <a
-          href={`mailto:${m.email}`}
-          className="mt-3 inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium"
-        >
-          <Mail className="w-3 h-3" /> Contact
-        </a>
+
+        {/* Expand hint + email — slides up on hover */}
+        <div className="mt-4 flex items-center gap-3 opacity-70 group-hover:opacity-100 transition-opacity">
+          <a
+            href={`mailto:${m.email}`}
+            onClick={(e) => e.stopPropagation()}
+            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full ${m.accentClass} text-white text-[11px] font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all`}
+          >
+            <Mail className="w-3 h-3" /> Email
+          </a>
+          <span className="text-[10px] text-muted-foreground italic">
+            {expanded ? 'Click to collapse' : 'Click for more'}
+          </span>
+        </div>
       </div>
     </div>
   );
