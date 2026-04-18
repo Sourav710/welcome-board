@@ -3,6 +3,14 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  safelist: [
+    // Org chart manager card accent gradients (loaded from JSON at runtime)
+    "bg-gradient-to-r",
+    "from-orange-400", "to-orange-500",
+    "from-pink-500", "to-fuchsia-500",
+    "from-sky-400", "to-blue-500",
+    "from-indigo-500", "to-purple-600",
+  ],
   prefix: "",
   theme: {
     container: {
