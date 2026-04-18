@@ -144,7 +144,6 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <NotificationBell user={user} />
           <Link to="/help" aria-label="Help Center">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
               <HelpCircle className="w-4 h-4" aria-hidden="true" />
