@@ -1,22 +1,75 @@
 import { useEffect, useState } from 'react';
-import type { OrgNode } from '@/data/companyData';
+
+export interface LeaderInfo {
+  id: string;
+  name: string;
+  title: string;
+  department: string;
+  email: string;
+  initials: string;
+  bio?: string;
+}
+
+export interface LocationHC {
+  name: string;
+  count: number;
+}
+
+export interface HeadcountInfo {
+  total: number;
+  locations: LocationHC[];
+}
+
+export interface ManagerInfo {
+  id: string;
+  name: string;
+  title: string;
+  team: string;
+  email: string;
+  initials: string;
+  accentClass: string;
+  responsibilities: string;
+  headcount: number;
+  location: string;
+}
+
+export interface PodInfo {
+  id: string;
+  name: string;
+  emoji: string;
+  owner: string;
+  focus: string;
+  tech: string[];
+}
+
+export interface OrgChartData {
+  leader: LeaderInfo;
+  headcount: HeadcountInfo;
+  managers: ManagerInfo[];
+  pods: PodInfo[];
+}
 
 const STORAGE_KEY = 'orgChartOverride';
 const EVENT = 'orgChart:updated';
 
-function validate(node: any): node is OrgNode {
-  if (!node || typeof node !== 'object') return false;
-  const required = ['id', 'name', 'title', 'department', 'email', 'initials'];
-  for (const k of required) if (typeof node[k] !== 'string') return false;
-  if (node.reports != null) {
-    if (!Array.isArray(node.reports)) return false;
-    for (const r of node.reports) if (!validate(r)) return false;
+function isStr(v: any) {
+  return typeof v === 'string';
+}
+
+function validate(d: any): d is OrgChartData {
+  if (!d || typeof d !== 'object') return false;
+  if (!d.leader || !isStr(d.leader.name) || !isStr(d.leader.initials)) return false;
+  if (!d.headcount || typeof d.headcount.total !== 'number' || !Array.isArray(d.headcount.locations)) return false;
+  if (!Array.isArray(d.managers)) return false;
+  for (const m of d.managers) {
+    if (!isStr(m.id) || !isStr(m.name) || !isStr(m.team) || !isStr(m.initials)) return false;
   }
+  if (!Array.isArray(d.pods)) return false;
   return true;
 }
 
 export function useOrgChart() {
-  const [data, setData] = useState<OrgNode | null>(null);
+  const [data, setData] = useState<OrgChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,8 +110,8 @@ export function useOrgChart() {
   return { data, loading, error };
 }
 
-export function saveOrgChartOverride(node: OrgNode) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(node));
+export function saveOrgChartOverride(data: OrgChartData) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   window.dispatchEvent(new Event(EVENT));
 }
 
@@ -67,6 +120,6 @@ export function clearOrgChartOverride() {
   window.dispatchEvent(new Event(EVENT));
 }
 
-export function validateOrgChart(node: any): node is OrgNode {
-  return validate(node);
+export function validateOrgChart(d: any): d is OrgChartData {
+  return validate(d);
 }

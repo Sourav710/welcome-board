@@ -1,90 +1,126 @@
-import { useState } from 'react';
-import { Tree, TreeNode } from 'react-organizational-chart';
-import { Search, ZoomIn, ZoomOut, Mail, Users } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Mail, MapPin, Users, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { OrgNode } from '@/data/companyData';
-import { useOrgChart } from '@/hooks/useOrgChart';
+import { Badge } from '@/components/ui/badge';
+import { useOrgChart, type ManagerInfo, type PodInfo } from '@/hooks/useOrgChart';
 
-function LeaderCard({
-  node,
-  collapsed,
-  onToggle,
-  highlight,
-}: {
-  node: OrgNode;
-  collapsed: boolean;
-  onToggle: () => void;
-  highlight: boolean;
-}) {
-  const reportsCount = node.reports?.length ?? 0;
+function LeaderHero({ leader }: { leader: ReturnType<typeof useOrgChart>['data'] extends infer T ? T extends { leader: infer L } ? L : never : never }) {
   return (
-    <div
-      className={`group inline-block rounded-2xl p-3 bg-white dark:bg-card border-2 shadow-md hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer min-w-[180px] ${
-        highlight ? 'border-pink-500 ring-2 ring-pink-500/30' : 'border-transparent'
-      }`}
-      onClick={onToggle}
-      title={node.title}
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0">
-          {node.initials}
-        </div>
-        <div className="text-left min-w-0">
-          <div className="text-sm font-bold truncate">{node.name}</div>
-          <div className="text-[11px] text-muted-foreground truncate">{node.title}</div>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mt-2 text-[10px]">
-        <a
-          href={`mailto:${node.email}`}
-          onClick={(e) => e.stopPropagation()}
-          className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
-        >
-          <Mail className="w-3 h-3" />Contact
-        </a>
-        {reportsCount > 0 && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-semibold">
-            <Users className="w-3 h-3" />{reportsCount} {collapsed ? '▸' : '▾'}
+    <div className="flex justify-center mb-10">
+      <div className="relative w-full max-w-sm rounded-2xl bg-gradient-to-br from-primary via-primary to-blue-700 dark:from-primary dark:to-blue-900 text-primary-foreground p-6 shadow-2xl overflow-hidden">
+        <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute -left-8 bottom-0 w-32 h-32 rounded-full bg-white/5 blur-xl" />
+        <div className="relative flex flex-col items-center text-center">
+          <div className="w-24 h-24 rounded-full ring-4 ring-orange-400 bg-white/20 backdrop-blur flex items-center justify-center text-3xl font-bold shadow-lg mb-4">
+            {leader.initials}
+          </div>
+          <h3 className="text-xl font-bold">{leader.name}</h3>
+          <p className="text-sm text-primary-foreground/80 mt-1">{leader.title}</p>
+          <span className="inline-block mt-3 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur text-xs italic font-medium">
+            {leader.department}
           </span>
-        )}
+          {leader.bio && (
+            <p className="text-xs text-primary-foreground/75 mt-4 leading-relaxed">{leader.bio}</p>
+          )}
+          <a
+            href={`mailto:${leader.email}`}
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
+          >
+            <Mail className="w-3.5 h-3.5" /> {leader.email}
+          </a>
+        </div>
       </div>
     </div>
   );
 }
 
-function renderNode(
-  node: OrgNode,
-  collapsedIds: Set<string>,
-  toggle: (id: string) => void,
-  query: string,
-): JSX.Element {
-  const collapsed = collapsedIds.has(node.id);
-  const matches = query.length > 0 && (node.name.toLowerCase().includes(query) || node.title.toLowerCase().includes(query));
-  const card = <LeaderCard node={node} collapsed={collapsed} onToggle={() => toggle(node.id)} highlight={matches} />;
-
-  if (!node.reports || node.reports.length === 0 || collapsed) return card as any;
+function HeadcountBar({ hc }: { hc: { total: number; locations: { name: string; count: number }[] } }) {
   return (
-    <TreeNode label={card}>
-      {node.reports.map((r) => (
-        <TreeNode key={r.id} label={renderNode(r, collapsedIds, toggle, query)} />
-      ))}
-    </TreeNode>
-  ) as any;
+    <div className="rounded-2xl bg-card border shadow-md px-6 py-5 mb-10">
+      <div className="flex flex-wrap items-center justify-around gap-6">
+        <div className="text-center">
+          <div className="text-xs font-bold tracking-widest text-orange-500 uppercase">Total HC</div>
+          <div className="text-3xl font-extrabold text-orange-500 mt-1">{hc.total}</div>
+        </div>
+        <div className="hidden md:block w-px h-12 bg-border" />
+        {hc.locations.map((loc) => (
+          <div key={loc.name} className="text-center">
+            <div className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{loc.name}</div>
+            <div className="mt-1">
+              <span className="text-2xl font-extrabold text-foreground">{loc.count}</span>
+              <span className="text-xs text-muted-foreground ml-1 font-medium">FTEs</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ManagerCard({ m }: { m: ManagerInfo }) {
+  return (
+    <div className="group relative rounded-2xl bg-card border shadow-md hover:shadow-2xl transition-all hover:-translate-y-1 overflow-hidden">
+      <div className={`h-1.5 w-full ${m.accentClass}`} />
+      <div className="p-5 flex flex-col items-center text-center">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted-foreground/20 flex items-center justify-center text-xl font-bold text-foreground shadow-md mb-3">
+          {m.initials}
+        </div>
+        <h4 className="text-base font-bold text-foreground">{m.name}</h4>
+        <p className="text-xs text-muted-foreground mt-0.5">{m.title}</p>
+        <Badge variant="secondary" className="mt-3 text-[11px]">{m.team}</Badge>
+        <p className="text-xs text-muted-foreground mt-3 leading-relaxed line-clamp-3">
+          {m.responsibilities}
+        </p>
+        <div className="flex items-center gap-3 mt-4 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1"><Users className="w-3 h-3" />{m.headcount} FTEs</span>
+          <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{m.location}</span>
+        </div>
+        <a
+          href={`mailto:${m.email}`}
+          className="mt-3 inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium"
+        >
+          <Mail className="w-3 h-3" /> Contact
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function PodCard({ p }: { p: PodInfo }) {
+  return (
+    <div className="rounded-2xl bg-card border shadow-md hover:shadow-xl transition-all hover:-translate-y-0.5 p-5">
+      <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center text-2xl mb-3">
+        {p.emoji}
+      </div>
+      <h4 className="text-sm font-bold text-foreground">{p.name}</h4>
+      <p className="text-[11px] text-muted-foreground mt-0.5">Led by {p.owner}</p>
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">{p.focus}</p>
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {p.tech.map((t) => (
+          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function OrgChartSection() {
-  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
-  const [zoom, setZoom] = useState(1);
+  const { data, loading, error } = useOrgChart();
   const [query, setQuery] = useState('');
-  const { data: orgChart, loading, error } = useOrgChart();
 
-  const toggle = (id: string) =>
-    setCollapsedIds((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+  const filteredManagers = useMemo(() => {
+    if (!data) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return data.managers;
+    return data.managers.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        m.team.toLowerCase().includes(q) ||
+        m.title.toLowerCase().includes(q),
+    );
+  }, [data, query]);
 
   return (
     <section id="org-chart" className="relative py-20 px-6 max-w-7xl mx-auto">
@@ -92,51 +128,53 @@ export function OrgChartSection() {
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
           Leadership & Org Chart
         </h2>
-        <p className="text-muted-foreground mt-3">Click cards to expand or collapse branches.</p>
+        <p className="text-muted-foreground mt-3">
+          Meet the team driving Business Enablement & Testing across the globe.
+        </p>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value.toLowerCase())}
-            placeholder="Search leader by name or title..."
-            className="pl-9 rounded-full"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" className="rounded-full" onClick={() => setZoom((z) => Math.max(0.5, z - 0.1))}>
-            <ZoomOut className="w-4 h-4" />
-          </Button>
-          <span className="text-xs font-mono w-12 text-center">{Math.round(zoom * 100)}%</span>
-          <Button variant="outline" size="icon" className="rounded-full" onClick={() => setZoom((z) => Math.min(1.5, z + 0.1))}>
-            <ZoomIn className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+      {loading && <div className="text-center py-12 text-muted-foreground">Loading org chart…</div>}
+      {error && !data && (
+        <div className="text-center py-12 text-destructive">Failed to load org chart: {error}</div>
+      )}
 
-      <div className="rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-pink-50 dark:from-indigo-950/30 dark:via-card dark:to-pink-950/30 border shadow-xl p-6 overflow-auto">
-        {loading && <div className="text-center py-12 text-muted-foreground">Loading org chart…</div>}
-        {error && !orgChart && (
-          <div className="text-center py-12 text-destructive">Failed to load org chart: {error}</div>
-        )}
-        {orgChart && (
-          <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s' }} className="inline-block min-w-full">
-            <Tree
-              lineWidth="2px"
-              lineColor="hsl(var(--primary))"
-              lineBorderRadius="12px"
-              label={renderNode(orgChart, collapsedIds, toggle, query)}
-            >
-              {!collapsedIds.has(orgChart.id) &&
-                orgChart.reports?.map((r) => (
-                  <TreeNode key={r.id} label={renderNode(r, collapsedIds, toggle, query)} />
-                ))}
-            </Tree>
+      {data && (
+        <>
+          <LeaderHero leader={data.leader} />
+          <HeadcountBar hc={data.headcount} />
+
+          <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+            <h3 className="text-xl font-bold text-foreground">Managers & Teams</h3>
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by name, team, role..."
+                className="pl-9 rounded-full"
+              />
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+            {filteredManagers.map((m) => (
+              <ManagerCard key={m.id} m={m} />
+            ))}
+            {filteredManagers.length === 0 && (
+              <div className="col-span-full text-center text-sm text-muted-foreground py-8">
+                No managers match "{query}".
+              </div>
+            )}
+          </div>
+
+          <h3 className="text-xl font-bold text-foreground mb-6">Teams & PODs</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {data.pods.map((p) => (
+              <PodCard key={p.id} p={p} />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
