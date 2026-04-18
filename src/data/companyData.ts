@@ -8,52 +8,8 @@ export interface OrgNode {
   reports?: OrgNode[];
 }
 
-export const orgChart: OrgNode = {
-  id: 'ceo',
-  name: 'David Wichmann',
-  title: 'Chief Executive Officer',
-  department: 'Executive Office',
-  email: 'david.wichmann@optum.com',
-  initials: 'DW',
-  reports: [
-    {
-      id: 'p1',
-      name: 'Amar Desai',
-      title: 'President, Optum Health',
-      department: 'Optum Health',
-      email: 'amar.desai@optum.com',
-      initials: 'AD',
-      reports: [
-        { id: 'p1a', name: 'Linda Park', title: 'VP Healthcare Operations', department: 'Optum Health', email: 'linda.park@optum.com', initials: 'LP' },
-        { id: 'p1b', name: 'Marcus Lee', title: 'VP Care Delivery', department: 'Optum Health', email: 'marcus.lee@optum.com', initials: 'ML' },
-      ],
-    },
-    {
-      id: 'p2',
-      name: 'Roger Connor',
-      title: 'President, Optum Insight',
-      department: 'Optum Insight',
-      email: 'roger.connor@optum.com',
-      initials: 'RC',
-      reports: [
-        { id: 'p2a', name: 'Gourav Banathia', title: 'VP Technology Services', department: 'Optum Insight', email: 'gourav.banatia@optum.com', initials: 'GB' },
-        { id: 'p2b', name: 'Aisha Khan', title: 'VP Analytics & Data', department: 'Optum Insight', email: 'aisha.khan@optum.com', initials: 'AK' },
-      ],
-    },
-    {
-      id: 'p3',
-      name: 'John Prince',
-      title: 'President, Optum Rx',
-      department: 'Optum Rx',
-      email: 'john.prince@optum.com',
-      initials: 'JP',
-      reports: [
-        { id: 'p3a', name: 'Sara Ito', title: 'VP Pharmacy Operations', department: 'Optum Rx', email: 'sara.ito@optum.com', initials: 'SI' },
-        { id: 'p3b', name: 'Daniel Cruz', title: 'VP Clinical Programs', department: 'Optum Rx', email: 'daniel.cruz@optum.com', initials: 'DC' },
-      ],
-    },
-  ],
-};
+// Org chart data lives in /public/orgChart.json and is loaded via useOrgChart().
+// Admins can upload a new JSON from the Admin console to override it.
 
 export interface DepartmentInfo {
   id: string;
