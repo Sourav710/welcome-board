@@ -695,6 +695,112 @@ export default function EngagementCulture() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <activeSpot.icon className="w-5 h-5 text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <SheetTitle>{activeSpot.label}</SheetTitle>
+                <SheetDescription>{activeSpot.description}</SheetDescription>
+              </div>
+            </div>
+          </SheetHeader>
+
+          <div className="mt-6 space-y-6">
+            {/* Progress */}
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">
+                  Setup progress
+                </span>
+                <span className="text-xs text-foreground font-medium">
+                  {spotChecked}/{spotEssentialKeys.length}
+                </span>
+              </div>
+              <Progress value={spotPct} className="h-2" />
+            </div>
+
+            {/* Essentials checklist */}
+            <div>
+              <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
+                <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                Office essentials
+              </h4>
+              <ul className="space-y-2">
+                {activeSpot.essentials.map((e, i) => {
+                  const key = `${activeSpot.id}::${i}`;
+                  const checked = !!checkedEssentials[key];
+                  return (
+                    <li
+                      key={key}
+                      className={`flex items-start gap-3 p-3 rounded-md border transition-colors ${
+                        checked ? 'bg-primary/5 border-primary/30' : 'bg-card border-border'
+                      }`}
+                    >
+                      <Checkbox
+                        id={key}
+                        checked={checked}
+                        onCheckedChange={() => toggleEssential(key)}
+                        className="mt-0.5"
+                      />
+                      <label htmlFor={key} className="flex-1 cursor-pointer">
+                        <div
+                          className={`text-sm font-medium ${
+                            checked ? 'text-muted-foreground line-through' : 'text-foreground'
+                          }`}
+                        >
+                          {e.label}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">{e.detail}</div>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Quick info chips */}
+            {activeSpot.id === 'desk' && (
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="gap-1">
+                  <Wifi className="w-3 h-3" aria-hidden="true" /> OPTUM-CORP
+                </Badge>
+                <Badge variant="secondary" className="gap-1">
+                  <IdCard className="w-3 h-3" aria-hidden="true" /> Badge required
+                </Badge>
+              </div>
+            )}
+
+            {/* Key contacts */}
+            <div>
+              <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
+                <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
+                Key contacts
+              </h4>
+              <div className="space-y-2">
+                {activeSpot.contacts.map((c) => (
+                  <div
+                    key={c.name}
+                    className="flex items-start justify-between gap-3 p-3 rounded-md border bg-card"
+                  >
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{c.name}</div>
+                      <div className="text-xs text-muted-foreground">{c.role}</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground text-right max-w-[55%]">
+                      {c.channel}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </AppLayout>
   );
 }
