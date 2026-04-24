@@ -18,6 +18,7 @@ import ChecklistItemDetail from "./pages/ChecklistItemDetail";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import AdminTemplates from "./pages/AdminTemplates";
 import HelpCenter from "./pages/HelpCenter";
+import EngagementCulture from "./pages/EngagementCulture";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
                   <Route path="/manager" element={<ManagerDashboard />} />
                   <Route path="/admin" element={<AdminTemplates />} />
                   <Route path="/help" element={<HelpCenter />} />
+                  <Route path="/engagement" element={<EngagementCulture />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SessionTimeoutProvider>
