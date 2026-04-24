@@ -72,8 +72,7 @@ function validate(d: unknown): d is OrgChartData {
   return true;
 }
 
-
-
+export function useOrgChart() {
   const [data, setData] = useState<OrgChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
