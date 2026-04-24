@@ -8,7 +8,7 @@ import { ExportButtons } from '@/components/ExportButtons';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { managerUser, teamMembers, allChecklistItems, notes as mockNotes } from '@/data/mockData';
+import { managerUser, adminUser, teamMembers, allChecklistItems, notes as mockNotes } from '@/data/mockData';
 import type { User, ChecklistItem, ChecklistSection } from '@/types/onboarding';
 import { Users, AlertTriangle, TrendingUp, Clock, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
