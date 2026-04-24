@@ -72,19 +72,8 @@ function validate(d: unknown): d is OrgChartData {
   return true;
 }
 
-function _validateLegacy(d: OrgChartData): d is OrgChartData {
-  if (!d || typeof d !== 'object') return false;
-  if (!d.leader || !isStr(d.leader.name) || !isStr(d.leader.initials)) return false;
-  if (!d.headcount || typeof d.headcount.total !== 'number' || !Array.isArray(d.headcount.locations)) return false;
-  if (!Array.isArray(d.managers)) return false;
-  for (const m of d.managers) {
-    if (!isStr(m.id) || !isStr(m.name) || !isStr(m.team) || !isStr(m.initials)) return false;
-  }
-  if (!Array.isArray(d.pods)) return false;
-  return true;
-}
 
-export function useOrgChart() {
+
   const [data, setData] = useState<OrgChartData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +102,7 @@ export function useOrgChart() {
         const json = await res.json();
         if (!validate(json)) throw new Error('Invalid org chart shape');
         if (!cancelled) setData(json);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!cancelled) setError(e?.message ?? 'Failed to load org chart');
       } finally {
         if (!cancelled) setLoading(false);
