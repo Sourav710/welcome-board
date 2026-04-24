@@ -354,7 +354,41 @@ export default function EngagementCulture() {
   };
 
   const [activeLocation, setActiveLocation] = useState<string>('desk');
+  const [sheetOpen, setSheetOpen] = useState(false);
   const activeSpot = officeLocations.find((l) => l.id === activeLocation)!;
+
+  const [checkedEssentials, setCheckedEssentials] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem('officeEssentialsChecks');
+      if (raw) return JSON.parse(raw);
+    } catch {
+      /* ignore */
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem('officeEssentialsChecks', JSON.stringify(checkedEssentials));
+  }, [checkedEssentials]);
+
+  const openLocationSheet = (id: string) => {
+    setActiveLocation(id);
+    setSheetOpen(true);
+  };
+
+  const toggleEssential = (key: string) => {
+    setCheckedEssentials((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (next[key]) fireConfetti('small');
+      return next;
+    });
+  };
+
+  const spotEssentialKeys = activeSpot.essentials.map((_, i) => `${activeSpot.id}::${i}`);
+  const spotChecked = spotEssentialKeys.filter((k) => checkedEssentials[k]).length;
+  const spotPct = spotEssentialKeys.length
+    ? Math.round((spotChecked / spotEssentialKeys.length) * 100)
+    : 0;
 
   // Celebrate first time a new milestone is reached this session
   useEffect(() => {
