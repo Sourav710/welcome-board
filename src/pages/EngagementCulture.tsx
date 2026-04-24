@@ -8,6 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { useChecklist } from '@/context/ChecklistContext';
 import { currentUser, managerUser, adminUser } from '@/data/mockData';
 import type { User } from '@/types/onboarding';
@@ -27,6 +35,10 @@ import {
   Bath,
   Monitor,
   Send,
+  Wifi,
+  IdCard,
+  Phone,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface Milestone {
@@ -81,13 +93,131 @@ const seedNotes: WelcomeNote[] = [
   },
 ];
 
-const officeLocations = [
-  { id: 'desk', label: 'Your Desk', icon: Monitor, x: 30, y: 35, description: 'Bay 4B, Floor 3 — window seat with a view of the courtyard.' },
-  { id: 'team', label: 'Team Pod', icon: Users, x: 45, y: 30, description: 'DMS team sits together in the open collab zone.' },
-  { id: 'cafe', label: 'Cafeteria', icon: Coffee, x: 70, y: 55, description: 'Breakfast 8–10 AM, lunch 12–3 PM. Free coffee all day.' },
-  { id: 'meet', label: 'Meeting Rooms', icon: DoorOpen, x: 25, y: 65, description: 'Rooms Aspen, Birch, Cedar — bookable via Outlook.' },
-  { id: 'rest', label: 'Restrooms', icon: Bath, x: 80, y: 25, description: 'Near the elevator lobby on every floor.' },
-  { id: 'lounge', label: 'Lounge', icon: Heart, x: 55, y: 75, description: 'Bean bags, foosball, and a quiet reading nook.' },
+interface Essential {
+  label: string;
+  detail: string;
+}
+interface Contact {
+  name: string;
+  role: string;
+  channel: string;
+}
+interface OfficeLocation {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  x: number;
+  y: number;
+  description: string;
+  essentials: Essential[];
+  contacts: Contact[];
+}
+
+const officeLocations: OfficeLocation[] = [
+  {
+    id: 'desk',
+    label: 'Your Desk',
+    icon: Monitor,
+    x: 30,
+    y: 35,
+    description: 'Bay 4B, Floor 3 — window seat with a view of the courtyard.',
+    essentials: [
+      { label: 'Connect to Wi-Fi: OPTUM-CORP', detail: 'Use your AD credentials. Guest network: OPTUM-GUEST (daily code at reception).' },
+      { label: 'Pair your access badge', detail: 'Tap badge on the desk reader to register seat assignment.' },
+      { label: 'Set up dual monitors', detail: 'USB-C dock under the desk — one cable powers laptop + displays.' },
+      { label: 'Adjust ergonomic chair', detail: 'Lumbar support knob on the right; armrests adjust by squeezing the lever.' },
+      { label: 'Test desk phone', detail: 'Dial 1234 to hear the echo test.' },
+    ],
+    contacts: [
+      { name: 'IT Help Desk', role: 'Hardware & network', channel: 'ext. 4357 / #it-helpdesk' },
+      { name: 'Facilities', role: 'Desk & seating', channel: 'facilities@optum.com' },
+    ],
+  },
+  {
+    id: 'team',
+    label: 'Team Pod',
+    icon: Users,
+    x: 45,
+    y: 30,
+    description: 'DMS team sits together in the open collab zone.',
+    essentials: [
+      { label: 'Join the team Slack channels', detail: '#dms-engineering, #dms-standup, #dms-random' },
+      { label: 'Add yourself to the team wiki', detail: 'Confluence → DMS Team → Members page.' },
+      { label: 'Sync with your buddy', detail: 'Your buddy will book a 30-min intro on Day 2.' },
+      { label: 'Review the team charter', detail: 'Pinned in #dms-engineering — covers rituals & on-call.' },
+    ],
+    contacts: [
+      { name: 'Gourav Banathia', role: 'Engineering Manager', channel: '@gourav on Slack' },
+      { name: 'Maria Garcia', role: 'Onboarding Buddy', channel: '@maria on Slack' },
+    ],
+  },
+  {
+    id: 'cafe',
+    label: 'Cafeteria',
+    icon: Coffee,
+    x: 70,
+    y: 55,
+    description: 'Breakfast 8–10 AM, lunch 12–3 PM. Free coffee all day.',
+    essentials: [
+      { label: 'Link badge for cashless payment', detail: 'Visit the kiosk near the entrance to register your badge.' },
+      { label: 'Check the daily menu', detail: 'Scan the QR code at the entrance or visit cafe.optum.com.' },
+      { label: 'Note dietary stations', detail: 'Veg, vegan, gluten-free counters clearly labeled.' },
+      { label: 'Coffee bar etiquette', detail: 'Rinse your cup — there is a dishwasher next to the espresso machine.' },
+    ],
+    contacts: [
+      { name: 'Cafe Manager', role: 'Menu & dietary requests', channel: 'cafe@optum.com' },
+    ],
+  },
+  {
+    id: 'meet',
+    label: 'Meeting Rooms',
+    icon: DoorOpen,
+    x: 25,
+    y: 65,
+    description: 'Rooms Aspen, Birch, Cedar — bookable via Outlook.',
+    essentials: [
+      { label: 'Book a room in Outlook', detail: 'Add the room as a resource when creating the meeting.' },
+      { label: 'Connect to room display', detail: 'HDMI / wireless via "Optum-Room-XX" — PIN shown on the screen.' },
+      { label: 'Join Zoom from the panel', detail: 'Tap "Join Zoom" on the room tablet and enter meeting ID.' },
+      { label: 'Whiteboard supplies', detail: 'Markers and erasers in the cabinet under each board.' },
+    ],
+    contacts: [
+      { name: 'Workplace Services', role: 'Room booking issues', channel: 'workplace@optum.com' },
+      { name: 'AV Support', role: 'Display / audio issues', channel: 'ext. 2828' },
+    ],
+  },
+  {
+    id: 'rest',
+    label: 'Restrooms',
+    icon: Bath,
+    x: 80,
+    y: 25,
+    description: 'Near the elevator lobby on every floor.',
+    essentials: [
+      { label: 'Badge access required after 8 PM', detail: 'Tap your badge on the reader by the door.' },
+      { label: 'Wellness rooms available', detail: 'Two private rooms on Floor 3 (West wing) for nursing or quiet time.' },
+      { label: 'Accessible restrooms', detail: 'Located on every floor near the main elevators.' },
+    ],
+    contacts: [
+      { name: 'Facilities', role: 'Cleanliness or supplies', channel: 'facilities@optum.com' },
+    ],
+  },
+  {
+    id: 'lounge',
+    label: 'Lounge',
+    icon: Heart,
+    x: 55,
+    y: 75,
+    description: 'Bean bags, foosball, and a quiet reading nook.',
+    essentials: [
+      { label: 'Game checkout', detail: 'Board games on the shelf — sign in/out on the clipboard.' },
+      { label: 'Quiet zone rules', detail: 'No calls or video meetings in the reading nook.' },
+      { label: 'Phone booths nearby', detail: 'Two soundproof booths for personal calls.' },
+    ],
+    contacts: [
+      { name: 'Culture Crew', role: 'Lounge events & meetups', channel: '#culture-crew on Slack' },
+    ],
+  },
 ];
 
 function fireConfetti(intensity: 'small' | 'medium' | 'large' = 'medium') {
@@ -224,7 +354,41 @@ export default function EngagementCulture() {
   };
 
   const [activeLocation, setActiveLocation] = useState<string>('desk');
+  const [sheetOpen, setSheetOpen] = useState(false);
   const activeSpot = officeLocations.find((l) => l.id === activeLocation)!;
+
+  const [checkedEssentials, setCheckedEssentials] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem('officeEssentialsChecks');
+      if (raw) return JSON.parse(raw);
+    } catch {
+      /* ignore */
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem('officeEssentialsChecks', JSON.stringify(checkedEssentials));
+  }, [checkedEssentials]);
+
+  const openLocationSheet = (id: string) => {
+    setActiveLocation(id);
+    setSheetOpen(true);
+  };
+
+  const toggleEssential = (key: string) => {
+    setCheckedEssentials((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (next[key]) fireConfetti('small');
+      return next;
+    });
+  };
+
+  const spotEssentialKeys = activeSpot.essentials.map((_, i) => `${activeSpot.id}::${i}`);
+  const spotChecked = spotEssentialKeys.filter((k) => checkedEssentials[k]).length;
+  const spotPct = spotEssentialKeys.length
+    ? Math.round((spotChecked / spotEssentialKeys.length) * 100)
+    : 0;
 
   // Celebrate first time a new milestone is reached this session
   useEffect(() => {
@@ -462,7 +626,7 @@ export default function EngagementCulture() {
                         return (
                           <button
                             key={loc.id}
-                            onClick={() => setActiveLocation(loc.id)}
+                            onClick={() => openLocationSheet(loc.id)}
                             className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all ${
                               isActive ? 'scale-125 z-10' : 'hover:scale-110'
                             }`}
@@ -493,6 +657,14 @@ export default function EngagementCulture() {
                         <h3 className="font-semibold text-foreground">{activeSpot.label}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground">{activeSpot.description}</p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 w-full"
+                        onClick={() => setSheetOpen(true)}
+                      >
+                        View essentials checklist
+                      </Button>
                     </div>
                     <div className="space-y-2">
                       <h4 className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">
@@ -503,7 +675,7 @@ export default function EngagementCulture() {
                         return (
                           <button
                             key={loc.id}
-                            onClick={() => setActiveLocation(loc.id)}
+                            onClick={() => openLocationSheet(loc.id)}
                             className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
                               loc.id === activeLocation
                                 ? 'bg-primary/10 text-primary'
@@ -523,6 +695,112 @@ export default function EngagementCulture() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <activeSpot.icon className="w-5 h-5 text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <SheetTitle>{activeSpot.label}</SheetTitle>
+                <SheetDescription>{activeSpot.description}</SheetDescription>
+              </div>
+            </div>
+          </SheetHeader>
+
+          <div className="mt-6 space-y-6">
+            {/* Progress */}
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">
+                  Setup progress
+                </span>
+                <span className="text-xs text-foreground font-medium">
+                  {spotChecked}/{spotEssentialKeys.length}
+                </span>
+              </div>
+              <Progress value={spotPct} className="h-2" />
+            </div>
+
+            {/* Essentials checklist */}
+            <div>
+              <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
+                <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                Office essentials
+              </h4>
+              <ul className="space-y-2">
+                {activeSpot.essentials.map((e, i) => {
+                  const key = `${activeSpot.id}::${i}`;
+                  const checked = !!checkedEssentials[key];
+                  return (
+                    <li
+                      key={key}
+                      className={`flex items-start gap-3 p-3 rounded-md border transition-colors ${
+                        checked ? 'bg-primary/5 border-primary/30' : 'bg-card border-border'
+                      }`}
+                    >
+                      <Checkbox
+                        id={key}
+                        checked={checked}
+                        onCheckedChange={() => toggleEssential(key)}
+                        className="mt-0.5"
+                      />
+                      <label htmlFor={key} className="flex-1 cursor-pointer">
+                        <div
+                          className={`text-sm font-medium ${
+                            checked ? 'text-muted-foreground line-through' : 'text-foreground'
+                          }`}
+                        >
+                          {e.label}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">{e.detail}</div>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Quick info chips */}
+            {activeSpot.id === 'desk' && (
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="gap-1">
+                  <Wifi className="w-3 h-3" aria-hidden="true" /> OPTUM-CORP
+                </Badge>
+                <Badge variant="secondary" className="gap-1">
+                  <IdCard className="w-3 h-3" aria-hidden="true" /> Badge required
+                </Badge>
+              </div>
+            )}
+
+            {/* Key contacts */}
+            <div>
+              <h4 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
+                <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
+                Key contacts
+              </h4>
+              <div className="space-y-2">
+                {activeSpot.contacts.map((c) => (
+                  <div
+                    key={c.name}
+                    className="flex items-start justify-between gap-3 p-3 rounded-md border bg-card"
+                  >
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{c.name}</div>
+                      <div className="text-xs text-muted-foreground">{c.role}</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground text-right max-w-[55%]">
+                      {c.channel}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </AppLayout>
   );
 }
