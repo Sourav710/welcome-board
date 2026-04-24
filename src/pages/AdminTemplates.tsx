@@ -194,6 +194,10 @@ export default function AdminTemplates() {
               <AuditLogPanel logs={logs} />
             ) : activeNav === 'orgchart' ? (
               <OrgChartAdminPanel />
+            ) : activeNav === 'templates' ? (
+              <RoleTemplatesPanel items={items} />
+            ) : activeNav === 'integrations' ? (
+              <IntegrationsPanel />
             ) : (
             <>
             <div className="flex items-center justify-between mb-6">
@@ -565,6 +569,147 @@ function AuditLogPanel({ logs }: { logs: import('@/context/AuditLogContext').Aud
         ))}
       </div>
       <p className="text-xs text-muted-foreground mt-3">{filtered.length} entries shown</p>
+    </>
+  );
+}
+
+// Role Templates Panel — overview of activities grouped by section/owner role
+function RoleTemplatesPanel({ items }: { items: ChecklistItem[] }) {
+  const grouped = sections.reduce((acc, section) => {
+    acc[section] = items.filter((i) => i.section === section);
+    return acc;
+  }, {} as Record<ChecklistSection, ChecklistItem[]>);
+
+  const totalMandatory = items.filter((i) => i.mandatory).length;
+
+  return (
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <LayoutTemplate className="w-6 h-6 text-primary" />
+          Role Templates
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Onboarding template breakdown by section and assigned role.
+        </p>
+      </div>
+
+      {/* Summary stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-card border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground mb-1">Total Activities</p>
+          <p className="text-2xl font-bold text-foreground">{items.length}</p>
+        </div>
+        <div className="bg-card border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground mb-1">Mandatory</p>
+          <p className="text-2xl font-bold text-warning">{totalMandatory}</p>
+        </div>
+        <div className="bg-card border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground mb-1">Sections</p>
+          <p className="text-2xl font-bold text-primary">{Object.keys(grouped).filter(k => grouped[k as ChecklistSection].length > 0).length}</p>
+        </div>
+      </div>
+
+      {/* Section breakdown */}
+      <div className="space-y-4">
+        {sections.map((section) => {
+          const sectionItems = grouped[section];
+          if (sectionItems.length === 0) return null;
+          const ownerCounts = sectionItems.reduce((acc, item) => {
+            acc[item.owner] = (acc[item.owner] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+          return (
+            <div key={section} className="bg-card border rounded-xl overflow-hidden">
+              <div className="px-4 py-3 bg-muted/30 border-b flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-foreground text-sm">{sectionLabels[section]}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{sectionItems.length} activities</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {Object.entries(ownerCounts).map(([owner, count]) => (
+                    <span key={owner} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                      {owner}: {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="divide-y">
+                {sectionItems.map((item) => (
+                  <div key={item.id} className="px-4 py-2.5 flex items-center justify-between hover:bg-accent/30 transition-colors">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      {item.mandatory && <span className="text-[10px] bg-warning/15 text-warning px-1.5 py-0.5 rounded font-medium shrink-0">REQ</span>}
+                      <span className="text-sm text-foreground truncate">{item.title}</span>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                      <span className="text-xs text-muted-foreground capitalize">{item.type}</span>
+                      <span className="text-xs text-muted-foreground">{item.owner}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// Integrations Panel
+function IntegrationsPanel() {
+  const integrations = [
+    { name: 'ServiceNow', description: 'IT service management & access requests', status: 'connected', category: 'Access' },
+    { name: 'Jira', description: 'Issue tracking & project workflow', status: 'connected', category: 'Workflow' },
+    { name: 'Okta SSO', description: 'Single sign-on & identity provider', status: 'connected', category: 'Auth' },
+    { name: 'Workday', description: 'HR data sync for new hires', status: 'available', category: 'HR' },
+    { name: 'Slack', description: 'Team notifications & onboarding alerts', status: 'available', category: 'Comms' },
+    { name: 'MongoDB Atlas', description: 'Persistent data store (Data API)', status: 'available', category: 'Data' },
+  ];
+
+  return (
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <Plug className="w-6 h-6 text-primary" />
+          Integrations
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          External systems connected to the onboarding platform.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {integrations.map((int) => (
+          <div key={int.name} className="bg-card border rounded-xl p-4 hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Plug className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground text-sm">{int.name}</h3>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{int.category}</span>
+                </div>
+              </div>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium capitalize ${
+                int.status === 'connected' ? 'bg-success/15 text-success' : 'bg-muted text-muted-foreground'
+              }`}>
+                {int.status}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">{int.description}</p>
+            <Button
+              variant={int.status === 'connected' ? 'outline' : 'default'}
+              size="sm"
+              className="w-full h-7 text-xs"
+              onClick={() => toast({ title: int.status === 'connected' ? `${int.name} settings` : `Connect ${int.name}`, description: 'Integration management is a prototype preview.' })}
+            >
+              {int.status === 'connected' ? 'Configure' : 'Connect'}
+            </Button>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
