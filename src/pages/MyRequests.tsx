@@ -12,7 +12,9 @@ function getLoggedInUser() {
   try {
     const stored = localStorage.getItem('loggedInUser');
     if (stored) return JSON.parse(stored);
-  } catch {}
+  } catch {
+    // ignore malformed stored user
+  }
   return currentUser;
 }
 

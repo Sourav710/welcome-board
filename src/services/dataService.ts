@@ -24,7 +24,7 @@ import type {
   Note,
 } from '@/types/onboarding';
 
-const useMongo = () => mongoApi.isConfigured();
+const isMongoEnabled = () => mongoApi.isConfigured();
 
 // ── Users ──────────────────────────────────────────────
 export async function getUser(id: string): Promise<User | null> {

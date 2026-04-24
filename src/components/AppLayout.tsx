@@ -1,20 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User } from '@/types/onboarding';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { Bell, HelpCircle, LogOut, ShieldAlert, CheckCircle2, Clock, AlertTriangle, Users } from 'lucide-react';
+import { HelpCircle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useNotifications, AppNotification } from '@/hooks/useNotifications';
-
-const notificationIcons: Record<AppNotification['type'], typeof Bell> = {
-  access_granted: CheckCircle2,
-  access_pending: ShieldAlert,
-  overdue: AlertTriangle,
-  completed: CheckCircle2,
-  team_overdue: AlertTriangle,
-  team_progress: Users,
-};
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -40,74 +28,6 @@ const adminNav = [
   { label: 'Team Onboarding', path: '/manager' },
   { label: 'Admin Templates', path: '/admin' },
 ];
-
-function NotificationBell({ user }: { user: User }) {
-  const dynamicNotifications = useNotifications(user);
-  const [readIds, setReadIds] = useState<Set<string>>(new Set());
-
-  const notifications = dynamicNotifications.map(n => ({
-    ...n,
-    read: n.read || readIds.has(n.id),
-  }));
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const markAllRead = () => {
-    setReadIds(new Set(notifications.map(n => n.id)));
-  };
-
-  const markRead = (id: string) => {
-    setReadIds(prev => new Set(prev).add(id));
-  };
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground relative">
-          <Bell className="w-4 h-4" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-destructive rounded-full text-[10px] font-bold text-destructive-foreground flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h4 className="text-sm font-semibold text-foreground">Notifications</h4>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-xs text-primary hover:underline">
-              Mark all read
-            </button>
-          )}
-        </div>
-        <div className="max-h-72 overflow-y-auto">
-          {notifications.length === 0 ? (
-            <div className="px-4 py-6 text-center text-sm text-muted-foreground">No notifications</div>
-          ) : (
-            notifications.map(n => {
-              const Icon = notificationIcons[n.type] || Bell;
-              return (
-                <div
-                  key={n.id}
-                  className={`flex items-start gap-3 px-4 py-3 border-b last:border-b-0 cursor-pointer transition-colors hover:bg-accent/50 ${!n.read ? 'bg-primary/5' : ''}`}
-                  onClick={() => markRead(n.id)}
-                >
-                  <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${!n.read ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs leading-tight ${!n.read ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>{n.title}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{n.time}</p>
-                  </div>
-                  {!n.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
-                </div>
-              );
-            })
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
 
 export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
   const location = useLocation();
