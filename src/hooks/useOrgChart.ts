@@ -131,6 +131,6 @@ export function clearOrgChartOverride() {
   window.dispatchEvent(new Event(EVENT));
 }
 
-export function validateOrgChart(d: any): d is OrgChartData {
+export function validateOrgChart(d: unknown): d is OrgChartData {
   return validate(d);
 }
