@@ -30,8 +30,8 @@ export function OrgChartAdminPanel() {
       saveOrgChartOverride(parsed);
       setParseError(null);
       toast({ title: 'Org chart updated', description: 'Changes are live on the homepage.' });
-    } catch (e: any) {
-      setParseError(e?.message ?? 'Invalid JSON');
+    } catch (e) {
+      setParseError(e instanceof Error ? e.message : 'Invalid JSON');
     }
   };
 
@@ -47,8 +47,8 @@ export function OrgChartAdminPanel() {
       setText(JSON.stringify(parsed, null, 2));
       setParseError(null);
       toast({ title: 'Uploaded', description: `Loaded ${file.name}` });
-    } catch (e: any) {
-      toast({ title: 'Upload failed', description: e?.message ?? 'Invalid JSON', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Upload failed', description: e instanceof Error ? e.message : 'Invalid JSON', variant: 'destructive' });
     }
   };
 

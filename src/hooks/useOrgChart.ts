@@ -53,19 +53,22 @@ export interface OrgChartData {
 const STORAGE_KEY = 'orgChartOverride';
 const EVENT = 'orgChart:updated';
 
-function isStr(v: any) {
+function isStr(v: unknown): v is string {
   return typeof v === 'string';
 }
 
-function validate(d: any): d is OrgChartData {
-  if (!d || typeof d !== 'object') return false;
-  if (!d.leader || !isStr(d.leader.name) || !isStr(d.leader.initials)) return false;
-  if (!d.headcount || typeof d.headcount.total !== 'number' || !Array.isArray(d.headcount.locations)) return false;
-  if (!Array.isArray(d.managers)) return false;
-  for (const m of d.managers) {
+function validate(d: unknown): d is OrgChartData {
+  const obj = d as Record<string, unknown> | null;
+  if (!obj || typeof obj !== 'object') return false;
+  const leader = obj.leader as Record<string, unknown> | undefined;
+  const headcount = obj.headcount as Record<string, unknown> | undefined;
+  if (!leader || !isStr(leader.name) || !isStr(leader.initials)) return false;
+  if (!headcount || typeof headcount.total !== 'number' || !Array.isArray(headcount.locations)) return false;
+  if (!Array.isArray(obj.managers)) return false;
+  for (const m of obj.managers as Array<Record<string, unknown>>) {
     if (!isStr(m.id) || !isStr(m.name) || !isStr(m.team) || !isStr(m.initials)) return false;
   }
-  if (!Array.isArray(d.pods)) return false;
+  if (!Array.isArray(obj.pods)) return false;
   return true;
 }
 
@@ -98,8 +101,9 @@ export function useOrgChart() {
         const json = await res.json();
         if (!validate(json)) throw new Error('Invalid org chart shape');
         if (!cancelled) setData(json);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? 'Failed to load org chart');
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Failed to load org chart';
+        if (!cancelled) setError(msg);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -126,6 +130,6 @@ export function clearOrgChartOverride() {
   window.dispatchEvent(new Event(EVENT));
 }
 
-export function validateOrgChart(d: any): d is OrgChartData {
+export function validateOrgChart(d: unknown): d is OrgChartData {
   return validate(d);
 }

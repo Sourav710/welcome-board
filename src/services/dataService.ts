@@ -24,11 +24,11 @@ import type {
   Note,
 } from '@/types/onboarding';
 
-const useMongo = () => mongoApi.isConfigured();
+const isMongoEnabled = () => mongoApi.isConfigured();
 
 // ── Users ──────────────────────────────────────────────
 export async function getUser(id: string): Promise<User | null> {
-  if (!useMongo()) {
+  if (!isMongoEnabled()) {
     return [currentUser, managerUser, adminUser, ...teamMembers].find((u) => u.id === id) ?? null;
   }
   const res = await mongoApi.findOne<User>(COLLECTIONS.users, { id });
@@ -36,20 +36,20 @@ export async function getUser(id: string): Promise<User | null> {
 }
 
 export async function getAllTeamMembers(): Promise<User[]> {
-  if (!useMongo()) return teamMembers;
+  if (!isMongoEnabled()) return teamMembers;
   const res = await mongoApi.find<User>(COLLECTIONS.users, { role: 'employee' });
   return res.documents;
 }
 
 // ── Templates ──────────────────────────────────────────
 export async function getTemplates(): Promise<ChecklistTemplate[]> {
-  if (!useMongo()) return templates;
+  if (!isMongoEnabled()) return templates;
   const res = await mongoApi.find<ChecklistTemplate>(COLLECTIONS.checklistTemplates);
   return res.documents;
 }
 
 export async function upsertTemplate(template: ChecklistTemplate): Promise<void> {
-  if (!useMongo()) return; // no-op in mock mode
+  if (!isMongoEnabled()) return; // no-op in mock mode
   await mongoApi.updateOne(
     COLLECTIONS.checklistTemplates,
     { id: template.id },
@@ -59,30 +59,30 @@ export async function upsertTemplate(template: ChecklistTemplate): Promise<void>
 
 // ── Checklist Items ────────────────────────────────────
 export async function getChecklistItemsForUser(userId: string): Promise<ChecklistItem[]> {
-  if (!useMongo()) return allChecklistItems.filter((i) => i.userId === userId);
+  if (!isMongoEnabled()) return allChecklistItems.filter((i) => i.userId === userId);
   const res = await mongoApi.find<ChecklistItem>(COLLECTIONS.checklistItems, { userId });
   return res.documents;
 }
 
 export async function getChecklistItem(id: string): Promise<ChecklistItem | null> {
-  if (!useMongo()) return checklistItems.find((i) => i.id === id) ?? null;
+  if (!isMongoEnabled()) return checklistItems.find((i) => i.id === id) ?? null;
   const res = await mongoApi.findOne<ChecklistItem>(COLLECTIONS.checklistItems, { id });
   return res.document;
 }
 
 export async function updateChecklistItem(id: string, updates: Partial<ChecklistItem>): Promise<void> {
-  if (!useMongo()) return; // handled by context in mock mode
+  if (!isMongoEnabled()) return; // handled by context in mock mode
   await mongoApi.updateOne(COLLECTIONS.checklistItems, { id }, { $set: updates });
 }
 
 export async function createChecklistItem(item: ChecklistItem): Promise<void> {
-  if (!useMongo()) return;
+  if (!isMongoEnabled()) return;
   await mongoApi.insertOne(COLLECTIONS.checklistItems, item);
 }
 
 // ── Access Requests ────────────────────────────────────
 export async function getAccessRequests(checklistItemId?: string): Promise<AccessRequest[]> {
-  if (!useMongo()) {
+  if (!isMongoEnabled()) {
     return checklistItemId
       ? accessRequests.filter((r) => r.checklistItemId === checklistItemId)
       : accessRequests;
@@ -94,13 +94,13 @@ export async function getAccessRequests(checklistItemId?: string): Promise<Acces
 
 // ── Notes ──────────────────────────────────────────────
 export async function getNotesForItem(checklistItemId: string): Promise<Note[]> {
-  if (!useMongo()) return mockNotes.filter((n) => n.checklistItemId === checklistItemId);
+  if (!isMongoEnabled()) return mockNotes.filter((n) => n.checklistItemId === checklistItemId);
   const res = await mongoApi.find<Note>(COLLECTIONS.notes, { checklistItemId }, { createdAt: 1 });
   return res.documents;
 }
 
 export async function addNote(note: Note): Promise<void> {
-  if (!useMongo()) return; // handled by context in mock mode
+  if (!isMongoEnabled()) return; // handled by context in mock mode
   await mongoApi.insertOne(COLLECTIONS.notes, note);
 }
 
