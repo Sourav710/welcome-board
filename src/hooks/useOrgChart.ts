@@ -102,7 +102,7 @@ function validate(d: unknown): d is OrgChartData {
         const json = await res.json();
         if (!validate(json)) throw new Error('Invalid org chart shape');
         if (!cancelled) setData(json);
-      } catch (e: unknown) {
+      } catch (e) {
         const msg = e instanceof Error ? e.message : 'Failed to load org chart';
         if (!cancelled) setError(msg);
       } finally {
