@@ -194,6 +194,10 @@ export default function AdminTemplates() {
               <AuditLogPanel logs={logs} />
             ) : activeNav === 'orgchart' ? (
               <OrgChartAdminPanel />
+            ) : activeNav === 'templates' ? (
+              <RoleTemplatesPanel items={items} />
+            ) : activeNav === 'integrations' ? (
+              <IntegrationsPanel />
             ) : (
             <>
             <div className="flex items-center justify-between mb-6">
