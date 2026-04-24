@@ -8,7 +8,7 @@ import { ExportButtons } from '@/components/ExportButtons';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { managerUser, teamMembers, allChecklistItems, notes as mockNotes } from '@/data/mockData';
+import { managerUser, adminUser, teamMembers, allChecklistItems, notes as mockNotes } from '@/data/mockData';
 import type { User, ChecklistItem, ChecklistSection } from '@/types/onboarding';
 import { Users, AlertTriangle, TrendingUp, Clock, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -23,6 +23,19 @@ const sectionLabels: Record<ChecklistSection, string> = {
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();
+  const currentLoggedUser = useMemo<User>(() => {
+    try {
+      const raw = localStorage.getItem('loggedInUser');
+      if (raw) {
+        const parsed = JSON.parse(raw) as User;
+        if (parsed && parsed.role) return parsed;
+      }
+    } catch {
+      // ignore malformed localStorage
+    }
+    const role = localStorage.getItem('loggedInRole');
+    return role === 'admin' ? adminUser : managerUser;
+  }, []);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [filterProject, setFilterProject] = useState<string>('all');
   const [filterRole, setFilterRole] = useState<string>('all');
@@ -70,7 +83,7 @@ export default function ManagerDashboard() {
   });
 
   return (
-    <AppLayout user={managerUser}>
+    <AppLayout user={currentLoggedUser}>
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
