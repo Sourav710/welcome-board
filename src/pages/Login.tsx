@@ -344,15 +344,7 @@ export default function LoginPage() {
               First time here? Create Your Profile
             </Button>
 
-            <button
-              type="button"
-              onClick={() => navigate('/preboarding')}
-              className="mt-4 w-full text-xs text-center text-primary hover:underline cursor-pointer"
-            >
-              ✨ New hire? Start your pre-boarding →
-            </button>
-
-            <p className="text-xs text-center text-muted-foreground mt-3 hover:underline cursor-pointer">
+            <p className="text-xs text-center text-muted-foreground mt-4 hover:underline cursor-pointer">
               Need help logging in?
             </p>
           </div>
