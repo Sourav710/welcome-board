@@ -23,6 +23,19 @@ const sectionLabels: Record<ChecklistSection, string> = {
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();
+  const currentLoggedUser = useMemo<User>(() => {
+    try {
+      const raw = localStorage.getItem('loggedInUser');
+      if (raw) {
+        const parsed = JSON.parse(raw) as User;
+        if (parsed && parsed.role) return parsed;
+      }
+    } catch {
+      // ignore malformed localStorage
+    }
+    const role = localStorage.getItem('loggedInRole');
+    return role === 'admin' ? adminUser : managerUser;
+  }, []);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [filterProject, setFilterProject] = useState<string>('all');
   const [filterRole, setFilterRole] = useState<string>('all');
