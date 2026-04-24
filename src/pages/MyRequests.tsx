@@ -402,7 +402,7 @@ export default function MyRequests() {
                             <div>
                               <div className="font-mono text-xs">{t.externalTicketId}</div>
                               <div className="text-[10px] text-muted-foreground mt-0.5">
-                                {t.system}
+                                {t.systemName}
                               </div>
                             </div>
                             <Button
