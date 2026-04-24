@@ -19,6 +19,7 @@ import ManagerDashboard from "./pages/ManagerDashboard";
 import AdminTemplates from "./pages/AdminTemplates";
 import HelpCenter from "./pages/HelpCenter";
 import NotFound from "./pages/NotFound";
+import PreBoarding from "./pages/PreBoarding";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
                   <Route path="/" element={<Navigate to="/login" replace />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
+                  <Route path="/preboarding" element={<PreBoarding />} />
                   <Route path="/home" element={<Home />} />
                   <Route path="/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/requests" element={<MyRequests />} />
