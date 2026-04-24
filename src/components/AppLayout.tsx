@@ -14,6 +14,7 @@ const employeeNav = [
   { label: 'Home', path: '/home' },
   { label: 'My Onboarding', path: '/dashboard' },
   { label: 'My Requests', path: '/requests' },
+  { label: 'Engagement', path: '/engagement' },
   { label: 'Help Center', path: '/help' },
 ];
 
@@ -21,12 +22,14 @@ const managerNav = [
   { label: 'Home', path: '/home' },
   { label: 'Team Onboarding', path: '/manager' },
   { label: 'My Onboarding', path: '/dashboard' },
+  { label: 'Engagement', path: '/engagement' },
 ];
 
 const adminNav = [
   { label: 'Home', path: '/home' },
   { label: 'Team Onboarding', path: '/manager' },
   { label: 'Admin Templates', path: '/admin' },
+  { label: 'Engagement', path: '/engagement' },
 ];
 
 export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
