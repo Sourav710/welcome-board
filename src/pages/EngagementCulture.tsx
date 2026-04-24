@@ -8,6 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { useChecklist } from '@/context/ChecklistContext';
 import { currentUser, managerUser, adminUser } from '@/data/mockData';
 import type { User } from '@/types/onboarding';
@@ -27,6 +35,10 @@ import {
   Bath,
   Monitor,
   Send,
+  Wifi,
+  IdCard,
+  Phone,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface Milestone {
