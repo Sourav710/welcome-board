@@ -81,13 +81,131 @@ const seedNotes: WelcomeNote[] = [
   },
 ];
 
-const officeLocations = [
-  { id: 'desk', label: 'Your Desk', icon: Monitor, x: 30, y: 35, description: 'Bay 4B, Floor 3 — window seat with a view of the courtyard.' },
-  { id: 'team', label: 'Team Pod', icon: Users, x: 45, y: 30, description: 'DMS team sits together in the open collab zone.' },
-  { id: 'cafe', label: 'Cafeteria', icon: Coffee, x: 70, y: 55, description: 'Breakfast 8–10 AM, lunch 12–3 PM. Free coffee all day.' },
-  { id: 'meet', label: 'Meeting Rooms', icon: DoorOpen, x: 25, y: 65, description: 'Rooms Aspen, Birch, Cedar — bookable via Outlook.' },
-  { id: 'rest', label: 'Restrooms', icon: Bath, x: 80, y: 25, description: 'Near the elevator lobby on every floor.' },
-  { id: 'lounge', label: 'Lounge', icon: Heart, x: 55, y: 75, description: 'Bean bags, foosball, and a quiet reading nook.' },
+interface Essential {
+  label: string;
+  detail: string;
+}
+interface Contact {
+  name: string;
+  role: string;
+  channel: string;
+}
+interface OfficeLocation {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  x: number;
+  y: number;
+  description: string;
+  essentials: Essential[];
+  contacts: Contact[];
+}
+
+const officeLocations: OfficeLocation[] = [
+  {
+    id: 'desk',
+    label: 'Your Desk',
+    icon: Monitor,
+    x: 30,
+    y: 35,
+    description: 'Bay 4B, Floor 3 — window seat with a view of the courtyard.',
+    essentials: [
+      { label: 'Connect to Wi-Fi: OPTUM-CORP', detail: 'Use your AD credentials. Guest network: OPTUM-GUEST (daily code at reception).' },
+      { label: 'Pair your access badge', detail: 'Tap badge on the desk reader to register seat assignment.' },
+      { label: 'Set up dual monitors', detail: 'USB-C dock under the desk — one cable powers laptop + displays.' },
+      { label: 'Adjust ergonomic chair', detail: 'Lumbar support knob on the right; armrests adjust by squeezing the lever.' },
+      { label: 'Test desk phone', detail: 'Dial 1234 to hear the echo test.' },
+    ],
+    contacts: [
+      { name: 'IT Help Desk', role: 'Hardware & network', channel: 'ext. 4357 / #it-helpdesk' },
+      { name: 'Facilities', role: 'Desk & seating', channel: 'facilities@optum.com' },
+    ],
+  },
+  {
+    id: 'team',
+    label: 'Team Pod',
+    icon: Users,
+    x: 45,
+    y: 30,
+    description: 'DMS team sits together in the open collab zone.',
+    essentials: [
+      { label: 'Join the team Slack channels', detail: '#dms-engineering, #dms-standup, #dms-random' },
+      { label: 'Add yourself to the team wiki', detail: 'Confluence → DMS Team → Members page.' },
+      { label: 'Sync with your buddy', detail: 'Your buddy will book a 30-min intro on Day 2.' },
+      { label: 'Review the team charter', detail: 'Pinned in #dms-engineering — covers rituals & on-call.' },
+    ],
+    contacts: [
+      { name: 'Gourav Banathia', role: 'Engineering Manager', channel: '@gourav on Slack' },
+      { name: 'Maria Garcia', role: 'Onboarding Buddy', channel: '@maria on Slack' },
+    ],
+  },
+  {
+    id: 'cafe',
+    label: 'Cafeteria',
+    icon: Coffee,
+    x: 70,
+    y: 55,
+    description: 'Breakfast 8–10 AM, lunch 12–3 PM. Free coffee all day.',
+    essentials: [
+      { label: 'Link badge for cashless payment', detail: 'Visit the kiosk near the entrance to register your badge.' },
+      { label: 'Check the daily menu', detail: 'Scan the QR code at the entrance or visit cafe.optum.com.' },
+      { label: 'Note dietary stations', detail: 'Veg, vegan, gluten-free counters clearly labeled.' },
+      { label: 'Coffee bar etiquette', detail: 'Rinse your cup — there is a dishwasher next to the espresso machine.' },
+    ],
+    contacts: [
+      { name: 'Cafe Manager', role: 'Menu & dietary requests', channel: 'cafe@optum.com' },
+    ],
+  },
+  {
+    id: 'meet',
+    label: 'Meeting Rooms',
+    icon: DoorOpen,
+    x: 25,
+    y: 65,
+    description: 'Rooms Aspen, Birch, Cedar — bookable via Outlook.',
+    essentials: [
+      { label: 'Book a room in Outlook', detail: 'Add the room as a resource when creating the meeting.' },
+      { label: 'Connect to room display', detail: 'HDMI / wireless via "Optum-Room-XX" — PIN shown on the screen.' },
+      { label: 'Join Zoom from the panel', detail: 'Tap "Join Zoom" on the room tablet and enter meeting ID.' },
+      { label: 'Whiteboard supplies', detail: 'Markers and erasers in the cabinet under each board.' },
+    ],
+    contacts: [
+      { name: 'Workplace Services', role: 'Room booking issues', channel: 'workplace@optum.com' },
+      { name: 'AV Support', role: 'Display / audio issues', channel: 'ext. 2828' },
+    ],
+  },
+  {
+    id: 'rest',
+    label: 'Restrooms',
+    icon: Bath,
+    x: 80,
+    y: 25,
+    description: 'Near the elevator lobby on every floor.',
+    essentials: [
+      { label: 'Badge access required after 8 PM', detail: 'Tap your badge on the reader by the door.' },
+      { label: 'Wellness rooms available', detail: 'Two private rooms on Floor 3 (West wing) for nursing or quiet time.' },
+      { label: 'Accessible restrooms', detail: 'Located on every floor near the main elevators.' },
+    ],
+    contacts: [
+      { name: 'Facilities', role: 'Cleanliness or supplies', channel: 'facilities@optum.com' },
+    ],
+  },
+  {
+    id: 'lounge',
+    label: 'Lounge',
+    icon: Heart,
+    x: 55,
+    y: 75,
+    description: 'Bean bags, foosball, and a quiet reading nook.',
+    essentials: [
+      { label: 'Game checkout', detail: 'Board games on the shelf — sign in/out on the clipboard.' },
+      { label: 'Quiet zone rules', detail: 'No calls or video meetings in the reading nook.' },
+      { label: 'Phone booths nearby', detail: 'Two soundproof booths for personal calls.' },
+    ],
+    contacts: [
+      { name: 'Culture Crew', role: 'Lounge events & meetups', channel: '#culture-crew on Slack' },
+    ],
+  },
 ];
 
 function fireConfetti(intensity: 'small' | 'medium' | 'large' = 'medium') {
