@@ -626,7 +626,7 @@ export default function EngagementCulture() {
                         return (
                           <button
                             key={loc.id}
-                            onClick={() => setActiveLocation(loc.id)}
+                            onClick={() => openLocationSheet(loc.id)}
                             className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all ${
                               isActive ? 'scale-125 z-10' : 'hover:scale-110'
                             }`}
@@ -657,6 +657,14 @@ export default function EngagementCulture() {
                         <h3 className="font-semibold text-foreground">{activeSpot.label}</h3>
                       </div>
                       <p className="text-sm text-muted-foreground">{activeSpot.description}</p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 w-full"
+                        onClick={() => setSheetOpen(true)}
+                      >
+                        View essentials checklist
+                      </Button>
                     </div>
                     <div className="space-y-2">
                       <h4 className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">
@@ -667,7 +675,7 @@ export default function EngagementCulture() {
                         return (
                           <button
                             key={loc.id}
-                            onClick={() => setActiveLocation(loc.id)}
+                            onClick={() => openLocationSheet(loc.id)}
                             className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
                               loc.id === activeLocation
                                 ? 'bg-primary/10 text-primary'
