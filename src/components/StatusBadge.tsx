@@ -5,7 +5,7 @@ const statusConfig: Record<ItemStatus, { label: string; className: string; dot: 
   in_progress: { label: 'In Progress', className: 'bg-info/15 text-info', dot: 'bg-info' },
   pending: { label: 'Pending', className: 'bg-warning/15 text-warning', dot: 'bg-warning' },
   complete: { label: 'Complete', className: 'bg-success/15 text-success', dot: 'bg-success' },
-  rejected: { label: 'Rejected', className: 'bg-destructive/15 text-destructive', dot: 'bg-destructive' },
+  rejected: { label: 'Blocked', className: 'bg-destructive/15 text-destructive', dot: 'bg-destructive' },
 };
 
 export function StatusBadge({ status }: { status: ItemStatus }) {
