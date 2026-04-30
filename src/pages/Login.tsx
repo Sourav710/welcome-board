@@ -43,6 +43,9 @@ export default function LoginPage() {
   const { addLog } = useAuditLog();
   const [showSetup, setShowSetup] = useState(false);
   const [isRegistration, setIsRegistration] = useState(false);
+  const [showSsoDialog, setShowSsoDialog] = useState(false);
+  const [ssoEmail, setSsoEmail] = useState('');
+  const [ssoError, setSsoError] = useState('');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -132,9 +135,23 @@ export default function LoginPage() {
     setSetupStep(0);
   };
 
-  const handleSimulatedSSO = () => {
+  const openSsoDialog = () => {
     if (isLocked) return;
-    const ssoUser = currentUser;
+    setSsoEmail('');
+    setSsoError('');
+    setShowSsoDialog(true);
+  };
+
+  const handleSimulatedSSO = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLocked) return;
+    const email = ssoEmail.trim().toLowerCase();
+    const companyEmailRegex = /^[a-z0-9._%+-]+@optum\.com$/i;
+    if (!companyEmailRegex.test(email)) {
+      setSsoError('Please use your company email (must end in @optum.com).');
+      return;
+    }
+    const ssoUser = { ...currentUser, email };
     localStorage.setItem('loggedInUser', JSON.stringify(ssoUser));
     localStorage.setItem('loggedInRole', 'employee');
     addLog({
@@ -143,8 +160,9 @@ export default function LoginPage() {
       userRole: 'employee',
       action: 'LOGIN',
       category: 'auth',
-      details: `${ssoUser.name} logged in via simulated SSO`,
+      details: `${ssoUser.name} logged in via simulated SSO (${email})`,
     });
+    setShowSsoDialog(false);
     toast({ title: 'SSO sign-in successful', description: 'Welcome back via Corporate SSO (simulated).' });
     navigate('/home');
   };
@@ -272,7 +290,7 @@ export default function LoginPage() {
             {/* Primary: SSO */}
             <Button
               type="button"
-              onClick={handleSimulatedSSO}
+              onClick={openSsoDialog}
               disabled={isLocked}
               className="w-full h-12 text-base font-semibold text-white border-0 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
               style={{
@@ -350,6 +368,49 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Company SSO email prompt */}
+      <Dialog open={showSsoDialog} onOpenChange={setShowSsoDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" aria-hidden="true" />
+              Sign in with Company SSO
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSimulatedSSO} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="ssoEmail">Company email</Label>
+              <Input
+                id="ssoEmail"
+                type="email"
+                autoFocus
+                value={ssoEmail}
+                onChange={(e) => { setSsoEmail(e.target.value); setSsoError(''); }}
+                placeholder="firstname.lastname@optum.com"
+                className="h-10"
+                maxLength={255}
+              />
+              <p className="text-xs text-muted-foreground">
+                Only <span className="font-medium">@optum.com</span> email addresses are allowed.
+              </p>
+            </div>
+            {ssoError && (
+              <div className="text-sm text-destructive bg-destructive/10 rounded-lg p-2.5 text-center">
+                {ssoError}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setShowSsoDialog(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Continue
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Setup Wizard (also used for registration) */}
       <Dialog open={showSetup} onOpenChange={setShowSetup}>
