@@ -290,7 +290,7 @@ export default function LoginPage() {
             {/* Primary: SSO */}
             <Button
               type="button"
-              onClick={handleSimulatedSSO}
+              onClick={openSsoDialog}
               disabled={isLocked}
               className="w-full h-12 text-base font-semibold text-white border-0 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
               style={{
