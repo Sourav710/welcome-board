@@ -249,17 +249,17 @@ export default function ChecklistItemDetail() {
                           {step.label}
                         </span>
 
-                        {/* Branch: Blocked/Rejected always visible above "In Progress" */}
+                        {/* Branch: Blocked always visible above "In Progress" */}
                         {isBranchAnchor && (
                           <div className="absolute bottom-full left-1/2 mb-1 flex -translate-x-1/2 flex-col items-center">
                             <span className={`w-20 text-center text-xs leading-tight ${isRejected ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                              Blocked /<br />Rejected
+                              Blocked
                             </span>
                             <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all ${
                               isRejected
                                 ? 'bg-destructive text-destructive-foreground border-destructive shadow-sm'
                                 : 'bg-muted text-muted-foreground border-border border-dashed'
-                            } mt-1.5`} aria-label="Blocked / Rejected">
+                            } mt-1.5`} aria-label="Blocked">
                               <Ban className="w-4 h-4" aria-hidden="true" />
                             </div>
                             <div className={`w-0.5 h-4 ${isRejected ? 'bg-destructive' : 'bg-border'}`} aria-hidden="true" />
@@ -375,7 +375,7 @@ export default function ChecklistItemDetail() {
                   <SelectItem value="not_started">Not Started</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="complete">Completed</SelectItem>
-                  <SelectItem value="rejected">Blocked / Rejected</SelectItem>
+                  <SelectItem value="rejected">Blocked</SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex gap-2">
