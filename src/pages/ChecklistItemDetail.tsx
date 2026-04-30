@@ -298,6 +298,7 @@ export default function ChecklistItemDetail() {
                             req.status === 'complete' ? 'bg-success border-success' :
                             req.status === 'in_progress' ? 'bg-primary border-primary' :
                             req.status === 'pending' ? 'bg-warning border-warning' :
+                            req.status === 'rejected' ? 'bg-destructive border-destructive' :
                             'bg-muted border-border'
                           }`} aria-hidden="true" />
                           <div className="bg-accent/30 border rounded-lg p-3">
