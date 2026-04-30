@@ -342,7 +342,6 @@ export default function ChecklistItemDetail() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="not_started">Not Started</SelectItem>
-                  <SelectItem value="pending">Submitted / Pending</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="complete">Completed</SelectItem>
                   <SelectItem value="rejected">Blocked / Rejected</SelectItem>
