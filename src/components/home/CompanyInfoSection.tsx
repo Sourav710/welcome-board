@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Heart, Users, Building2 } from 'lucide-react';
+import { Sparkles, Heart, Users, Target, Lightbulb } from 'lucide-react';
 import { businessUnits } from '@/data/companyData';
 
 export function CompanyInfoSection() {
