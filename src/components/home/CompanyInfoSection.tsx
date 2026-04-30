@@ -10,7 +10,7 @@ export function CompanyInfoSection() {
     <section className="relative py-20 px-6 max-w-7xl mx-auto">
       <div className="text-center mb-12 animate-fade-in">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          About Optum
+          About TIE
         </h2>
         <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
           Get to know who we are, what drives us, and where you fit in.
@@ -69,29 +69,31 @@ export function CompanyInfoSection() {
           </div>
         </div>
 
-        {/* Card 3: Business Units */}
+        {/* Card 3: In-House Tools */}
         <div className="group relative rounded-3xl p-6 bg-white/70 dark:bg-card/70 backdrop-blur-xl border border-white/40 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-emerald-500 flex items-center justify-center text-white shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform">
               <Users className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Business Units</h3>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {businessUnits.map((bu) => (
-                <button
-                  key={bu.id}
-                  onClick={() => setActiveUnit(bu.id)}
-                  className={`px-3 py-1 text-xs font-semibold rounded-full border transition-all ${bu.pillBg} ${activeUnit === bu.id ? 'ring-2 ring-offset-1 ring-offset-background scale-105' : 'opacity-70 hover:opacity-100'}`}
+            <h3 className="text-xl font-bold mb-3">In-House Tools</h3>
+            <div className="space-y-2 text-xs">
+              {[
+                { name: 'One-I', desc: 'Inventory Management Platform' },
+                { name: 'Automac', desc: 'Touchless Automation' },
+                { name: 'Test Framework', desc: 'Reusable test automation' },
+                { name: 'Data Framework', desc: 'Automated data creation' },
+                { name: 'Doc Library', desc: 'Standardised document library' },
+              ].map((tool) => (
+                <div
+                  key={tool.name}
+                  className="flex items-start gap-2 p-2 rounded-xl bg-orange-500/5 hover:bg-orange-500/10 hover:scale-[1.02] transition-all cursor-pointer border border-orange-500/10"
                 >
-                  {bu.name}
-                </button>
-              ))}
-            </div>
-            <div className="text-xs space-y-1 animate-fade-in" key={activeUnit}>
-              {businessUnits.find((b) => b.id === activeUnit)?.departments.map((d) => (
-                <div key={d} className="flex items-center gap-2 text-muted-foreground">
-                  <span className="w-1 h-1 rounded-full bg-current" />{d}
+                  <span className="w-1.5 h-1.5 mt-1.5 rounded-full bg-gradient-to-br from-orange-500 to-emerald-500 flex-shrink-0" />
+                  <div>
+                    <div className="font-semibold text-foreground">{tool.name}</div>
+                    <div className="text-muted-foreground text-[11px]">{tool.desc}</div>
+                  </div>
                 </div>
               ))}
             </div>
