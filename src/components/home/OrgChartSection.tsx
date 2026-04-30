@@ -149,11 +149,6 @@ function PodCard({ p }: { p: PodInfo }) {
         </div>
 
         <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">{p.name}</h4>
-
-        <span className={`mt-2 inline-block px-3 py-0.5 rounded-full ${p.accentClass} text-white text-[10px] font-semibold shadow-sm`}>
-          Led by {p.owner}
-        </span>
-
         <p className={`text-xs text-muted-foreground mt-3 leading-relaxed transition-all duration-300 ${expanded ? '' : 'line-clamp-3'}`}>
           {p.focus}
         </p>
