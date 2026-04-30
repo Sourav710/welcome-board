@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Mail, MapPin, Users, Search } from 'lucide-react';
+import { Mail, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useOrgChart, type ManagerInfo, type PodInfo } from '@/hooks/useOrgChart';
