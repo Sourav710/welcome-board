@@ -18,31 +18,46 @@ export function CompanyInfoSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1: Overview */}
+        {/* Card 1: Strategic Goals */}
         <div
-          onMouseEnter={() => setHovered('overview')}
+          onMouseEnter={() => setHovered('goals')}
           onMouseLeave={() => setHovered(null)}
           className="group relative rounded-3xl p-6 bg-white/70 dark:bg-card/70 backdrop-blur-xl border border-white/40 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform">
-              <Building2 className="w-7 h-7" />
+              <Target className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Company Overview</h3>
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 italic mb-3">
-              "Empowering Health Through Innovation"
-            </p>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-2 rounded-lg bg-blue-500/10"><div className="font-bold text-base">2011</div><div className="text-muted-foreground">Founded</div></div>
-              <div className="p-2 rounded-lg bg-blue-500/10"><div className="font-bold text-base">300K+</div><div className="text-muted-foreground">Employees</div></div>
-              <div className="p-2 rounded-lg bg-blue-500/10"><div className="font-bold text-base">150+</div><div className="text-muted-foreground">Locations</div></div>
+            <h3 className="text-xl font-bold mb-3">Strategic Goals</h3>
+            <div className="space-y-3">
+              {[
+                {
+                  icon: Users,
+                  title: 'Community Collaboration',
+                  desc: 'Foster knowledge sharing and networking among testing professionals worldwide for collective growth.',
+                  color: 'from-blue-500 to-cyan-500',
+                  bg: 'bg-blue-500/5 border-blue-500/15',
+                },
+                {
+                  icon: Lightbulb,
+                  title: 'Innovation Leadership',
+                  desc: 'Drive innovation in testing methodologies and best practices across the industry to stay ahead.',
+                  color: 'from-cyan-500 to-teal-500',
+                  bg: 'bg-cyan-500/5 border-cyan-500/15',
+                },
+              ].map((g) => (
+                <div key={g.title} className={`flex items-start gap-3 p-3 rounded-xl border ${g.bg} hover:scale-[1.02] transition-transform cursor-pointer`}>
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${g.color} flex items-center justify-center text-white flex-shrink-0 shadow-md`}>
+                    <g.icon className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">{g.title}</div>
+                    <div className="text-[11px] text-muted-foreground leading-relaxed">{g.desc}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-            {hovered === 'overview' && (
-              <div className="mt-4 text-xs text-muted-foreground animate-fade-in">
-                Optum is a leading information and technology-enabled health services business dedicated to helping make the health system work better for everyone.
-              </div>
-            )}
           </div>
         </div>
 
