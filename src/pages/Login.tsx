@@ -43,6 +43,9 @@ export default function LoginPage() {
   const { addLog } = useAuditLog();
   const [showSetup, setShowSetup] = useState(false);
   const [isRegistration, setIsRegistration] = useState(false);
+  const [showSsoDialog, setShowSsoDialog] = useState(false);
+  const [ssoEmail, setSsoEmail] = useState('');
+  const [ssoError, setSsoError] = useState('');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
