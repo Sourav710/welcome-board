@@ -160,8 +160,9 @@ export default function LoginPage() {
       userRole: 'employee',
       action: 'LOGIN',
       category: 'auth',
-      details: `${ssoUser.name} logged in via simulated SSO`,
+      details: `${ssoUser.name} logged in via simulated SSO (${email})`,
     });
+    setShowSsoDialog(false);
     toast({ title: 'SSO sign-in successful', description: 'Welcome back via Corporate SSO (simulated).' });
     navigate('/home');
   };
