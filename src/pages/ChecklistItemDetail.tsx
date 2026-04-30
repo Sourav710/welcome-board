@@ -274,7 +274,7 @@ export default function ChecklistItemDetail() {
                 })}
               </div>
               {status === 'rejected' && (
-                <p className="text-xs text-muted-foreground mt-10 text-center">
+                <p className="text-xs text-muted-foreground mt-4 text-center">
                   This task is currently blocked. Resolve the blocker and update the status to resume the process.
                 </p>
               )}
