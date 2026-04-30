@@ -220,33 +220,61 @@ export default function ChecklistItemDetail() {
             {/* Status timeline */}
             <div className="bg-card border rounded-xl p-6">
               <h3 className="text-sm font-semibold text-foreground mb-5">Status Timeline</h3>
-              <div className="flex items-center justify-between">
-                {statusSteps.map((step, i) => (
-                  <div key={step.key} className="flex items-center flex-1">
-                    <div className="flex flex-col items-center">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium border-2 transition-all ${
-                        i <= currentStepIndex
-                          ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                          : 'bg-muted text-muted-foreground border-border'
-                      }`} aria-label={`Step ${i + 1}: ${step.label} - ${i <= currentStepIndex ? 'completed' : 'pending'}`}>
-                        {i < currentStepIndex ? (
-                          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                        ) : i === currentStepIndex ? (
-                          <Clock className="w-4 h-4" aria-hidden="true" />
-                        ) : (
-                          i + 1
+              <div className="flex items-start justify-between">
+                {statusSteps.map((step, i) => {
+                  const isRejected = status === 'rejected';
+                  const effectiveCurrent = isRejected ? 1 : currentStepIndex; // anchor branch at "In Progress"
+                  const reached = !isRejected && i <= currentStepIndex;
+                  const isBranchAnchor = isRejected && i === 1;
+                  return (
+                    <div key={step.key} className="flex items-start flex-1">
+                      <div className="flex flex-col items-center relative">
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium border-2 transition-all ${
+                          reached
+                            ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                            : isBranchAnchor
+                              ? 'bg-warning text-warning-foreground border-warning shadow-sm'
+                              : 'bg-muted text-muted-foreground border-border'
+                        }`} aria-label={`Step ${i + 1}: ${step.label}`}>
+                          {!isRejected && i < currentStepIndex ? (
+                            <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+                          ) : !isRejected && i === currentStepIndex ? (
+                            <Clock className="w-4 h-4" aria-hidden="true" />
+                          ) : isBranchAnchor ? (
+                            <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                          ) : (
+                            i + 1
+                          )}
+                        </div>
+                        <span className={`text-xs mt-1.5 text-center ${reached || isBranchAnchor ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                          {step.label}
+                        </span>
+
+                        {/* Branch: Blocked/Rejected hangs off the "In Progress" node */}
+                        {isBranchAnchor && (
+                          <div className="absolute top-9 left-1/2 flex flex-col items-center -translate-x-1/2 mt-1">
+                            <div className="w-0.5 h-4 bg-destructive" aria-hidden="true" />
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center border-2 bg-destructive text-destructive-foreground border-destructive shadow-sm">
+                              <Ban className="w-4 h-4" aria-hidden="true" />
+                            </div>
+                            <span className="text-xs mt-1.5 text-center text-destructive font-medium whitespace-nowrap">
+                              Blocked / Rejected
+                            </span>
+                          </div>
                         )}
                       </div>
-                      <span className={`text-xs mt-1.5 text-center ${i <= currentStepIndex ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                        {step.label}
-                      </span>
+                      {i < statusSteps.length - 1 && (
+                        <div className={`flex-1 h-0.5 mx-2 mt-[1.125rem] rounded-full ${!isRejected && i < currentStepIndex ? 'bg-primary' : 'bg-border'}`} aria-hidden="true" />
+                      )}
                     </div>
-                    {i < statusSteps.length - 1 && (
-                      <div className={`flex-1 h-0.5 mx-2 mt-[-1.25rem] rounded-full ${i < currentStepIndex ? 'bg-primary' : 'bg-border'}`} aria-hidden="true" />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+              {status === 'rejected' && (
+                <p className="text-xs text-muted-foreground mt-10 text-center">
+                  This task is currently blocked. Resolve the blocker and update the status to resume the process.
+                </p>
+              )}
             </div>
 
             {/* Tickets Timeline */}
