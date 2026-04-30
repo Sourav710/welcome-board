@@ -218,7 +218,7 @@ export default function ChecklistItemDetail() {
             </div>
 
             {/* Status timeline */}
-            <div className="bg-card border rounded-xl p-6">
+            <div className="bg-card border rounded-xl p-6 pb-24">
               <h3 className="text-sm font-semibold text-foreground mb-5">Status Timeline</h3>
               <div className="flex items-start justify-between">
                 {statusSteps.map((step, i) => {
