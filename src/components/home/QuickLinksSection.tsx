@@ -10,7 +10,7 @@ export function QuickLinksSection() {
         <p className="text-muted-foreground mt-3">Everything you need, one tap away.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {quickLinks.map((link) => (
           <a
             key={link.title}
