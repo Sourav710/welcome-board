@@ -135,9 +135,23 @@ export default function LoginPage() {
     setSetupStep(0);
   };
 
-  const handleSimulatedSSO = () => {
+  const openSsoDialog = () => {
     if (isLocked) return;
-    const ssoUser = currentUser;
+    setSsoEmail('');
+    setSsoError('');
+    setShowSsoDialog(true);
+  };
+
+  const handleSimulatedSSO = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLocked) return;
+    const email = ssoEmail.trim().toLowerCase();
+    const companyEmailRegex = /^[a-z0-9._%+-]+@optum\.com$/i;
+    if (!companyEmailRegex.test(email)) {
+      setSsoError('Please use your company email (must end in @optum.com).');
+      return;
+    }
+    const ssoUser = { ...currentUser, email };
     localStorage.setItem('loggedInUser', JSON.stringify(ssoUser));
     localStorage.setItem('loggedInRole', 'employee');
     addLog({
