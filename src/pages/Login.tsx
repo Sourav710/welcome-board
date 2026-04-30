@@ -369,6 +369,49 @@ export default function LoginPage() {
         </div>
       </div>
 
+      {/* Company SSO email prompt */}
+      <Dialog open={showSsoDialog} onOpenChange={setShowSsoDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" aria-hidden="true" />
+              Sign in with Company SSO
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSimulatedSSO} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="ssoEmail">Company email</Label>
+              <Input
+                id="ssoEmail"
+                type="email"
+                autoFocus
+                value={ssoEmail}
+                onChange={(e) => { setSsoEmail(e.target.value); setSsoError(''); }}
+                placeholder="firstname.lastname@optum.com"
+                className="h-10"
+                maxLength={255}
+              />
+              <p className="text-xs text-muted-foreground">
+                Only <span className="font-medium">@optum.com</span> email addresses are allowed.
+              </p>
+            </div>
+            {ssoError && (
+              <div className="text-sm text-destructive bg-destructive/10 rounded-lg p-2.5 text-center">
+                {ssoError}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setShowSsoDialog(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1">
+                Continue
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* Setup Wizard (also used for registration) */}
       <Dialog open={showSetup} onOpenChange={setShowSetup}>
         <DialogContent className="sm:max-w-md">
