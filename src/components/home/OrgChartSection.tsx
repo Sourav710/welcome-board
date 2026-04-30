@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Mail, MapPin, Users, Search } from 'lucide-react';
+import { Mail, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useOrgChart, type ManagerInfo, type PodInfo } from '@/hooks/useOrgChart';
@@ -94,16 +94,6 @@ function ManagerCard({ m }: { m: ManagerInfo }) {
         <p className={`text-xs text-muted-foreground mt-3 leading-relaxed transition-all duration-300 ${expanded ? '' : 'line-clamp-3'}`}>
           {m.responsibilities}
         </p>
-
-        {/* Stat pills with color */}
-        <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full ${m.accentClass} bg-opacity-15 text-[11px] font-semibold text-white shadow-sm`}>
-            <Users className="w-3 h-3" />{m.headcount} FTEs
-          </span>
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-[11px] font-semibold text-foreground">
-            <MapPin className="w-3 h-3" />{m.location}
-          </span>
-        </div>
 
         {/* Expand hint + email — slides up on hover */}
         <div className="mt-4 flex items-center gap-3 opacity-70 group-hover:opacity-100 transition-opacity">
