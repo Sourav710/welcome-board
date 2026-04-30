@@ -223,16 +223,15 @@ export default function ChecklistItemDetail() {
               <div className="flex items-start justify-between">
                 {statusSteps.map((step, i) => {
                   const isRejected = status === 'rejected';
-                  const effectiveCurrent = isRejected ? 1 : currentStepIndex; // anchor branch at "In Progress"
                   const reached = !isRejected && i <= currentStepIndex;
-                  const isBranchAnchor = isRejected && i === 1;
+                  const isBranchAnchor = i === 1; // always show branch off "In Progress"
                   return (
                     <div key={step.key} className="flex items-start flex-1">
                       <div className="flex flex-col items-center relative">
                         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium border-2 transition-all ${
                           reached
                             ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                            : isBranchAnchor
+                            : isRejected && isBranchAnchor
                               ? 'bg-warning text-warning-foreground border-warning shadow-sm'
                               : 'bg-muted text-muted-foreground border-border'
                         }`} aria-label={`Step ${i + 1}: ${step.label}`}>
@@ -240,24 +239,28 @@ export default function ChecklistItemDetail() {
                             <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
                           ) : !isRejected && i === currentStepIndex ? (
                             <Clock className="w-4 h-4" aria-hidden="true" />
-                          ) : isBranchAnchor ? (
+                          ) : isRejected && isBranchAnchor ? (
                             <AlertCircle className="w-4 h-4" aria-hidden="true" />
                           ) : (
                             i + 1
                           )}
                         </div>
-                        <span className={`text-xs mt-1.5 text-center ${reached || isBranchAnchor ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                        <span className={`text-xs mt-1.5 text-center ${reached || (isRejected && isBranchAnchor) ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
                           {step.label}
                         </span>
 
-                        {/* Branch: Blocked/Rejected hangs off the "In Progress" node */}
+                        {/* Branch: Blocked/Rejected always visible, hangs off "In Progress" */}
                         {isBranchAnchor && (
                           <div className="absolute top-9 left-1/2 flex flex-col items-center -translate-x-1/2 mt-1">
-                            <div className="w-0.5 h-4 bg-destructive" aria-hidden="true" />
-                            <div className="w-9 h-9 rounded-full flex items-center justify-center border-2 bg-destructive text-destructive-foreground border-destructive shadow-sm">
+                            <div className={`w-0.5 h-4 ${isRejected ? 'bg-destructive' : 'bg-border'}`} aria-hidden="true" />
+                            <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all ${
+                              isRejected
+                                ? 'bg-destructive text-destructive-foreground border-destructive shadow-sm'
+                                : 'bg-muted text-muted-foreground border-border border-dashed'
+                            }`} aria-label="Blocked / Rejected">
                               <Ban className="w-4 h-4" aria-hidden="true" />
                             </div>
-                            <span className="text-xs mt-1.5 text-center text-destructive font-medium whitespace-nowrap">
+                            <span className={`text-xs mt-1.5 text-center whitespace-nowrap ${isRejected ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                               Blocked / Rejected
                             </span>
                           </div>
