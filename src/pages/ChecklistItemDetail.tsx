@@ -218,7 +218,7 @@ export default function ChecklistItemDetail() {
             </div>
 
             {/* Status timeline */}
-            <div className="bg-card border rounded-xl p-6">
+            <div className="bg-card border rounded-xl p-6 pb-24">
               <h3 className="text-sm font-semibold text-foreground mb-5">Status Timeline</h3>
               <div className="flex items-start justify-between">
                 {statusSteps.map((step, i) => {
@@ -274,7 +274,7 @@ export default function ChecklistItemDetail() {
                 })}
               </div>
               {status === 'rejected' && (
-                <p className="text-xs text-muted-foreground mt-10 text-center">
+                <p className="text-xs text-muted-foreground mt-4 text-center">
                   This task is currently blocked. Resolve the blocker and update the status to resume the process.
                 </p>
               )}
