@@ -218,8 +218,8 @@ export default function ChecklistItemDetail() {
             </div>
 
             {/* Status timeline */}
-            <div className="bg-card border rounded-xl p-6 pb-24">
-              <h3 className="text-sm font-semibold text-foreground mb-5">Status Timeline</h3>
+            <div className="bg-card border rounded-xl p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-16">Status Timeline</h3>
               <div className="flex items-start justify-between">
                 {statusSteps.map((step, i) => {
                   const isRejected = status === 'rejected';
@@ -249,20 +249,20 @@ export default function ChecklistItemDetail() {
                           {step.label}
                         </span>
 
-                        {/* Branch: Blocked/Rejected always visible, hangs off "In Progress" */}
+                        {/* Branch: Blocked/Rejected always visible above "In Progress" */}
                         {isBranchAnchor && (
-                          <div className="absolute top-9 left-1/2 flex flex-col items-center -translate-x-1/2 mt-1">
-                            <div className={`w-0.5 h-4 ${isRejected ? 'bg-destructive' : 'bg-border'}`} aria-hidden="true" />
+                          <div className="absolute bottom-full left-1/2 mb-1 flex -translate-x-1/2 flex-col items-center">
+                            <span className={`w-20 text-center text-xs leading-tight ${isRejected ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                              Blocked /<br />Rejected
+                            </span>
                             <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all ${
                               isRejected
                                 ? 'bg-destructive text-destructive-foreground border-destructive shadow-sm'
                                 : 'bg-muted text-muted-foreground border-border border-dashed'
-                            }`} aria-label="Blocked / Rejected">
+                            } mt-1.5`} aria-label="Blocked / Rejected">
                               <Ban className="w-4 h-4" aria-hidden="true" />
                             </div>
-                            <span className={`text-xs mt-1.5 text-center whitespace-nowrap ${isRejected ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                              Blocked / Rejected
-                            </span>
+                            <div className={`w-0.5 h-4 ${isRejected ? 'bg-destructive' : 'bg-border'}`} aria-hidden="true" />
                           </div>
                         )}
                       </div>
