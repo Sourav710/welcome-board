@@ -99,6 +99,7 @@ export function CompanyInfoSection() {
             </div>
           </div>
         </div>
+      </div>
     </section>
   );
 }
