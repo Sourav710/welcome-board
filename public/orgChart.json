@@ -35,7 +35,7 @@
       "id": "m2",
       "name": "Dheeraj Mishra",
       "title": "Senior Manager",
-      "team": "Product Management COE",
+      "team": "Product Capability Center",
       "email": "dheeraj.mishra@optum.com",
       "initials": "DM",
       "accentClass": "bg-gradient-to-r from-pink-500 to-fuchsia-500",
@@ -80,7 +80,7 @@
     },
     {
       "id": "p2",
-      "name": "Product Management COE",
+      "name": "Product Capability Center",
       "emoji": "📦",
       "owner": "Dheeraj Mishra",
       "accentClass": "bg-gradient-to-r from-pink-500 to-fuchsia-500",

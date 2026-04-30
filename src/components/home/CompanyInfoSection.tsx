@@ -10,7 +10,7 @@ export function CompanyInfoSection() {
     <section className="relative py-20 px-6 max-w-7xl mx-auto">
       <div className="text-center mb-12 animate-fade-in">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          About Optum
+          About TIE
         </h2>
         <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
           Get to know who we are, what drives us, and where you fit in.
