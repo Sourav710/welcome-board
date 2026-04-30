@@ -18,9 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'not_started', label: 'Not Started' },
-  { key: 'pending', label: 'Submitted' },
-  { key: 'in_progress', label: 'In Review' },
-  { key: 'complete', label: 'Approved' },
+  { key: 'in_progress', label: 'In Progress' },
+  { key: 'complete', label: 'Completed' },
 ];
 
 function getLoggedInUser() {
