@@ -124,10 +124,8 @@ export const departments: DepartmentInfo[] = [
 ];
 
 export const quickLinks = [
-  { emoji: '📚', title: 'Employee Handbook', url: 'https://uhg.edcast.com/home', color: 'from-blue-400 to-blue-600' },
   { emoji: '🎓', title: 'Training Portal', url: 'https://uhg.edcast.com/home', color: 'from-purple-400 to-purple-600' },
   { emoji: '💼', title: 'Benefits & Payroll', url: '#', color: 'from-emerald-400 to-emerald-600' },
-  { emoji: '🏥', title: 'Health Insurance', url: '#', color: 'from-rose-400 to-rose-600' },
   { emoji: '🌐', title: 'Internal Wiki', url: '#', color: 'from-cyan-400 to-cyan-600' },
   { emoji: '🎫', title: 'Submit IT Ticket', url: 'https://servicenow.optum.com', color: 'from-orange-400 to-orange-600' },
   { emoji: '📅', title: 'Book Meeting Rooms', url: '#', color: 'from-fuchsia-400 to-fuchsia-600' },
