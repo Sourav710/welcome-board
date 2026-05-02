@@ -212,6 +212,7 @@ export default function EmployeeDashboard() {
                     <p className="text-muted-foreground">helpdesk@company.com</p>
                   </div>
                 </div>
+              </div>
             </div>
 
             <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
