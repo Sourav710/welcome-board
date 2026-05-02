@@ -212,7 +212,39 @@ export default function EmployeeDashboard() {
                     <p className="text-muted-foreground">helpdesk@company.com</p>
                   </div>
                 </div>
+            </div>
+
+            <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 opacity-20 blur-2xl" />
+              <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
+                <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </span>
+                <span className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent font-bold">Quick Links & Resources</span>
+              </h3>
+              <div className="relative overflow-hidden group/m" style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+                <div className="flex gap-2 w-max animate-marquee-x">
+                  {[...quickLinks, ...quickLinks].map((link, idx) => (
+                    <a
+                      key={`${link.title}-${idx}`}
+                      href={link.url}
+                      target={link.url.startsWith('http') ? '_blank' : undefined}
+                      rel="noreferrer"
+                      title={link.title}
+                      className="shrink-0 w-28 group/q relative rounded-xl overflow-hidden p-3 text-center bg-card border hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${link.color} opacity-0 group-hover/q:opacity-100 transition-opacity`} />
+                      <div className="relative">
+                        <div className={`w-10 h-10 mx-auto rounded-xl bg-gradient-to-br ${link.color} flex items-center justify-center text-xl shadow-md mb-1.5 group-hover/q:scale-110 transition-transform`}>
+                          {link.emoji}
+                        </div>
+                        <div className="text-[10px] font-semibold leading-tight text-foreground group-hover/q:text-white transition-colors line-clamp-2">{link.title}</div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </div>
+            </div>
             </div>
             </div>
           </div>
