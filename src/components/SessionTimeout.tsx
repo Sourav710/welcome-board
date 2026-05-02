@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Clock } from 'lucide-react';
 
@@ -72,6 +72,9 @@ export function SessionTimeoutProvider({ children }: { children: React.ReactNode
               <Clock className="w-5 h-5 text-warning" aria-hidden="true" />
               Session Expiring
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Your session is about to expire due to inactivity.
+            </DialogDescription>
           </DialogHeader>
           <div className="text-center py-4">
             <p className="text-4xl font-bold text-foreground mb-2">
