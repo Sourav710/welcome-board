@@ -38,7 +38,6 @@ export default function Home() {
         <CompanyInfoSection />
         <OrgChartSection />
         <DepartmentTabsSection />
-        <QuickLinksSection />
         <EmergencyFooter />
       </div>
     </AppLayout>
