@@ -267,7 +267,7 @@ function SectionAccordion({
   onMarkDone: (id: string) => void;
   onViewItem: (id: string) => void;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const completed = items.filter((i) => i.status === 'complete').length;
   const sectionProgress = Math.round((completed / items.length) * 100);
 
