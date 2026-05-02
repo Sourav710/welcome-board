@@ -5,7 +5,6 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { CompanyInfoSection } from '@/components/home/CompanyInfoSection';
 import { OrgChartSection } from '@/components/home/OrgChartSection';
 import { DepartmentTabsSection } from '@/components/home/DepartmentTabsSection';
-import { QuickLinksSection } from '@/components/home/QuickLinksSection';
 import { EmergencyFooter } from '@/components/home/EmergencyFooter';
 import { useChecklist } from '@/context/ChecklistContext';
 import { currentUser } from '@/data/mockData';
@@ -39,7 +38,6 @@ export default function Home() {
         <CompanyInfoSection />
         <OrgChartSection />
         <DepartmentTabsSection />
-        <QuickLinksSection />
         <EmergencyFooter />
       </div>
     </AppLayout>
