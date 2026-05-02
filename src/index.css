@@ -143,3 +143,15 @@
   0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.5; }
   50% { transform: translateY(-30px) translateX(15px); opacity: 0.9; }
 }
+
+@keyframes marquee-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-x {
+  animation: marquee-x 22s linear infinite;
+}
+.animate-marquee-x:hover {
+  animation-play-state: paused;
+}
