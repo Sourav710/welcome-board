@@ -9,6 +9,7 @@ import { NotesProvider } from "@/context/NotesContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SkipNav } from "@/components/SkipNav";
 import { SessionTimeoutProvider } from "@/components/SessionTimeout";
+import { SlaNotificationProvider } from "@/context/SlaNotificationProvider";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
@@ -29,6 +30,7 @@ const App = () => (
         <ChecklistProvider>
           <AuditLogProvider>
           <NotesProvider>
+            <SlaNotificationProvider>
             <SkipNav />
             <Toaster />
             <Sonner />
@@ -49,6 +51,7 @@ const App = () => (
                 </Routes>
               </SessionTimeoutProvider>
             </BrowserRouter>
+            </SlaNotificationProvider>
           </NotesProvider>
           </AuditLogProvider>
         </ChecklistProvider>
