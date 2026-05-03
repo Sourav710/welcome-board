@@ -7,11 +7,12 @@ import { ProgressRing } from '@/components/ProgressRing';
 import { StatsCard } from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { currentUser, managerUser } from '@/data/mockData';
 import { quickLinks } from '@/data/companyData';
 import { useChecklist } from '@/context/ChecklistContext';
 import type { ChecklistItem, ChecklistSection, User } from '@/types/onboarding';
-import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle, Users, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, CheckCircle2, ShieldAlert, Clock, ListChecks, AlertTriangle, Users, Sparkles, PanelLeftOpen, Building2 } from 'lucide-react';
 
 const sectionLabels: Record<ChecklistSection, string> = {
   Access: 'Access & Applications',
