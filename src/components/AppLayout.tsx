@@ -42,7 +42,7 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
               <span className="text-primary-foreground text-xs font-bold" aria-hidden="true">♚</span>
             </div>
             <span className="text-base font-bold tracking-tight text-foreground uppercase">
-              Check<span className="text-primary font-bold">mate</span>
+              Onboarding<span className="text-primary font-bold">Hub</span>
             </span>
           </Link>
           <nav className="flex gap-0.5" aria-label="Main navigation">
