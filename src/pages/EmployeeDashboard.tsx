@@ -110,10 +110,6 @@ export default function EmployeeDashboard() {
                 </div>
               </div>
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs mb-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Active Onboarding
-                </div>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-pink-100 to-orange-100 bg-clip-text text-transparent">
                   Welcome, {activeUser.name.split(' ')[0]}! 👋
                 </h1>
