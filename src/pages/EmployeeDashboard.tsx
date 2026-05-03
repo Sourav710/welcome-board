@@ -64,8 +64,10 @@ export default function EmployeeDashboard() {
 
   const todaysPriorities = items
     .filter((i) => i.status !== 'complete' && i.status !== 'rejected')
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-    .slice(0, 5);
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+
+  const [showAllPriorities, setShowAllPriorities] = useState(false);
+  const visiblePriorities = showAllPriorities ? todaysPriorities : todaysPriorities.slice(0, 3);
 
   // Motivational message based on progress
   const motivation =
@@ -163,9 +165,10 @@ export default function EmployeeDashboard() {
                   <Clock className="w-4 h-4 text-white" />
                 </span>
                 <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">Today's Priorities</span>
+                <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow">{todaysPriorities.length}</span>
               </h3>
               <div className="relative space-y-2">
-                {todaysPriorities.map((item) => {
+                {visiblePriorities.map((item) => {
                   const isOverdue = new Date(item.dueDate) < new Date();
                   return (
                     <div
@@ -188,6 +191,14 @@ export default function EmployeeDashboard() {
                   );
                 })}
               </div>
+              {todaysPriorities.length > 3 && (
+                <button
+                  onClick={() => setShowAllPriorities((v) => !v)}
+                  className="relative mt-3 w-full text-xs font-semibold text-center py-1.5 rounded-lg bg-gradient-to-r from-orange-400/10 to-pink-500/10 hover:from-orange-400/20 hover:to-pink-500/20 text-orange-600 dark:text-orange-300 transition-colors"
+                >
+                  {showAllPriorities ? 'Show less' : `Show more (${todaysPriorities.length - 3})`}
+                </button>
+              )}
             </div>
 
             <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
