@@ -210,20 +210,26 @@ export default function EmployeeDashboard() {
                 <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent font-bold">Quick Contacts</span>
               </h3>
               <div className="relative space-y-2 text-xs">
-                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c">
+                <a
+                  href={`mailto:gourav.banathia@optum.com?subject=${encodeURIComponent(`Onboarding support for ${activeUser.name}`)}&body=${encodeURIComponent(`Hi Gourav,%0D%0A%0D%0AI need assistance with my onboarding tasks.%0D%0A%0D%0AThanks,%0D%0A${activeUser.name}`)}`}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c"
+                >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">GB</div>
                   <div>
                     <p className="font-semibold text-foreground">Gourav Banathia</p>
                     <p className="text-muted-foreground">Manager</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c">
+                </a>
+                <a
+                  href={`mailto:helpdesk@company.com?subject=${encodeURIComponent(`IT support request from ${activeUser.name}`)}&body=${encodeURIComponent(`Hello IT Help Desk,%0D%0A%0D%0AI need assistance with the following:%0D%0A%0D%0A[Describe your issue]%0D%0A%0D%0AThanks,%0D%0A${activeUser.name}`)}`}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer group/c"
+                >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">IT</div>
                   <div>
                     <p className="font-semibold text-foreground">IT Help Desk</p>
                     <p className="text-muted-foreground">helpdesk@company.com</p>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
 
