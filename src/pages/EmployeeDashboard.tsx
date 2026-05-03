@@ -119,7 +119,7 @@ export default function EmployeeDashboard() {
                 </h1>
                 <p className="text-sm md:text-base text-white/90 mt-1 font-medium">{motivation}</p>
                 <div className="flex flex-wrap items-center gap-2 mt-3 text-xs">
-                  <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">🎯 {activeUser.employeeRole}</span>
+                  <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">👨🏻‍💻 {activeUser.employeeRole}</span>
                   <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">📁 {activeUser.project}</span>
                   <span className="bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full font-medium">📅 {activeUser.startDate}</span>
                 </div>
