@@ -192,7 +192,7 @@ export default function LoginPage() {
         category: 'auth',
         details: `New profile created via registration flow`,
       });
-      toast({ title: 'Profile created', description: 'Welcome to Checkmate!' });
+      toast({ title: 'Profile created', description: 'Welcome to OnboardingHub!' });
     }
     navigate('/home');
   };
@@ -225,7 +225,7 @@ export default function LoginPage() {
               <span className="text-3xl">♚</span>
             </div>
             <span className="text-xl font-bold tracking-wide uppercase">
-              Check<span className="text-orange-200">mate</span>
+              Onboarding<span className="text-orange-200">Hub</span>
             </span>
           </div>
 
@@ -277,7 +277,7 @@ export default function LoginPage() {
               <span className="text-primary-foreground text-2xl">♚</span>
             </div>
             <h1 className="text-xl font-bold uppercase tracking-wide">
-              Check<span className="text-primary">mate</span>
+              Onboarding<span className="text-primary">Hub</span>
             </h1>
           </div>
 

@@ -21,7 +21,7 @@ export interface SlaCandidate {
   hoursUntilDue: number; // negative when overdue
 }
 
-const LEDGER_KEY = 'checkmate.sla.notified.v1';
+const LEDGER_KEY = 'onboardinghub.sla.notified.v1';
 const REMINDER_WINDOW_HOURS = 24;
 
 // ── De-dup ledger ─────────────────────────────────────────────
@@ -93,8 +93,8 @@ export function buildEmail(c: SlaCandidate): { subject: string; html: string; te
   const isBreach = trigger === 'breach';
 
   const subject = isBreach
-    ? `[CHECKMATE] SLA BREACHED — "${item.title}" is overdue`
-    : `[CHECKMATE] Reminder — "${item.title}" due in ${overdueHrs}h`;
+    ? `[ONBOARDINGHUB] SLA BREACHED — "${item.title}" is overdue`
+    : `[ONBOARDINGHUB] Reminder — "${item.title}" due in ${overdueHrs}h`;
 
   const headline = isBreach
     ? `SLA Breach: task is ${overdueHrs}h overdue`
@@ -113,8 +113,8 @@ export function buildEmail(c: SlaCandidate): { subject: string; html: string; te
     ``,
     item.description,
     ``,
-    `Please log in to CHECKMATE to update the status.`,
-    `— CHECKMATE Onboarding Hub`,
+    `Please log in to ONBOARDINGHUB to update the status.`,
+    `— ONBOARDINGHUB Onboarding Hub`,
   ].join('\n');
 
   const color = isBreach ? '#c0392b' : '#d68910';
@@ -134,7 +134,7 @@ export function buildEmail(c: SlaCandidate): { subject: string; html: string; te
         <tr><td style="padding:6px 0;color:#6b7280">Due</td><td>${fmtDate(item.dueDate)}</td></tr>
       </table>
       <p style="color:#4b5563">${item.description}</p>
-      <p style="margin-top:18px">Please log in to <b>CHECKMATE</b> to update the status.</p>
+      <p style="margin-top:18px">Please log in to <b>ONBOARDINGHUB</b> to update the status.</p>
       <p style="color:#9ca3af;font-size:12px;margin-top:24px">
         Manager has been CC'd on this notification.
       </p>
