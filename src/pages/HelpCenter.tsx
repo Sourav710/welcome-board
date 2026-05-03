@@ -24,12 +24,28 @@ export default function HelpCenter() {
   const [search, setSearch] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  const activeUser = useMemo<User>(() => {
+    try {
+      const raw = localStorage.getItem('loggedInUser');
+      if (raw) {
+        const parsed = JSON.parse(raw) as User;
+        if (parsed && parsed.role) return parsed;
+      }
+    } catch {
+      // ignore
+    }
+    const role = localStorage.getItem('loggedInRole');
+    if (role === 'manager') return managerUser;
+    if (role === 'admin') return adminUser;
+    return currentUser;
+  }, []);
+
   const filtered = faqs.filter(
     (f) => f.q.toLowerCase().includes(search.toLowerCase()) || f.a.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <AppLayout user={currentUser}>
+    <AppLayout user={activeUser}>
       <div className="max-w-4xl mx-auto px-6 py-6">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground">Help Center</h1>
