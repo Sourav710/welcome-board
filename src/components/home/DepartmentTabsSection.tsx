@@ -2,18 +2,20 @@ import { useState } from 'react';
 import { Mail, Phone, MessageSquare, MapPin } from 'lucide-react';
 import { departments } from '@/data/companyData';
 
-export function DepartmentTabsSection() {
+export function DepartmentTabsSection({ compact = false }: { compact?: boolean } = {}) {
   const [active, setActive] = useState(departments[0].id);
   const dept = departments.find((d) => d.id === active)!;
 
   return (
-    <section className="relative py-20 px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-10 animate-fade-in">
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-600 via-rose-600 to-fuchsia-600 bg-clip-text text-transparent">
-          Department Contacts
-        </h2>
-        <p className="text-muted-foreground mt-3">Reach the right team in one click.</p>
-      </div>
+    <section className={compact ? 'px-2 pb-2' : 'relative py-20 px-6 max-w-7xl mx-auto'}>
+      {!compact && (
+        <div className="text-center mb-10 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-orange-600 via-rose-600 to-fuchsia-600 bg-clip-text text-transparent">
+            Department Contacts
+          </h2>
+          <p className="text-muted-foreground mt-3">Reach the right team in one click.</p>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2 mb-6 justify-center">
         {departments.map((d) => (
