@@ -111,7 +111,7 @@ export default function EmployeeDashboard() {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-pink-100 to-orange-100 bg-clip-text text-transparent">
-                  Welcome, {activeUser.name.split(' ')[0]}! 👋
+                  Welcome, {activeUser.name.split(' ')[0]}!
                 </h1>
                 <p className="text-sm md:text-base text-white/90 mt-1 font-medium">{motivation}</p>
                 <div className="flex flex-wrap items-center gap-2 mt-3 text-xs">
