@@ -191,6 +191,14 @@ export default function EmployeeDashboard() {
                   );
                 })}
               </div>
+              {todaysPriorities.length > 3 && (
+                <button
+                  onClick={() => setShowAllPriorities((v) => !v)}
+                  className="relative mt-3 w-full text-xs font-semibold text-center py-1.5 rounded-lg bg-gradient-to-r from-orange-400/10 to-pink-500/10 hover:from-orange-400/20 hover:to-pink-500/20 text-orange-600 dark:text-orange-300 transition-colors"
+                >
+                  {showAllPriorities ? 'Show less' : `Show more (${todaysPriorities.length - 3})`}
+                </button>
+              )}
             </div>
 
             <div className="relative overflow-hidden bg-card border rounded-xl p-4 hover:shadow-lg transition-shadow">
