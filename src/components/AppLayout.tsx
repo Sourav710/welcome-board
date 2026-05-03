@@ -37,7 +37,7 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
     <div className="min-h-screen flex flex-col bg-background">
       <header className="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 px-6 py-0 flex items-center justify-between sticky top-0 z-50 h-14" role="banner">
         <div className="flex items-center gap-8">
-          <Link to="/home" className="flex items-center gap-2" aria-label="Checkmate Home">
+          <Link to="/home" className="flex items-center gap-2" aria-label="OnboardingHub Home">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground text-xs font-bold" aria-hidden="true">♚</span>
             </div>

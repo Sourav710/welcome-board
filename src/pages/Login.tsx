@@ -192,7 +192,7 @@ export default function LoginPage() {
         category: 'auth',
         details: `New profile created via registration flow`,
       });
-      toast({ title: 'Profile created', description: 'Welcome to Checkmate!' });
+      toast({ title: 'Profile created', description: 'Welcome to OnboardingHub!' });
     }
     navigate('/home');
   };
