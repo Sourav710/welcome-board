@@ -165,9 +165,10 @@ export default function EmployeeDashboard() {
                   <Clock className="w-4 h-4 text-white" />
                 </span>
                 <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">Today's Priorities</span>
+                <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow">{todaysPriorities.length}</span>
               </h3>
               <div className="relative space-y-2">
-                {todaysPriorities.map((item) => {
+                {visiblePriorities.map((item) => {
                   const isOverdue = new Date(item.dueDate) < new Date();
                   return (
                     <div
