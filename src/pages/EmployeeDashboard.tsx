@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
+import { DepartmentTabsSection } from '@/components/home/DepartmentTabsSection';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ProgressRing } from '@/components/ProgressRing';
 import { StatsCard } from '@/components/StatsCard';
@@ -249,6 +250,9 @@ export default function EmployeeDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Department Contacts */}
+        <DepartmentTabsSection />
       </div>
     </AppLayout>
   );
