@@ -64,8 +64,10 @@ export default function EmployeeDashboard() {
 
   const todaysPriorities = items
     .filter((i) => i.status !== 'complete' && i.status !== 'rejected')
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-    .slice(0, 5);
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+
+  const [showAllPriorities, setShowAllPriorities] = useState(false);
+  const visiblePriorities = showAllPriorities ? todaysPriorities : todaysPriorities.slice(0, 3);
 
   // Motivational message based on progress
   const motivation =
