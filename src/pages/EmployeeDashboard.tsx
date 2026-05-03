@@ -156,10 +156,22 @@ export default function EmployeeDashboard() {
           <SheetTrigger asChild>
             <Button
               size="icon"
-              aria-label="Open quick navigation"
-              className="fixed left-4 top-1/2 -translate-y-1/2 z-40 h-12 w-12 rounded-full shadow-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white hover:scale-110 transition-transform"
+              aria-label={overdueItems > 0 ? `Open quick navigation — ${overdueItems} overdue` : 'Open quick navigation'}
+              className={`fixed left-4 top-1/2 -translate-y-1/2 z-40 h-12 w-12 rounded-full shadow-xl text-white hover:scale-110 transition-transform ${
+                overdueItems > 0
+                  ? 'bg-gradient-to-br from-rose-500 to-red-600 ring-2 ring-rose-400/60 animate-pulse'
+                  : 'bg-gradient-to-br from-indigo-600 to-purple-600'
+              }`}
             >
               <PanelLeftOpen className="h-5 w-5" />
+              {overdueItems > 0 && (
+                <>
+                  <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow ring-2 ring-background">
+                    {overdueItems > 9 ? '9+' : overdueItems}
+                  </span>
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 opacity-75 animate-ping" />
+                </>
+              )}
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[340px] sm:w-[400px] p-0 overflow-y-auto">
