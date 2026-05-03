@@ -36,7 +36,6 @@ export default function Home() {
         <HeroSection user={activeUser} progress={progress} />
         <CompanyInfoSection />
         <OrgChartSection />
-        <DepartmentTabsSection />
         <EmergencyFooter />
       </div>
     </AppLayout>
