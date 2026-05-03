@@ -79,7 +79,7 @@ export default function EmployeeDashboard() {
     "👋 Welcome aboard — let's get started!";
 
   return (
-    <AppLayout user={activeUser} onSwitchRole={activeUser.role === 'manager' ? toggleRole : undefined}>
+    <AppLayout user={activeUser}>
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Vibrant Hero Header */}
         <div className="relative overflow-hidden rounded-2xl p-6 mb-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 animate-fade-in">
