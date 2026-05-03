@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AppLayout } from '@/components/AppLayout';
-import { currentUser } from '@/data/mockData';
+import { currentUser, managerUser, adminUser } from '@/data/mockData';
+import type { User } from '@/types/onboarding';
 import { Input } from '@/components/ui/input';
 import { Search, BookOpen, MessageCircle, FileText, ExternalLink, ChevronRight } from 'lucide-react';
 
