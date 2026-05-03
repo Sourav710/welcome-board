@@ -287,7 +287,7 @@ export default function EmployeeDashboard() {
                   <span className="bg-gradient-to-r from-fuchsia-500 to-rose-500 bg-clip-text text-transparent font-bold">Department Contacts</span>
                 </h3>
                 <div className="relative -mx-4 -mb-4">
-                  <DepartmentTabsSection />
+                  <DepartmentTabsSection compact />
                 </div>
               </div>
             </div>
