@@ -267,10 +267,11 @@ export default function AdminTemplates() {
               <div className="grid grid-cols-12 gap-2 px-4 py-3 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
                 <div className="col-span-3">Activity</div>
                 <div className="col-span-2">Section</div>
+                <div className="col-span-2">Project</div>
                 <div className="col-span-1">Type</div>
                 <div className="col-span-1">Owner</div>
-                <div className="col-span-2">Due Date</div>
-                <div className="col-span-2">Link URL</div>
+                <div className="col-span-1">Due</div>
+                <div className="col-span-1">Link</div>
                 <div className="col-span-1"></div>
               </div>
               {filteredItems.length === 0 && (
@@ -289,19 +290,28 @@ export default function AdminTemplates() {
                       {sectionLabels[item.section]}
                     </span>
                   </div>
+                  <div className="col-span-2">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      !item.project || item.project === 'All'
+                        ? 'bg-muted text-muted-foreground'
+                        : 'bg-primary/10 text-primary'
+                    }`}>
+                      {item.project || 'All'}
+                    </span>
+                  </div>
                   <div className="col-span-1">
                     <span className="text-xs text-muted-foreground capitalize">{item.type}</span>
                   </div>
                   <div className="col-span-1">
                     <span className="text-xs text-muted-foreground">{item.owner}</span>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     {isEditing ? (
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className={cn('w-full h-7 justify-start text-left text-xs font-normal', !editDueDate && 'text-muted-foreground')}>
+                          <Button variant="outline" size="sm" className={cn('w-full h-7 justify-start text-left text-xs font-normal px-1.5', !editDueDate && 'text-muted-foreground')}>
                             <CalendarIcon className="mr-1 h-3 w-3" />
-                            {editDueDate ? format(editDueDate, 'MMM d, yyyy') : 'Pick date'}
+                            {editDueDate ? format(editDueDate, 'MMM d') : 'Pick'}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -312,7 +322,7 @@ export default function AdminTemplates() {
                       <span className="text-xs text-muted-foreground">{item.dueDate}</span>
                     )}
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     {isEditing ? (
                       <Input
                         value={editLinkUrl}
@@ -324,7 +334,6 @@ export default function AdminTemplates() {
                       item.linkUrl ? (
                         <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 truncate">
                           <ExternalLink className="w-3 h-3 shrink-0" />
-                          <span className="truncate">{item.linkUrl.replace(/^https?:\/\//, '')}</span>
                         </a>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
