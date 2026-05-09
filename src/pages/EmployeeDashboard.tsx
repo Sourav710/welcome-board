@@ -156,7 +156,7 @@ export default function EmployeeDashboard() {
           <SheetTrigger asChild>
             <Button
               size="icon"
-              aria-label={overdueItems > 0 ? `Open quick navigation — ${overdueItems} overdue` : 'Open quick navigation'}
+              aria-label={overdueItems > 0 ? `Open general information — ${overdueItems} overdue` : 'Open general information'}
               className={`fixed left-4 top-1/2 -translate-y-1/2 z-40 h-12 w-12 rounded-full shadow-xl text-white hover:scale-110 transition-transform ${
                 overdueItems > 0
                   ? 'bg-gradient-to-br from-rose-500 to-red-600'
