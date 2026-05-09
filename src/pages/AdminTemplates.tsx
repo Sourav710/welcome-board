@@ -507,6 +507,9 @@ export default function AdminTemplates() {
                     />
                   </PopoverContent>
                 </Popover>
+                <p className="text-[11px] text-muted-foreground">
+                  Auto-set to {slaDaysFor(newActivity.section, newActivity.type)} day(s) from joining date (SLA). Editable.
+                </p>
               </div>
             </div>
             <div className="space-y-1.5">
