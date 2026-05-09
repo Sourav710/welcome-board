@@ -437,6 +437,20 @@ export default function AdminTemplates() {
                 </Select>
               </div>
             </div>
+            <div className="space-y-1.5">
+              <Label>Project *</Label>
+              <Select value={newActivity.project} onValueChange={(v) => setNewActivity((p) => ({ ...p, project: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">All Projects</SelectItem>
+                  {allProjects.map((p) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                  <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">Choose a project to scope this activity, or "All Projects" to apply globally.</p>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Owner *</Label>
