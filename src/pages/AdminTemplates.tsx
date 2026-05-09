@@ -224,9 +224,9 @@ export default function AdminTemplates() {
             </div>
 
             {/* Filters */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               <span className="text-xs text-muted-foreground font-medium">Filter by section:</span>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap">
                 <Button
                   size="sm"
                   variant={filterSection === 'all' ? 'default' : 'outline'}
@@ -246,6 +246,19 @@ export default function AdminTemplates() {
                     {sectionLabels[s]}
                   </Button>
                 ))}
+              </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <span className="text-xs text-muted-foreground font-medium">Project:</span>
+                <Select value={filterProject} onValueChange={setFilterProject}>
+                  <SelectTrigger className="h-7 text-xs w-44"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Projects</SelectItem>
+                    {allProjects.map((p) => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                    <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
