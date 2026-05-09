@@ -177,7 +177,7 @@ export default function EmployeeDashboard() {
           <SheetContent side="left" className="w-[340px] sm:w-[400px] p-0 overflow-y-auto">
             <div className="p-4 space-y-4">
               <div className="pb-3 border-b">
-                <h2 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Quick Navigation</h2>
+                <h2 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">General Information</h2>
                 <p className="text-xs text-muted-foreground">Priorities, contacts & resources</p>
               </div>
 
