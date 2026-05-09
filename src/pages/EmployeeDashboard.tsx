@@ -245,16 +245,32 @@ export default function EmployeeDashboard() {
                       <p className="text-muted-foreground">Manager</p>
                     </div>
                   </a>
-                  <a
-                    href={`mailto:helpdesk@company.com?subject=${encodeURIComponent(`IT support request from ${activeUser.name}`)}&body=${encodeURIComponent(`Hello IT Help Desk,%0D%0A%0D%0AI need assistance with the following:%0D%0A%0D%0A[Describe your issue]%0D%0A%0D%0AThanks,%0D%0A${activeUser.name}`)}`}
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors group/c"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">IT</div>
-                    <div>
-                      <p className="font-semibold text-foreground">IT Help Desk</p>
-                      <p className="text-muted-foreground">helpdesk@company.com</p>
+                </div>
+              </div>
+
+              {/* Billing Details */}
+              <div className="relative overflow-hidden bg-card border rounded-xl p-4">
+                <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 opacity-20 blur-2xl" />
+                <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md text-white text-sm font-bold">$</span>
+                  <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-bold">Billing Details</span>
+                </h3>
+                <div className="relative grid grid-cols-2 gap-2 text-xs">
+                  {[
+                    { label: 'Business Segment', value: 'Optum Technology' },
+                    { label: 'GL Code', value: 'GL-48820-1024' },
+                    { label: 'Cost Center', value: 'CC-7781' },
+                    { label: 'Location', value: 'Gurgaon, IN' },
+                    { label: 'Department', value: 'Engineering' },
+                    { label: 'Division', value: 'Enterprise Platforms' },
+                    { label: 'Employee ID', value: activeUser.id?.toUpperCase() || 'EMP-0001' },
+                    { label: 'Manager', value: 'Gourav Banathia' },
+                  ].map((f) => (
+                    <div key={f.label} className="p-2 rounded-lg bg-muted/40 border">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{f.label}</p>
+                      <p className="text-xs font-semibold text-foreground mt-0.5 leading-tight">{f.value}</p>
                     </div>
-                  </a>
+                  ))}
                 </div>
               </div>
 
