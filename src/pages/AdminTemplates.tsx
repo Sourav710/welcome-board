@@ -435,7 +435,7 @@ export default function AdminTemplates() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Section *</Label>
-                <Select value={newActivity.section} onValueChange={(v) => setNewActivity((p) => ({ ...p, section: v as ChecklistSection }))}>
+                <Select value={newActivity.section} onValueChange={(v) => setNewActivity((p) => ({ ...p, section: v as ChecklistSection, dueDate: defaultDueDate(v as ChecklistSection, p.type) }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {sections.map((s) => (
@@ -446,7 +446,7 @@ export default function AdminTemplates() {
               </div>
               <div className="space-y-1.5">
                 <Label>Type *</Label>
-                <Select value={newActivity.type} onValueChange={(v) => setNewActivity((p) => ({ ...p, type: v as ChecklistItemType }))}>
+                <Select value={newActivity.type} onValueChange={(v) => setNewActivity((p) => ({ ...p, type: v as ChecklistItemType, dueDate: defaultDueDate(p.section, v as ChecklistItemType) }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {typeOptions.map((t) => (
