@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { teamMembers } from '@/data/mockData';
+import { teamMembers, projects as allProjects } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useAuditLog } from '@/context/AuditLogContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
@@ -61,6 +61,7 @@ interface NewActivity {
   dueDate: Date | undefined;
   mandatory: boolean;
   linkUrl: string;
+  project: string;
 }
 
 const emptyActivity: NewActivity = {
@@ -72,6 +73,7 @@ const emptyActivity: NewActivity = {
   dueDate: undefined,
   mandatory: false,
   linkUrl: '',
+  project: 'All',
 };
 
 export default function AdminTemplates() {
@@ -81,6 +83,7 @@ export default function AdminTemplates() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
+  const [filterProject, setFilterProject] = useState<string>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDueDate, setEditDueDate] = useState<Date | undefined>();
   const [editLinkUrl, setEditLinkUrl] = useState('');
@@ -109,7 +112,11 @@ export default function AdminTemplates() {
 
   const cancelEdit = () => setEditingId(null);
 
-  const filteredItems = filterSection === 'all' ? items : items.filter((i) => i.section === filterSection);
+  const filteredItems = items.filter((i) => {
+    if (filterSection !== 'all' && i.section !== filterSection) return false;
+    if (filterProject !== 'all' && i.project !== filterProject && i.project !== 'All') return false;
+    return true;
+  });
 
   const handleAdd = () => {
     if (!newActivity.title.trim()) {
@@ -136,6 +143,7 @@ export default function AdminTemplates() {
       dueDate: format(newActivity.dueDate, 'yyyy-MM-dd'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      project: newActivity.project,
     };
 
     addItem(newItem);
@@ -143,7 +151,12 @@ export default function AdminTemplates() {
     setShowAddDialog(false);
     toast({
       title: 'Activity added',
-      description: `"${newItem.title}" has been added for all users.`,
+      description: `"${newItem.title}" added for ${newActivity.project === 'All' ? 'all projects' : newActivity.project}.`,
+    });
+    addLog({
+      userId: 'u10', userName: 'Admin User', userRole: 'admin',
+      action: 'TEMPLATE_ADD', category: 'admin',
+      details: `Added "${newItem.title}" to ${newActivity.project === 'All' ? 'all projects' : newActivity.project}`,
     });
   };
 
