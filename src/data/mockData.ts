@@ -137,14 +137,15 @@ function generateItemsForUser(userId: string, startDate: string, project?: strin
     dueDate: dueDate(startDate, t.targetDay),
     createdAt: startDate + 'T09:00:00Z',
     updatedAt: startDate + 'T09:00:00Z',
+    project,
   }));
 }
 
 export const allChecklistItems: ChecklistItem[] = [
   ...checklistItems,
-  ...generateItemsForUser('u2', '2026-02-10'),
-  ...generateItemsForUser('u3', '2026-02-18'),
-  ...generateItemsForUser('u4', '2026-02-20'),
+  ...generateItemsForUser('u2', '2026-02-10', 'Project Phoenix'),
+  ...generateItemsForUser('u3', '2026-02-18', 'Project Atlas'),
+  ...generateItemsForUser('u4', '2026-02-20', 'Project Atlas'),
 ];
 
 export const accessRequests: AccessRequest[] = [
