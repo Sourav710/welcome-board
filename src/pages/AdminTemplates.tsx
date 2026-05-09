@@ -64,13 +64,32 @@ interface NewActivity {
   project: string;
 }
 
+// Default SLA (days from joining date) per section/type
+const slaDaysFor = (section: ChecklistSection, type: ChecklistItemType): number => {
+  if (type === 'training' || section === 'Training') return 14; // 2 weeks
+  if (section === 'Access') return 3;
+  if (section === 'Day1') return 1;
+  if (section === 'Week1') return 3; // Secure Request
+  if (section === 'Week2Plus') return 10;
+  return 3;
+};
+
+const addDays = (date: Date, days: number): Date => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const defaultDueDate = (section: ChecklistSection, type: ChecklistItemType): Date =>
+  addDays(new Date(), slaDaysFor(section, type));
+
 const emptyActivity: NewActivity = {
   title: '',
   description: '',
   section: 'Day1',
   type: 'activity',
   owner: 'Employee',
-  dueDate: undefined,
+  dueDate: defaultDueDate('Day1', 'activity'),
   mandatory: false,
   linkUrl: '',
   project: 'All',
@@ -416,7 +435,7 @@ export default function AdminTemplates() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Section *</Label>
-                <Select value={newActivity.section} onValueChange={(v) => setNewActivity((p) => ({ ...p, section: v as ChecklistSection }))}>
+                <Select value={newActivity.section} onValueChange={(v) => setNewActivity((p) => ({ ...p, section: v as ChecklistSection, dueDate: defaultDueDate(v as ChecklistSection, p.type) }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {sections.map((s) => (
@@ -427,7 +446,7 @@ export default function AdminTemplates() {
               </div>
               <div className="space-y-1.5">
                 <Label>Type *</Label>
-                <Select value={newActivity.type} onValueChange={(v) => setNewActivity((p) => ({ ...p, type: v as ChecklistItemType }))}>
+                <Select value={newActivity.type} onValueChange={(v) => setNewActivity((p) => ({ ...p, type: v as ChecklistItemType, dueDate: defaultDueDate(p.section, v as ChecklistItemType) }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {typeOptions.map((t) => (
@@ -488,6 +507,9 @@ export default function AdminTemplates() {
                     />
                   </PopoverContent>
                 </Popover>
+                <p className="text-[11px] text-muted-foreground">
+                  Auto-set to {slaDaysFor(newActivity.section, newActivity.type)} day(s) from joining date (SLA). Editable.
+                </p>
               </div>
             </div>
             <div className="space-y-1.5">
