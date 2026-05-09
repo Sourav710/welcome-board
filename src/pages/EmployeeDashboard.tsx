@@ -225,29 +225,6 @@ export default function EmployeeDashboard() {
                 )}
               </div>
 
-              {/* Quick Contacts */}
-              <div className="relative overflow-hidden bg-card border rounded-xl p-4">
-                <div className="absolute -left-6 -bottom-6 w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-20 blur-2xl" />
-                <h3 className="relative font-semibold text-sm mb-3 flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md">
-                    <Users className="w-4 h-4 text-white" />
-                  </span>
-                  <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent font-bold">Quick Contacts</span>
-                </h3>
-                <div className="relative space-y-2 text-xs">
-                  <a
-                    href={`mailto:gourav.banathia@optum.com?subject=${encodeURIComponent(`Onboarding support for ${activeUser.name}`)}&body=${encodeURIComponent(`Hi Gourav,%0D%0A%0D%0AI need assistance with my onboarding tasks.%0D%0A%0D%0AThanks,%0D%0A${activeUser.name}`)}`}
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors group/c"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-md group-hover/c:scale-110 transition-transform">GB</div>
-                    <div>
-                      <p className="font-semibold text-foreground">Gourav Banathia</p>
-                      <p className="text-muted-foreground">Manager</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-
               {/* Billing Details */}
               <div className="relative overflow-hidden bg-card border rounded-xl p-4">
                 <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 opacity-20 blur-2xl" />
