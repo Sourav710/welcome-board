@@ -64,13 +64,32 @@ interface NewActivity {
   project: string;
 }
 
+// Default SLA (days from joining date) per section/type
+const slaDaysFor = (section: ChecklistSection, type: ChecklistItemType): number => {
+  if (type === 'training' || section === 'Training') return 14; // 2 weeks
+  if (section === 'Access') return 3;
+  if (section === 'Day1') return 1;
+  if (section === 'Week1') return 3; // Secure Request
+  if (section === 'Week2Plus') return 10;
+  return 3;
+};
+
+const addDays = (date: Date, days: number): Date => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const defaultDueDate = (section: ChecklistSection, type: ChecklistItemType): Date =>
+  addDays(new Date(), slaDaysFor(section, type));
+
 const emptyActivity: NewActivity = {
   title: '',
   description: '',
   section: 'Day1',
   type: 'activity',
   owner: 'Employee',
-  dueDate: undefined,
+  dueDate: defaultDueDate('Day1', 'activity'),
   mandatory: false,
   linkUrl: '',
   project: 'All',
