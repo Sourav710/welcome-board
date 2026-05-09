@@ -111,10 +111,11 @@ export const checklistItems: ChecklistItem[] = templates.map((t, i) => ({
   dueDate: dueDate(currentUser.startDate || '2026-03-12', t.targetDay),
   createdAt: '2026-02-16T09:00:00Z',
   updatedAt: '2026-02-18T14:00:00Z',
+  project: currentUser.project,
 }));
 
 // Generate items for other team members
-function generateItemsForUser(userId: string, startDate: string): ChecklistItem[] {
+function generateItemsForUser(userId: string, startDate: string, project?: string): ChecklistItem[] {
   const defaultStatuses = templates.map(() => 'not_started' as ItemStatus);
   const userStatuses: Record<string, ItemStatus[]> = {
     u2: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'in_progress', 'complete', 'not_started', 'not_started', 'complete', 'in_progress', 'not_started', ...Array(templates.length - 17).fill('not_started' as ItemStatus)],
