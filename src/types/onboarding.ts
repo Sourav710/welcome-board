@@ -45,6 +45,7 @@ export interface ChecklistItem {
   dueDate: string;
   createdAt: string;
   updatedAt: string;
+  project?: string; // project this activity is scoped to ('All' or specific project name)
 }
 
 export interface AccessRequest {

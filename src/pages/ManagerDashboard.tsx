@@ -132,10 +132,10 @@ export default function ManagerDashboard() {
             <div className="bg-card border rounded-xl overflow-hidden">
               <div className="grid grid-cols-12 px-4 py-2.5 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
                 <div className="col-span-3">Employee</div>
-                <div className="col-span-2">Role</div>
+                <div className="col-span-3">Role / Project</div>
                 <div className="col-span-1">Start</div>
                 <div className="col-span-2">Progress</div>
-                <div className="col-span-2">Access</div>
+                <div className="col-span-1">Access</div>
                 <div className="col-span-1">Overdue</div>
                 <div className="col-span-1"></div>
               </div>
@@ -156,13 +156,16 @@ export default function ManagerDashboard() {
                       </div>
                       <span className="font-medium text-foreground">{member.name}</span>
                     </div>
-                    <div className="col-span-2 text-xs text-muted-foreground">{member.employeeRole}</div>
+                    <div className="col-span-3 text-xs">
+                      <div className="text-foreground font-medium">{member.employeeRole}</div>
+                      <div className="text-muted-foreground text-[11px]">{member.project || '—'}</div>
+                    </div>
                     <div className="col-span-1 text-xs text-muted-foreground">{member.startDate?.slice(5)}</div>
                     <div className="col-span-2 flex items-center gap-2">
                       <Progress value={stats.progress} className="h-1.5 flex-1" />
                       <span className="text-xs text-muted-foreground w-8">{stats.progress}%</span>
                     </div>
-                    <div className="col-span-2 text-xs">
+                    <div className="col-span-1 text-xs">
                       <span className={stats.accessGranted === stats.accessTotal ? 'text-success font-medium' : 'text-warning font-medium'}>
                         {stats.accessGranted}/{stats.accessTotal}
                       </span>

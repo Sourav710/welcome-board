@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { teamMembers } from '@/data/mockData';
+import { teamMembers, projects as allProjects } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useAuditLog } from '@/context/AuditLogContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
@@ -61,6 +61,7 @@ interface NewActivity {
   dueDate: Date | undefined;
   mandatory: boolean;
   linkUrl: string;
+  project: string;
 }
 
 const emptyActivity: NewActivity = {
@@ -72,6 +73,7 @@ const emptyActivity: NewActivity = {
   dueDate: undefined,
   mandatory: false,
   linkUrl: '',
+  project: 'All',
 };
 
 export default function AdminTemplates() {
@@ -81,6 +83,7 @@ export default function AdminTemplates() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
+  const [filterProject, setFilterProject] = useState<string>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDueDate, setEditDueDate] = useState<Date | undefined>();
   const [editLinkUrl, setEditLinkUrl] = useState('');
@@ -109,7 +112,11 @@ export default function AdminTemplates() {
 
   const cancelEdit = () => setEditingId(null);
 
-  const filteredItems = filterSection === 'all' ? items : items.filter((i) => i.section === filterSection);
+  const filteredItems = items.filter((i) => {
+    if (filterSection !== 'all' && i.section !== filterSection) return false;
+    if (filterProject !== 'all' && i.project !== filterProject && i.project !== 'All') return false;
+    return true;
+  });
 
   const handleAdd = () => {
     if (!newActivity.title.trim()) {
@@ -136,6 +143,7 @@ export default function AdminTemplates() {
       dueDate: format(newActivity.dueDate, 'yyyy-MM-dd'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      project: newActivity.project,
     };
 
     addItem(newItem);
@@ -143,7 +151,12 @@ export default function AdminTemplates() {
     setShowAddDialog(false);
     toast({
       title: 'Activity added',
-      description: `"${newItem.title}" has been added for all users.`,
+      description: `"${newItem.title}" added for ${newActivity.project === 'All' ? 'all projects' : newActivity.project}.`,
+    });
+    addLog({
+      userId: 'u10', userName: 'Admin User', userRole: 'admin',
+      action: 'TEMPLATE_ADD', category: 'admin',
+      details: `Added "${newItem.title}" to ${newActivity.project === 'All' ? 'all projects' : newActivity.project}`,
     });
   };
 
@@ -211,9 +224,9 @@ export default function AdminTemplates() {
             </div>
 
             {/* Filters */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               <span className="text-xs text-muted-foreground font-medium">Filter by section:</span>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap">
                 <Button
                   size="sm"
                   variant={filterSection === 'all' ? 'default' : 'outline'}
@@ -234,6 +247,19 @@ export default function AdminTemplates() {
                   </Button>
                 ))}
               </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <span className="text-xs text-muted-foreground font-medium">Project:</span>
+                <Select value={filterProject} onValueChange={setFilterProject}>
+                  <SelectTrigger className="h-7 text-xs w-44"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Projects</SelectItem>
+                    {allProjects.map((p) => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                    <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Activities Table */}
@@ -241,10 +267,11 @@ export default function AdminTemplates() {
               <div className="grid grid-cols-12 gap-2 px-4 py-3 text-xs font-medium text-muted-foreground bg-muted/30 border-b">
                 <div className="col-span-3">Activity</div>
                 <div className="col-span-2">Section</div>
+                <div className="col-span-2">Project</div>
                 <div className="col-span-1">Type</div>
                 <div className="col-span-1">Owner</div>
-                <div className="col-span-2">Due Date</div>
-                <div className="col-span-2">Link URL</div>
+                <div className="col-span-1">Due</div>
+                <div className="col-span-1">Link</div>
                 <div className="col-span-1"></div>
               </div>
               {filteredItems.length === 0 && (
@@ -263,19 +290,28 @@ export default function AdminTemplates() {
                       {sectionLabels[item.section]}
                     </span>
                   </div>
+                  <div className="col-span-2">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      !item.project || item.project === 'All'
+                        ? 'bg-muted text-muted-foreground'
+                        : 'bg-primary/10 text-primary'
+                    }`}>
+                      {item.project || 'All'}
+                    </span>
+                  </div>
                   <div className="col-span-1">
                     <span className="text-xs text-muted-foreground capitalize">{item.type}</span>
                   </div>
                   <div className="col-span-1">
                     <span className="text-xs text-muted-foreground">{item.owner}</span>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     {isEditing ? (
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className={cn('w-full h-7 justify-start text-left text-xs font-normal', !editDueDate && 'text-muted-foreground')}>
+                          <Button variant="outline" size="sm" className={cn('w-full h-7 justify-start text-left text-xs font-normal px-1.5', !editDueDate && 'text-muted-foreground')}>
                             <CalendarIcon className="mr-1 h-3 w-3" />
-                            {editDueDate ? format(editDueDate, 'MMM d, yyyy') : 'Pick date'}
+                            {editDueDate ? format(editDueDate, 'MMM d') : 'Pick'}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -286,7 +322,7 @@ export default function AdminTemplates() {
                       <span className="text-xs text-muted-foreground">{item.dueDate}</span>
                     )}
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     {isEditing ? (
                       <Input
                         value={editLinkUrl}
@@ -298,7 +334,6 @@ export default function AdminTemplates() {
                       item.linkUrl ? (
                         <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 truncate">
                           <ExternalLink className="w-3 h-3 shrink-0" />
-                          <span className="truncate">{item.linkUrl.replace(/^https?:\/\//, '')}</span>
                         </a>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
@@ -401,6 +436,20 @@ export default function AdminTemplates() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Project *</Label>
+              <Select value={newActivity.project} onValueChange={(v) => setNewActivity((p) => ({ ...p, project: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">All Projects</SelectItem>
+                  {allProjects.map((p) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                  <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">Choose a project to scope this activity, or "All Projects" to apply globally.</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
