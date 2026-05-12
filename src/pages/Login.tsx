@@ -164,7 +164,7 @@ export default function LoginPage() {
     });
     setShowSsoDialog(false);
     toast({ title: 'SSO sign-in successful', description: 'Welcome back via Corporate SSO (simulated).' });
-    navigate('/home');
+    navigate('/dashboard');
   };
 
   const handleStartRegistration = () => {
