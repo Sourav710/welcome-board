@@ -12,7 +12,7 @@ import { SessionTimeoutProvider } from "@/components/SessionTimeout";
 import { SlaNotificationProvider } from "@/context/SlaNotificationProvider";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
+import Home from "./pages/Home";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import MyRequests from "./pages/MyRequests";
 import ChecklistItemDetail from "./pages/ChecklistItemDetail";
@@ -40,7 +40,7 @@ const App = () => (
                   <Route path="/" element={<Navigate to="/login" replace />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
-                  <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/home" element={<Home />} />
                   <Route path="/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/requests" element={<MyRequests />} />
                   <Route path="/item/:id" element={<ChecklistItemDetail />} />
