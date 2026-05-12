@@ -36,10 +36,11 @@ export function HeroSection({ user, progress }: Props) {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-20">
         <div className="text-center text-white space-y-6 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            Welcome back, <span className="font-semibold">{user.name}!</span>
-            <span className="opacity-80">({roleLabel})</span>
+          <div className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-gradient-to-r from-white/25 via-white/15 to-white/25 backdrop-blur-md border border-white/30 shadow-xl">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+            <span className="text-2xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-pink-100 to-orange-100 bg-clip-text text-transparent">
+              Welcome back, {user.name}! 👋
+            </span>
           </div>
 
           <p className="text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
