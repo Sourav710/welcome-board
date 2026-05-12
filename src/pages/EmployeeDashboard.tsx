@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
 import { DepartmentTabsSection } from '@/components/home/DepartmentTabsSection';
+import { BillingDetails } from '@/components/home/BillingDetails';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ProgressRing } from '@/components/ProgressRing';
 import { StatsCard } from '@/components/StatsCard';
@@ -232,22 +233,8 @@ export default function EmployeeDashboard() {
                   <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md text-white text-sm font-bold">$</span>
                   <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-bold">Billing Details</span>
                 </h3>
-                <div className="relative grid grid-cols-2 gap-2 text-xs">
-                  {[
-                    { label: 'Business Segment', value: 'Optum Technology' },
-                    { label: 'GL Code', value: 'GL-48820-1024' },
-                    { label: 'Cost Center', value: 'CC-7781' },
-                    { label: 'Location', value: 'Gurgaon, IN' },
-                    { label: 'Department', value: 'Engineering' },
-                    { label: 'Division', value: 'Enterprise Platforms' },
-                    { label: 'Employee ID', value: activeUser.id?.toUpperCase() || 'EMP-0001' },
-                    { label: 'Manager', value: 'Gourav Banathia' },
-                  ].map((f) => (
-                    <div key={f.label} className="p-2 rounded-lg bg-muted/40 border">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{f.label}</p>
-                      <p className="text-xs font-semibold text-foreground mt-0.5 leading-tight">{f.value}</p>
-                    </div>
-                  ))}
+                <div className="relative">
+                  <BillingDetails overrides={{ employeeId: activeUser.id?.toUpperCase() || 'EMP-0001' }} />
                 </div>
               </div>
 
