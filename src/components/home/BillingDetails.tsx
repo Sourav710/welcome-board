@@ -40,7 +40,7 @@ export const BillingDetails: React.FC<Props> = ({ context, overrides, managerNam
     return () => {
       cancelled = true;
     };
-  }, [context, overrides]);
+  }, [context, overrides, managerName]);
 
   if (error) {
     return <p className="text-xs text-destructive">{error}</p>;
