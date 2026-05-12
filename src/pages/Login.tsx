@@ -405,10 +405,51 @@ export default function LoginPage() {
                 Cancel
               </Button>
               <Button type="submit" className="flex-1">
-                Continue
+                Continue (demo)
               </Button>
             </div>
           </form>
+
+          <div className="relative my-2">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">or</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full gap-2"
+            onClick={async () => {
+              try {
+                const { signInWithMicrosoft } = await import('@/auth/msalInstance');
+                const account = await signInWithMicrosoft();
+                addLog({
+                  userId: account.username,
+                  userName: account.name || account.username,
+                  action: 'LOGIN',
+                  details: `${account.name || account.username} signed in via Microsoft Entra SSO`,
+                });
+                toast({ title: 'Signed in with Microsoft', description: account.username });
+                setShowSsoDialog(false);
+                navigate('/dashboard');
+              } catch (err: any) {
+                setSsoError(err?.message || 'Microsoft sign-in failed');
+              }
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 23 23" aria-hidden="true">
+              <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+              <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+              <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+              <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+            </svg>
+            Continue with Microsoft (real SSO)
+          </Button>
+          <p className="text-[11px] text-muted-foreground text-center">
+            Requires Azure AD app registration. Set <code>VITE_AZURE_CLIENT_ID</code> and <code>VITE_AZURE_TENANT_ID</code>.
+          </p>
         </DialogContent>
       </Dialog>
 
