@@ -39,7 +39,7 @@ const App = () => (
                   <Route path="/" element={<Navigate to="/login" replace />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
-                  <Route path="/home" element={<Home />} />
+                  <Route path="/home" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/requests" element={<MyRequests />} />
                   <Route path="/item/:id" element={<ChecklistItemDetail />} />
