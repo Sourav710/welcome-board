@@ -175,7 +175,6 @@ export default function ChecklistItemDetail() {
   };
 
   const openServiceNow = () => {
-    // Build pre-populated URL with employee details
     const params = new URLSearchParams({
       employee_name: encodeURIComponent(activeUser.name),
       employee_id: encodeURIComponent(activeUser.id),
@@ -200,7 +199,27 @@ export default function ChecklistItemDetail() {
       details: `Opened access request form for "${item.title}"`,
     });
 
-    // Show ticket capture dialog after a brief delay
+    // For Secure Request items, auto-create a tracker (mock Secure Request ID)
+    // so polling can begin immediately. Real impl would parse the `requestid`
+    // returned from POST /request to gateway.optum.com.
+    if (isSecureRequest && localRequests.length === 0) {
+      const mockSecureId = `${Math.floor(100000 + Math.random() * 900000)}`;
+      const newReq: AccessRequest = {
+        id: `ar-${Date.now()}`,
+        checklistItemId: id!,
+        externalTicketId: `SECURE-${mockSecureId}`,
+        systemName: 'Optum Secure',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        secureRequestId: mockSecureId,
+        secureStatusId: 18,
+        secureStatusValue: 'Request Created',
+      };
+      setLocalRequests([newReq]);
+      return; // skip manual ticket dialog — Secure auto-tracks
+    }
+
     setTimeout(() => setShowTicketDialog(true), 1000);
   };
 
@@ -210,10 +229,17 @@ export default function ChecklistItemDetail() {
       id: `ar-${Date.now()}`,
       checklistItemId: id!,
       externalTicketId: ticketId.trim().toUpperCase(),
-      systemName: ticketSystem || item.title.split(' ')[0],
+      systemName: isSecureRequest ? 'Optum Secure' : (ticketSystem || item.title.split(' ')[0]),
       status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      ...(isSecureRequest
+        ? {
+            secureRequestId: ticketId.trim(),
+            secureStatusId: 18 as const,
+            secureStatusValue: 'Request Created',
+          }
+        : {}),
     };
     setLocalRequests((prev) => [...prev, newReq]);
     setShowTicketDialog(false);
