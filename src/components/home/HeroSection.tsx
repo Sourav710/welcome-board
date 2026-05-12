@@ -43,9 +43,6 @@ export function HeroSection({ user, progress }: Props) {
             <span className="opacity-80">({roleLabel})</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-white via-pink-100 to-orange-100 bg-clip-text text-transparent">
-            Your Onboarding,<br />Reimagined.
-          </h1>
           <p className="text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
             Everything you need to get started at Optum — people, policies, tools, and progress in one place.
           </p>
@@ -65,22 +62,10 @@ export function HeroSection({ user, progress }: Props) {
             </div>
           )}
 
-          {/* Search */}
-          <div className="max-w-xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
-            <Input
-              placeholder="Find departments, contacts, policies..."
-              className="h-14 pl-12 pr-4 bg-white/15 backdrop-blur-md border-white/25 text-white placeholder:text-white/60 rounded-2xl text-base focus-visible:ring-white/50"
-            />
-          </div>
-
           {/* Quick actions */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Button asChild size="lg" className="rounded-full bg-white text-indigo-700 hover:bg-white/90 hover:scale-105 transition-transform shadow-lg">
               <Link to="/dashboard"><ListChecks className="w-4 h-4" />My Onboarding</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur border-white/40 text-white hover:bg-white/20 hover:scale-105 transition-transform">
-              <a href="#org-chart"><Users className="w-4 h-4" />Team Directory</a>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur border-white/40 text-white hover:bg-white/20 hover:scale-105 transition-transform">
               <Link to="/help"><HelpCircle className="w-4 h-4" />Help Center</Link>

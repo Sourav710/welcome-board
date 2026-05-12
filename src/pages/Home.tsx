@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
 import { HeroSection } from '@/components/home/HeroSection';
 import { CompanyInfoSection } from '@/components/home/CompanyInfoSection';
-import { OrgChartSection } from '@/components/home/OrgChartSection';
+
 import { EmergencyFooter } from '@/components/home/EmergencyFooter';
 import { useChecklist } from '@/context/ChecklistContext';
 import { currentUser } from '@/data/mockData';
@@ -35,7 +35,6 @@ export default function Home() {
       <div className="relative">
         <HeroSection user={activeUser} progress={progress} />
         <CompanyInfoSection />
-        <OrgChartSection />
         <EmergencyFooter />
       </div>
     </AppLayout>
