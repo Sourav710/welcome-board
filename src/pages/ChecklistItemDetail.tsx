@@ -93,6 +93,64 @@ export default function ChecklistItemDetail() {
   const currentStepIndex = statusSteps.findIndex((s) => s.key === status);
   const daysUntilDue = Math.ceil((new Date(item.dueDate).getTime() - Date.now()) / 86400000);
 
+  // Secure Request items auto-sync from the Optum Secure Request API.
+  // Manual status edits are locked — status mirrors the upstream RequestStatusId.
+  const isSecureRequest = item.section === 'Week1';
+  const secureRequest = isSecureRequest ? localRequests[0] : undefined;
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSecureStatus, setLastSecureStatus] = useState<SecureRequestStatus | null>(null);
+
+  const syncSecureStatus = useCallback(async () => {
+    if (!isSecureRequest || !secureRequest?.secureRequestId || !id) return;
+    setIsSyncing(true);
+    try {
+      const remote = await fetchSecureRequestStatus(
+        secureRequest.secureRequestId,
+        secureRequest.createdAt,
+      );
+      setLastSecureStatus(remote);
+      const mapped = mapSecureStatusToItemStatus(remote.requestStatusId);
+      setLocalRequests((prev) =>
+        prev.map((r) =>
+          r.id === secureRequest.id
+            ? {
+                ...r,
+                status: mapped,
+                secureStatusId: remote.requestStatusId,
+                secureStatusValue: remote.requestStatusValue,
+                lastSyncedAt: remote.fetchedAt,
+                updatedAt: remote.fetchedAt,
+              }
+            : r,
+        ),
+      );
+      if (mapped !== item.status) {
+        updateItem(id, { status: mapped, updatedAt: remote.fetchedAt });
+        addLog({
+          userId: activeUser.id,
+          userName: activeUser.name,
+          userRole: activeUser.role,
+          action: 'SECURE_STATUS_SYNC',
+          category: 'access',
+          details: `Auto-synced "${item.title}" from Secure: ${remote.requestStatusValue} (id ${remote.requestStatusId})`,
+        });
+      }
+    } finally {
+      setIsSyncing(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSecureRequest, secureRequest?.secureRequestId, secureRequest?.createdAt, id, item.status, item.title]);
+
+  // Poll on mount + every 60s while page is open (per user spec)
+  useEffect(() => {
+    if (!isSecureRequest || !secureRequest?.secureRequestId) return;
+    syncSecureStatus();
+    const interval = setInterval(syncSecureStatus, 60_000);
+    return () => clearInterval(interval);
+  }, [isSecureRequest, secureRequest?.secureRequestId, syncSecureStatus]);
+
+  const statusLocked = isSecureRequest && !!secureRequest?.secureRequestId;
+
   const addNote = () => {
     if (!newNote.trim()) return;
     const note: Note = {
