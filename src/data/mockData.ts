@@ -6,7 +6,7 @@ export const currentUser: User = {
   email: 'souarv_402@optum.com',
   role: 'employee',
   employeeRole: 'BA',
-  project: 'DMS',
+  project: 'Contact Center',
   location: 'Noida',
   managerId: 'u5',
   startDate: '2026-03-13',
@@ -19,7 +19,7 @@ export const managerUser: User = {
   email: 'Gourav.banatia@optum.com',
   role: 'manager',
   employeeRole: 'Manager',
-  project: 'DMS',
+  project: 'Contact Center',
   location: 'Noida',
   startDate: '2025-01-15',
   profileComplete: true,
@@ -39,9 +39,9 @@ export const adminUser: User = {
 
 export const teamMembers: User[] = [
   currentUser,
-  { id: 'u2', name: 'Maria Garcia', email: 'maria@company.com', role: 'employee', employeeRole: 'BA', project: 'Project Phoenix', location: 'Chicago', managerId: 'u5', startDate: '2026-02-10', profileComplete: true },
-  { id: 'u3', name: 'James Wilson', email: 'james@company.com', role: 'employee', employeeRole: 'QA', project: 'Project Atlas', location: 'New York', managerId: 'u5', startDate: '2026-02-18', profileComplete: true },
-  { id: 'u4', name: 'Priya Patel', email: 'priya@company.com', role: 'employee', employeeRole: 'Developer', project: 'Project Atlas', location: 'Remote', managerId: 'u5', startDate: '2026-02-20', profileComplete: true },
+  { id: 'u2', name: 'Maria Garcia', email: 'maria@company.com', role: 'employee', employeeRole: 'BA', project: 'Martech', location: 'Chicago', managerId: 'u5', startDate: '2026-02-10', profileComplete: true },
+  { id: 'u3', name: 'James Wilson', email: 'james@company.com', role: 'employee', employeeRole: 'QA', project: 'Optum Rx', location: 'New York', managerId: 'u5', startDate: '2026-02-18', profileComplete: true },
+  { id: 'u4', name: 'Priya Patel', email: 'priya@company.com', role: 'employee', employeeRole: 'Developer', project: 'Optum Rx', location: 'Remote', managerId: 'u5', startDate: '2026-02-20', profileComplete: true },
 ];
 
 export const templates: ChecklistTemplate[] = [
@@ -143,9 +143,9 @@ function generateItemsForUser(userId: string, startDate: string, project?: strin
 
 export const allChecklistItems: ChecklistItem[] = [
   ...checklistItems,
-  ...generateItemsForUser('u2', '2026-02-10', 'Project Phoenix'),
-  ...generateItemsForUser('u3', '2026-02-18', 'Project Atlas'),
-  ...generateItemsForUser('u4', '2026-02-20', 'Project Atlas'),
+  ...generateItemsForUser('u2', '2026-02-10', 'Martech'),
+  ...generateItemsForUser('u3', '2026-02-18', 'Optum Rx'),
+  ...generateItemsForUser('u4', '2026-02-20', 'Optum Rx'),
 ];
 
 export const accessRequests: AccessRequest[] = [
@@ -161,7 +161,7 @@ export const notes: Note[] = [
   { id: 'n3', checklistItemId: 'ci4', authorId: 'u1', authorRole: 'employee', authorName: 'Sourav', text: 'VPN client installed. Awaiting credentials.', createdAt: '2026-03-14T11:00:00Z' },
 ];
 
-export const projects = ['DMS', 'Project Atlas', 'Project Titan', 'Project Nova'];
+export const projects = ['Contact Center', 'Martech', 'Optum Rx'];
 export const locations = ['Noida', 'Gurugram', 'Hyderabad', 'Remote', 'Banagalore'];
 export const managers = [
   { id: 'u5', name: 'Gourav Banathia' },
