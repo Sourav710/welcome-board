@@ -21,7 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const employeeRoles: EmployeeRole[] = ['BA', 'Developer', 'QA', 'Manager', 'Other'];
-const projectOptions = ['DMS', 'Global Health', 'Rx Platform', ...projects.filter(p => !['DMS'].includes(p)), 'Other'];
+const projectOptions = [...projects, 'Other'];
 const locationOptions = ['Delhi', 'Bangalore', 'Mumbai', 'Pune', 'Remote', ...locations.filter(l => !['Remote'].includes(l))];
 
 const STEP_LABELS = ['Basic Info', 'Role & Project', 'Manager', 'Review'];
@@ -402,7 +402,7 @@ export default function RegisterPage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{m.name}</p>
-                              <p className="text-xs text-muted-foreground truncate">DMS · {m.name.toLowerCase().replace(/\s/g, '.')}@optum.com</p>
+                              <p className="text-xs text-muted-foreground truncate">Contact Center · {m.name.toLowerCase().replace(/\s/g, '.')}@optum.com</p>
                             </div>
                             {selected && <Check className="w-4 h-4 text-primary" />}
                           </button>

@@ -275,7 +275,6 @@ export default function AdminTemplates() {
                     {allProjects.map((p) => (
                       <SelectItem key={p} value={p}>{p}</SelectItem>
                     ))}
-                    <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -465,7 +464,7 @@ export default function AdminTemplates() {
                   {allProjects.map((p) => (
                     <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
-                  <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
+                  
                 </SelectContent>
               </Select>
               <p className="text-[11px] text-muted-foreground">Choose a project to scope this activity, or "All Projects" to apply globally.</p>
