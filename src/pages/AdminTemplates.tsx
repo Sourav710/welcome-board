@@ -47,7 +47,6 @@ const typeOptions: { value: ChecklistItemType; label: string }[] = [
 const navItems = [
   { key: 'activities' as const, label: 'Manage Activities', icon: Library },
   { key: 'templates' as const, label: 'Role Templates', icon: LayoutTemplate },
-  { key: 'orgchart' as const, label: 'Org Chart', icon: Network },
   { key: 'audit' as const, label: 'Audit Logs', icon: ScrollText },
   { key: 'integrations' as const, label: 'Integrations', icon: Plug },
 ];
@@ -98,7 +97,7 @@ const emptyActivity: NewActivity = {
 export default function AdminTemplates() {
   const { items, addItem, removeItem, updateItem } = useChecklist();
   const { logs, addLog } = useAuditLog();
-  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'orgchart' | 'audit' | 'integrations'>('activities');
+  const [activeNav, setActiveNav] = useState<'activities' | 'templates' | 'audit' | 'integrations'>('activities');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newActivity, setNewActivity] = useState<NewActivity>({ ...emptyActivity });
   const [filterSection, setFilterSection] = useState<ChecklistSection | 'all'>('all');
@@ -224,8 +223,6 @@ export default function AdminTemplates() {
           <div className="max-w-6xl">
             {activeNav === 'audit' ? (
               <AuditLogPanel logs={logs} />
-            ) : activeNav === 'orgchart' ? (
-              <OrgChartAdminPanel />
             ) : activeNav === 'templates' ? (
               <RoleTemplatesPanel items={items} />
             ) : activeNav === 'integrations' ? (
