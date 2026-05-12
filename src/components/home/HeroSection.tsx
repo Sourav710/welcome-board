@@ -44,7 +44,7 @@ export function HeroSection({ user, progress }: Props) {
           </div>
 
           <p className="text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
-            Everything you need to get started at Optum — people, policies, tools, and progress in one place.
+            Everything you need to get started at Optum — people, access, tools, and progress in one place.
           </p>
 
           {progress > 0 && progress < 100 && (
