@@ -12,11 +12,13 @@ interface Props {
   context?: GraphContext;
   /** Optional overrides used by the prototype to seed values (e.g. employeeId). */
   overrides?: Partial<BillingType>;
+  /** Explicit manager name override; when provided, skips Graph manager lookup. */
+  managerName?: string | null;
 }
 
 type BillingWithManager = BillingType & { manager: string };
 
-export const BillingDetails: React.FC<Props> = ({ context, overrides }) => {
+export const BillingDetails: React.FC<Props> = ({ context, overrides, managerName }) => {
   const [data, setData] = useState<BillingWithManager | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,11 +26,11 @@ export const BillingDetails: React.FC<Props> = ({ context, overrides }) => {
     let cancelled = false;
     const load = async () => {
       try {
-        const [billing, managerName] = await Promise.all([
+        const [billing, fetchedManager] = await Promise.all([
           getUserBillingDetails(context, overrides),
-          getManager(context),
+          managerName !== undefined ? Promise.resolve(managerName ?? '') : getManager(context),
         ]);
-        if (!cancelled) setData({ ...billing, manager: managerName });
+        if (!cancelled) setData({ ...billing, manager: fetchedManager || '' });
       } catch (err) {
         console.error('Error loading billing details:', err);
         if (!cancelled) setError('Unable to load billing details.');
