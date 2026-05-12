@@ -146,7 +146,7 @@ export default function RegisterPage() {
       title: `Welcome aboard, ${newUser.name.split(' ')[0]}! 🎉`,
       description: 'Your onboarding checklist has been generated.',
     });
-    setTimeout(() => navigate('/home'), 1600);
+    setTimeout(() => navigate('/dashboard'), 1600);
   };
 
   const ActiveTestimonialIcon = testimonials[testimonialIdx].icon;
