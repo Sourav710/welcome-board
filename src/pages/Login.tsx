@@ -194,7 +194,7 @@ export default function LoginPage() {
       });
       toast({ title: 'Profile created', description: 'Welcome to OnboardingHub!' });
     }
-    navigate('/home');
+    navigate('/dashboard');
   };
 
   const nextStep = () => setSetupStep((s) => Math.min(s + 1, steps.length - 1));
