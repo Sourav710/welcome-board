@@ -129,7 +129,7 @@ export default function LoginPage() {
 
     if (validUser.role === 'admin') return navigate('/admin');
     if (validUser.role === 'manager') return navigate('/manager');
-    if (validUser.user.profileComplete) return navigate('/home');
+    if (validUser.user.profileComplete) return navigate('/dashboard');
     setIsRegistration(false);
     setShowSetup(true);
     setSetupStep(0);
