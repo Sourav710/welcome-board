@@ -428,7 +428,9 @@ export default function LoginPage() {
                 addLog({
                   userId: account.username,
                   userName: account.name || account.username,
+                  userRole: 'employee',
                   action: 'LOGIN',
+                  category: 'auth',
                   details: `${account.name || account.username} signed in via Microsoft Entra SSO`,
                 });
                 toast({ title: 'Signed in with Microsoft', description: account.username });
