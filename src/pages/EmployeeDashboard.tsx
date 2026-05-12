@@ -234,7 +234,19 @@ export default function EmployeeDashboard() {
                   <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-bold">Billing Details</span>
                 </h3>
                 <div className="relative">
-                  <BillingDetails overrides={{ employeeId: activeUser.id?.toUpperCase() || 'EMP-0001' }} />
+                  <BillingDetails
+                    overrides={{
+                      employeeId: activeUser.id?.toUpperCase() || 'EMP-0001',
+                      location: activeUser.location,
+                      department: activeUser.project,
+                      division: activeUser.role === 'manager' ? 'Engineering Leadership' : 'Enterprise Platforms',
+                      businessSegment: activeUser.role === 'manager' ? 'Optum Technology — Leadership' : 'Optum Technology',
+                      glCode: activeUser.role === 'manager' ? 'GL-48820-2001' : 'GL-48820-1024',
+                      costCenter: activeUser.role === 'manager' ? 'CC-9001' : 'CC-7781',
+                      managerId: activeUser.managerId?.toUpperCase(),
+                    }}
+                    managerName={activeUser.role === 'manager' ? '—' : 'Gourav Banathia'}
+                  />
                 </div>
               </div>
 
