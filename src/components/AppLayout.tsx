@@ -11,20 +11,17 @@ interface AppLayoutProps {
 }
 
 const employeeNav = [
-  { label: 'Home', path: '/home' },
   { label: 'My Onboarding', path: '/dashboard' },
   { label: 'My Requests', path: '/requests' },
   { label: 'Help Center', path: '/help' },
 ];
 
 const managerNav = [
-  { label: 'Home', path: '/home' },
   { label: 'Team Onboarding', path: '/manager' },
   { label: 'My Onboarding', path: '/dashboard' },
 ];
 
 const adminNav = [
-  { label: 'Home', path: '/home' },
   { label: 'Team Onboarding', path: '/manager' },
   { label: 'Admin Templates', path: '/admin' },
 ];
