@@ -15,10 +15,9 @@ import { teamMembers, projects as allProjects } from '@/data/mockData';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useAuditLog } from '@/context/AuditLogContext';
 import type { ChecklistItem, ChecklistSection, ChecklistItemType } from '@/types/onboarding';
-import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X, ScrollText, Search, Download, Network } from 'lucide-react';
+import { Plus, Trash2, LayoutTemplate, Library, Plug, CalendarIcon, Users, Pencil, ExternalLink, Check, X, ScrollText, Search, Download } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { OrgChartAdminPanel } from '@/components/admin/OrgChartAdminPanel';
 
 const adminUser = {
   id: 'u-admin',
