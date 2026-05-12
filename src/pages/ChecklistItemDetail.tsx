@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
@@ -13,8 +13,13 @@ import { useAuditLog } from '@/context/AuditLogContext';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useNotes } from '@/context/NotesContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
-import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Play, Ban, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Ban, RotateCcw, Lock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  fetchSecureRequestStatus,
+  mapSecureStatusToItemStatus,
+  type SecureRequestStatus,
+} from '@/services/secureRequestService';
 
 const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'not_started', label: 'Not Started' },
