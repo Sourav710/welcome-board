@@ -435,80 +435,135 @@ export default function ChecklistItemDetail() {
 
           {/* Right column */}
           <div className="space-y-4">
-            {/* Update Status card */}
-            <div className="bg-card border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <RotateCcw className="w-4 h-4 text-primary" aria-hidden="true" />
-                <h3 className="text-sm font-semibold text-foreground">Update Status</h3>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Change the status when you receive confirmation or encounter a blocker.
-              </p>
-              <Select
-                value={status}
-                onValueChange={(val: ItemStatus) => {
-                  setStatus(val);
-                  addLog({
-                    userId: activeUser.id,
-                    userName: activeUser.name,
-                    userRole: activeUser.role,
-                    action: 'STATUS_CHANGE',
-                    category: 'checklist',
-                    details: `Changed "${item.title}" status to ${val}`,
-                  });
-                }}
-              >
-                <SelectTrigger className="w-full mb-3">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="not_started">Not Started</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="complete">Completed</SelectItem>
-                  <SelectItem value="rejected">Blocked</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-2">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="flex-1 gap-1.5"
-                  disabled={status === 'complete'}
-                  onClick={() => {
-                    setStatus('complete');
-                    addLog({
-                      userId: activeUser.id,
-                      userName: activeUser.name,
-                      userRole: activeUser.role,
-                      action: 'STATUS_CHANGE',
-                      category: 'checklist',
-                      details: `Marked "${item.title}" as complete`,
-                    });
-                  }}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Mark Complete
-                </Button>
+            {/* Secure Sync card — replaces manual status when this is a Secure Request */}
+            {statusLocked ? (
+              <div className="bg-card border rounded-xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" aria-hidden="true" />
+                    <h3 className="text-sm font-semibold text-foreground">Secure Status (auto)</h3>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    <Lock className="w-3 h-3" aria-hidden="true" /> Locked
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Status mirrors the Optum Secure Request system and refreshes every 60 seconds. Manual changes are disabled.
+                </p>
+                <div className="rounded-lg border bg-accent/30 p-3 mb-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Request ID</span>
+                    <span className="text-xs font-mono font-semibold text-foreground">
+                      {secureRequest?.secureRequestId}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-xs text-muted-foreground">RequestStatusId</span>
+                    <span className="text-xs font-mono text-foreground">
+                      {secureRequest?.secureStatusId}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-xs text-muted-foreground">Status</span>
+                    <span className="text-xs font-semibold text-foreground">
+                      {secureRequest?.secureStatusValue}
+                    </span>
+                  </div>
+                  {secureRequest?.lastSyncedAt && (
+                    <div className="flex items-center justify-between mt-1.5">
+                      <span className="text-xs text-muted-foreground">Last sync</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {format(new Date(secureRequest.lastSyncedAt), 'MMM d, h:mm:ss a')}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 gap-1.5"
-                  disabled={status === 'rejected'}
-                  onClick={() => {
-                    setStatus('rejected');
+                  className="w-full gap-1.5"
+                  onClick={syncSecureStatus}
+                  disabled={isSyncing}
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                  {isSyncing ? 'Syncing…' : 'Sync now'}
+                </Button>
+              </div>
+            ) : (
+              <div className="bg-card border rounded-xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <RotateCcw className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <h3 className="text-sm font-semibold text-foreground">Update Status</h3>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Change the status when you receive confirmation or encounter a blocker.
+                </p>
+                <Select
+                  value={status}
+                  onValueChange={(val: ItemStatus) => {
+                    setStatus(val);
                     addLog({
                       userId: activeUser.id,
                       userName: activeUser.name,
                       userRole: activeUser.role,
                       action: 'STATUS_CHANGE',
                       category: 'checklist',
-                      details: `Marked "${item.title}" as blocked`,
+                      details: `Changed "${item.title}" status to ${val}`,
                     });
                   }}
                 >
-                  <Ban className="w-3.5 h-3.5" aria-hidden="true" /> Mark Blocked
-                </Button>
+                  <SelectTrigger className="w-full mb-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not_started">Not Started</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="complete">Completed</SelectItem>
+                    <SelectItem value="rejected">Blocked</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1 gap-1.5"
+                    disabled={status === 'complete'}
+                    onClick={() => {
+                      setStatus('complete');
+                      addLog({
+                        userId: activeUser.id,
+                        userName: activeUser.name,
+                        userRole: activeUser.role,
+                        action: 'STATUS_CHANGE',
+                        category: 'checklist',
+                        details: `Marked "${item.title}" as complete`,
+                      });
+                    }}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Mark Complete
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-1.5"
+                    disabled={status === 'rejected'}
+                    onClick={() => {
+                      setStatus('rejected');
+                      addLog({
+                        userId: activeUser.id,
+                        userName: activeUser.name,
+                        userRole: activeUser.role,
+                        action: 'STATUS_CHANGE',
+                        category: 'checklist',
+                        details: `Marked "${item.title}" as blocked`,
+                      });
+                    }}
+                  >
+                    <Ban className="w-3.5 h-3.5" aria-hidden="true" /> Mark Blocked
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* SLA card */}
             <div className="bg-card border rounded-xl p-5">
