@@ -98,7 +98,7 @@ export default function ChecklistItemDetail() {
   const isSecureRequest = item.section === 'Week1';
   const secureRequest = isSecureRequest ? localRequests[0] : undefined;
   const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSecureStatus, setLastSecureStatus] = useState<SecureRequestStatus | null>(null);
+  const [, setLastSecureStatus] = useState<SecureRequestStatus | null>(null);
 
   const syncSecureStatus = useCallback(async () => {
     if (!isSecureRequest || !secureRequest?.secureRequestId || !id) return;
