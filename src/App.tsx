@@ -12,7 +12,7 @@ import { SessionTimeoutProvider } from "@/components/SessionTimeout";
 import { SlaNotificationProvider } from "@/context/SlaNotificationProvider";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home";
+
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import MyRequests from "./pages/MyRequests";
 import ChecklistItemDetail from "./pages/ChecklistItemDetail";
