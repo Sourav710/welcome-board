@@ -1,11 +1,14 @@
 // graphService — Sparq / Microsoft Graph integration.
 //
-// In the SPFx host, pass the WebPartContext as `context`. We dynamically use
-// `context.msGraphClientFactory` so we don't have to import
-// `@microsoft/sp-http` (that package only resolves inside SharePoint and
-// breaks the Vite build). When `context` is omitted (this prototype runs
-// outside SharePoint) we return mock data with the same shape so the UI
-// keeps working.
+// Three execution paths, in priority order:
+//  1. SPFx host: caller passes WebPartContext → use msGraphClientFactory.
+//  2. Browser MSAL session: an Azure AD user is signed in via MSAL
+//     (see src/auth/msalInstance.ts) → call Graph REST directly with the
+//     bearer token.
+//  3. No auth available (this Lovable preview, or unconfigured tenant) →
+//     return mock data so the UI keeps working.
+
+import { acquireGraphToken } from '@/auth/msalInstance';
 
 /**
  * Shape of billing data used in UI
@@ -26,14 +29,25 @@ export interface BillingDetails {
 
 export type GraphContext = any | undefined;
 
-/** Helper to safely extract extension fields */
-const getExtension = (user: any, key: string): string | undefined => {
-  return user?.[key] ?? undefined;
-};
-
 const EXT_PREFIX = 'extension_ecae76899d904e1088fb6a8b5844ca60_';
+const GRAPH_BETA = 'https://graph.microsoft.com/beta';
 
-// ── Mock fallback (used when no SPFx context is provided) ─────────────
+const getExtension = (user: any, key: string): string | undefined => user?.[key] ?? undefined;
+
+const mapUserToBilling = (user: any): BillingDetails => ({
+  businessSegment: getExtension(user, `${EXT_PREFIX}uht_InternalSegment`),
+  business: getExtension(user, `${EXT_PREFIX}uht_Business`),
+  glCode: getExtension(user, `${EXT_PREFIX}uht_GLDepartmentID`),
+  costCenter: getExtension(user, `${EXT_PREFIX}uht_GLDepartmentID`),
+  location: getExtension(user, `${EXT_PREFIX}uht_GLLocation`),
+  department: user?.department,
+  division: getExtension(user, `${EXT_PREFIX}uht_Division`),
+  employeeId: user?.employeeId,
+  managerId: getExtension(user, `${EXT_PREFIX}uht_SupervisorID`),
+  rawBillingString: user?.onPremisesExtensionAttributes?.extensionAttribute10,
+});
+
+// ── Mock fallback ─────────────────────────────────────────────────────
 const MOCK_BILLING: BillingDetails = {
   businessSegment: 'Optum Technology',
   business: 'Optum',
@@ -46,12 +60,20 @@ const MOCK_BILLING: BillingDetails = {
   managerId: 'MGR-1042',
   rawBillingString: 'OPT|TECH|GL-48820-1024|CC-7781',
 };
-
 const MOCK_MANAGER = 'Gourav Banathia';
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-const hasGraph = (context: GraphContext): boolean =>
+const hasSpfxGraph = (context: GraphContext): boolean =>
   !!context && typeof context?.msGraphClientFactory?.getClient === 'function';
+
+// ── Direct REST helpers (used in MSAL path) ───────────────────────────
+const fetchGraph = async <T>(token: string, path: string): Promise<T> => {
+  const res = await fetch(`${GRAPH_BETA}${path}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+  });
+  if (!res.ok) throw new Error(`Graph ${path} → ${res.status} ${res.statusText}`);
+  return res.json() as Promise<T>;
+};
 
 /**
  * Fetch user billing details from Microsoft Graph (/beta/me)
@@ -60,46 +82,54 @@ export const getUserBillingDetails = async (
   context?: GraphContext,
   overrides?: Partial<BillingDetails>,
 ): Promise<BillingDetails> => {
-  if (!hasGraph(context)) {
-    await delay(300);
-    return { ...MOCK_BILLING, ...overrides };
+  // Path 1: SPFx host
+  if (hasSpfxGraph(context)) {
+    const client: any = await context.msGraphClientFactory.getClient('3');
+    const user = await client.api('/me').version('beta').get();
+    return { ...mapUserToBilling(user), ...overrides };
   }
 
-  const client: any = await context.msGraphClientFactory.getClient('3');
-  const user = await client.api('/me').version('beta').get();
+  // Path 2: browser MSAL session
+  const token = await acquireGraphToken();
+  if (token) {
+    try {
+      const user = await fetchGraph<any>(token, '/me');
+      return { ...mapUserToBilling(user), ...overrides };
+    } catch (err) {
+      console.error('Graph /me failed, falling back to mock:', err);
+    }
+  }
 
-  return {
-    businessSegment: getExtension(user, `${EXT_PREFIX}uht_InternalSegment`),
-    business: getExtension(user, `${EXT_PREFIX}uht_Business`),
-    glCode: getExtension(user, `${EXT_PREFIX}uht_GLDepartmentID`),
-    costCenter: getExtension(user, `${EXT_PREFIX}uht_GLDepartmentID`),
-    location: getExtension(user, `${EXT_PREFIX}uht_GLLocation`),
-    department: user?.department,
-    division: getExtension(user, `${EXT_PREFIX}uht_Division`),
-    employeeId: user?.employeeId,
-    managerId: getExtension(user, `${EXT_PREFIX}uht_SupervisorID`),
-    rawBillingString: user?.onPremisesExtensionAttributes?.extensionAttribute10,
-    ...overrides,
-  };
+  // Path 3: mock
+  await delay(300);
+  return { ...MOCK_BILLING, ...overrides };
 };
 
 /**
- * Fetch manager display name
+ * Fetch manager display name (/beta/me/manager)
  */
-export const getManager = async (
-  context?: GraphContext,
-): Promise<string | undefined> => {
-  if (!hasGraph(context)) {
-    await delay(150);
-    return MOCK_MANAGER;
+export const getManager = async (context?: GraphContext): Promise<string | undefined> => {
+  if (hasSpfxGraph(context)) {
+    try {
+      const client: any = await context.msGraphClientFactory.getClient('3');
+      const manager = await client.api('/me/manager').version('beta').get();
+      return manager?.displayName;
+    } catch (error) {
+      console.warn('Manager fetch failed (SPFx):', error);
+      return undefined;
+    }
   }
 
-  try {
-    const client: any = await context.msGraphClientFactory.getClient('3');
-    const manager = await client.api('/me/manager').version('beta').get();
-    return manager?.displayName;
-  } catch (error) {
-    console.warn('Manager fetch failed:', error);
-    return undefined;
+  const token = await acquireGraphToken();
+  if (token) {
+    try {
+      const manager = await fetchGraph<any>(token, '/me/manager');
+      return manager?.displayName;
+    } catch (error) {
+      console.warn('Manager fetch failed (MSAL):', error);
+    }
   }
+
+  await delay(150);
+  return MOCK_MANAGER;
 };
