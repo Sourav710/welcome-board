@@ -56,6 +56,11 @@ export interface AccessRequest {
   status: ItemStatus;
   createdAt: string;
   updatedAt: string;
+  // Optum Secure Request fields (populated for Secure Request items)
+  secureRequestId?: string;
+  secureStatusId?: number;
+  secureStatusValue?: string;
+  lastSyncedAt?: string;
 }
 
 export interface Note {

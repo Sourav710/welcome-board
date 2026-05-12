@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/AppLayout';
@@ -13,8 +13,13 @@ import { useAuditLog } from '@/context/AuditLogContext';
 import { useChecklist } from '@/context/ChecklistContext';
 import { useNotes } from '@/context/NotesContext';
 import type { Note, ItemStatus, AccessRequest } from '@/types/onboarding';
-import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Play, Ban, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Clock, AlertCircle, CheckCircle2, Timer, Ticket, Plus, Ban, RotateCcw, Lock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  fetchSecureRequestStatus,
+  mapSecureStatusToItemStatus,
+  type SecureRequestStatus,
+} from '@/services/secureRequestService';
 
 const statusSteps: { key: ItemStatus; label: string }[] = [
   { key: 'not_started', label: 'Not Started' },
@@ -88,6 +93,64 @@ export default function ChecklistItemDetail() {
   const currentStepIndex = statusSteps.findIndex((s) => s.key === status);
   const daysUntilDue = Math.ceil((new Date(item.dueDate).getTime() - Date.now()) / 86400000);
 
+  // Secure Request items auto-sync from the Optum Secure Request API.
+  // Manual status edits are locked — status mirrors the upstream RequestStatusId.
+  const isSecureRequest = item.section === 'Week1';
+  const secureRequest = isSecureRequest ? localRequests[0] : undefined;
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [, setLastSecureStatus] = useState<SecureRequestStatus | null>(null);
+
+  const syncSecureStatus = useCallback(async () => {
+    if (!isSecureRequest || !secureRequest?.secureRequestId || !id) return;
+    setIsSyncing(true);
+    try {
+      const remote = await fetchSecureRequestStatus(
+        secureRequest.secureRequestId,
+        secureRequest.createdAt,
+      );
+      setLastSecureStatus(remote);
+      const mapped = mapSecureStatusToItemStatus(remote.requestStatusId);
+      setLocalRequests((prev) =>
+        prev.map((r) =>
+          r.id === secureRequest.id
+            ? {
+                ...r,
+                status: mapped,
+                secureStatusId: remote.requestStatusId,
+                secureStatusValue: remote.requestStatusValue,
+                lastSyncedAt: remote.fetchedAt,
+                updatedAt: remote.fetchedAt,
+              }
+            : r,
+        ),
+      );
+      if (mapped !== item.status) {
+        updateItem(id, { status: mapped, updatedAt: remote.fetchedAt });
+        addLog({
+          userId: activeUser.id,
+          userName: activeUser.name,
+          userRole: activeUser.role,
+          action: 'SECURE_STATUS_SYNC',
+          category: 'access',
+          details: `Auto-synced "${item.title}" from Secure: ${remote.requestStatusValue} (id ${remote.requestStatusId})`,
+        });
+      }
+    } finally {
+      setIsSyncing(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSecureRequest, secureRequest?.secureRequestId, secureRequest?.createdAt, id, item.status, item.title]);
+
+  // Poll on mount + every 60s while page is open (per user spec)
+  useEffect(() => {
+    if (!isSecureRequest || !secureRequest?.secureRequestId) return;
+    syncSecureStatus();
+    const interval = setInterval(syncSecureStatus, 60_000);
+    return () => clearInterval(interval);
+  }, [isSecureRequest, secureRequest?.secureRequestId, syncSecureStatus]);
+
+  const statusLocked = isSecureRequest && !!secureRequest?.secureRequestId;
+
   const addNote = () => {
     if (!newNote.trim()) return;
     const note: Note = {
@@ -112,7 +175,6 @@ export default function ChecklistItemDetail() {
   };
 
   const openServiceNow = () => {
-    // Build pre-populated URL with employee details
     const params = new URLSearchParams({
       employee_name: encodeURIComponent(activeUser.name),
       employee_id: encodeURIComponent(activeUser.id),
@@ -137,7 +199,27 @@ export default function ChecklistItemDetail() {
       details: `Opened access request form for "${item.title}"`,
     });
 
-    // Show ticket capture dialog after a brief delay
+    // For Secure Request items, auto-create a tracker (mock Secure Request ID)
+    // so polling can begin immediately. Real impl would parse the `requestid`
+    // returned from POST /request to gateway.optum.com.
+    if (isSecureRequest && localRequests.length === 0) {
+      const mockSecureId = `${Math.floor(100000 + Math.random() * 900000)}`;
+      const newReq: AccessRequest = {
+        id: `ar-${Date.now()}`,
+        checklistItemId: id!,
+        externalTicketId: `SECURE-${mockSecureId}`,
+        systemName: 'Optum Secure',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        secureRequestId: mockSecureId,
+        secureStatusId: 18,
+        secureStatusValue: 'Request Created',
+      };
+      setLocalRequests([newReq]);
+      return; // skip manual ticket dialog — Secure auto-tracks
+    }
+
     setTimeout(() => setShowTicketDialog(true), 1000);
   };
 
@@ -147,10 +229,17 @@ export default function ChecklistItemDetail() {
       id: `ar-${Date.now()}`,
       checklistItemId: id!,
       externalTicketId: ticketId.trim().toUpperCase(),
-      systemName: ticketSystem || item.title.split(' ')[0],
+      systemName: isSecureRequest ? 'Optum Secure' : (ticketSystem || item.title.split(' ')[0]),
       status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      ...(isSecureRequest
+        ? {
+            secureRequestId: ticketId.trim(),
+            secureStatusId: 18 as const,
+            secureStatusValue: 'Request Created',
+          }
+        : {}),
     };
     setLocalRequests((prev) => [...prev, newReq]);
     setShowTicketDialog(false);
@@ -346,80 +435,135 @@ export default function ChecklistItemDetail() {
 
           {/* Right column */}
           <div className="space-y-4">
-            {/* Update Status card */}
-            <div className="bg-card border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <RotateCcw className="w-4 h-4 text-primary" aria-hidden="true" />
-                <h3 className="text-sm font-semibold text-foreground">Update Status</h3>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Change the status when you receive confirmation or encounter a blocker.
-              </p>
-              <Select
-                value={status}
-                onValueChange={(val: ItemStatus) => {
-                  setStatus(val);
-                  addLog({
-                    userId: activeUser.id,
-                    userName: activeUser.name,
-                    userRole: activeUser.role,
-                    action: 'STATUS_CHANGE',
-                    category: 'checklist',
-                    details: `Changed "${item.title}" status to ${val}`,
-                  });
-                }}
-              >
-                <SelectTrigger className="w-full mb-3">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="not_started">Not Started</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="complete">Completed</SelectItem>
-                  <SelectItem value="rejected">Blocked</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-2">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="flex-1 gap-1.5"
-                  disabled={status === 'complete'}
-                  onClick={() => {
-                    setStatus('complete');
-                    addLog({
-                      userId: activeUser.id,
-                      userName: activeUser.name,
-                      userRole: activeUser.role,
-                      action: 'STATUS_CHANGE',
-                      category: 'checklist',
-                      details: `Marked "${item.title}" as complete`,
-                    });
-                  }}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Mark Complete
-                </Button>
+            {/* Secure Sync card — replaces manual status when this is a Secure Request */}
+            {statusLocked ? (
+              <div className="bg-card border rounded-xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" aria-hidden="true" />
+                    <h3 className="text-sm font-semibold text-foreground">Secure Status (auto)</h3>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    <Lock className="w-3 h-3" aria-hidden="true" /> Locked
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Status mirrors the Optum Secure Request system and refreshes every 60 seconds. Manual changes are disabled.
+                </p>
+                <div className="rounded-lg border bg-accent/30 p-3 mb-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Request ID</span>
+                    <span className="text-xs font-mono font-semibold text-foreground">
+                      {secureRequest?.secureRequestId}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-xs text-muted-foreground">RequestStatusId</span>
+                    <span className="text-xs font-mono text-foreground">
+                      {secureRequest?.secureStatusId}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-xs text-muted-foreground">Status</span>
+                    <span className="text-xs font-semibold text-foreground">
+                      {secureRequest?.secureStatusValue}
+                    </span>
+                  </div>
+                  {secureRequest?.lastSyncedAt && (
+                    <div className="flex items-center justify-between mt-1.5">
+                      <span className="text-xs text-muted-foreground">Last sync</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {format(new Date(secureRequest.lastSyncedAt), 'MMM d, h:mm:ss a')}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 gap-1.5"
-                  disabled={status === 'rejected'}
-                  onClick={() => {
-                    setStatus('rejected');
+                  className="w-full gap-1.5"
+                  onClick={syncSecureStatus}
+                  disabled={isSyncing}
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                  {isSyncing ? 'Syncing…' : 'Sync now'}
+                </Button>
+              </div>
+            ) : (
+              <div className="bg-card border rounded-xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <RotateCcw className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <h3 className="text-sm font-semibold text-foreground">Update Status</h3>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Change the status when you receive confirmation or encounter a blocker.
+                </p>
+                <Select
+                  value={status}
+                  onValueChange={(val: ItemStatus) => {
+                    setStatus(val);
                     addLog({
                       userId: activeUser.id,
                       userName: activeUser.name,
                       userRole: activeUser.role,
                       action: 'STATUS_CHANGE',
                       category: 'checklist',
-                      details: `Marked "${item.title}" as blocked`,
+                      details: `Changed "${item.title}" status to ${val}`,
                     });
                   }}
                 >
-                  <Ban className="w-3.5 h-3.5" aria-hidden="true" /> Mark Blocked
-                </Button>
+                  <SelectTrigger className="w-full mb-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not_started">Not Started</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="complete">Completed</SelectItem>
+                    <SelectItem value="rejected">Blocked</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1 gap-1.5"
+                    disabled={status === 'complete'}
+                    onClick={() => {
+                      setStatus('complete');
+                      addLog({
+                        userId: activeUser.id,
+                        userName: activeUser.name,
+                        userRole: activeUser.role,
+                        action: 'STATUS_CHANGE',
+                        category: 'checklist',
+                        details: `Marked "${item.title}" as complete`,
+                      });
+                    }}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Mark Complete
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-1.5"
+                    disabled={status === 'rejected'}
+                    onClick={() => {
+                      setStatus('rejected');
+                      addLog({
+                        userId: activeUser.id,
+                        userName: activeUser.name,
+                        userRole: activeUser.role,
+                        action: 'STATUS_CHANGE',
+                        category: 'checklist',
+                        details: `Marked "${item.title}" as blocked`,
+                      });
+                    }}
+                  >
+                    <Ban className="w-3.5 h-3.5" aria-hidden="true" /> Mark Blocked
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* SLA card */}
             <div className="bg-card border rounded-xl p-5">
