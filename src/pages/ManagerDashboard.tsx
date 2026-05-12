@@ -111,8 +111,9 @@ export default function ManagerDashboard() {
             <SelectTrigger className="w-48 h-8 text-xs"><SelectValue placeholder="All Projects" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Projects</SelectItem>
-              <SelectItem value="Project Phoenix">Project Phoenix</SelectItem>
-              <SelectItem value="Project Atlas">Project Atlas</SelectItem>
+              <SelectItem value="Contact Center">Contact Center</SelectItem>
+              <SelectItem value="Martech">Martech</SelectItem>
+              <SelectItem value="Optum Rx">Optum Rx</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterRole} onValueChange={setFilterRole}>
