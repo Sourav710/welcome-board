@@ -129,7 +129,7 @@ export default function LoginPage() {
 
     if (validUser.role === 'admin') return navigate('/admin');
     if (validUser.role === 'manager') return navigate('/manager');
-    if (validUser.user.profileComplete) return navigate('/home');
+    if (validUser.user.profileComplete) return navigate('/dashboard');
     setIsRegistration(false);
     setShowSetup(true);
     setSetupStep(0);
@@ -164,7 +164,7 @@ export default function LoginPage() {
     });
     setShowSsoDialog(false);
     toast({ title: 'SSO sign-in successful', description: 'Welcome back via Corporate SSO (simulated).' });
-    navigate('/home');
+    navigate('/dashboard');
   };
 
   const handleStartRegistration = () => {
@@ -194,7 +194,7 @@ export default function LoginPage() {
       });
       toast({ title: 'Profile created', description: 'Welcome to OnboardingHub!' });
     }
-    navigate('/home');
+    navigate('/dashboard');
   };
 
   const nextStep = () => setSetupStep((s) => Math.min(s + 1, steps.length - 1));
