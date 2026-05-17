@@ -66,6 +66,9 @@ export function buildStatus(requestId: string, statusId: SecureRequestStatusId):
  * To go live: replace this with `supabase.functions.invoke('secure-request-status', { body: { requestId } })`
  * where the Edge Function performs the Stargate-authenticated GET against the gateway.
  */
+// Track the last status we logged per request so console/audit only fire on transitions.
+const lastLoggedStatus = new Map<string, SecureRequestStatusId>();
+
 export async function fetchSecureRequestStatus(
   requestId: string,
   createdAtIso: string,
@@ -73,11 +76,27 @@ export async function fetchSecureRequestStatus(
   // simulate small network latency
   await new Promise((r) => setTimeout(r, 250));
 
-  const elapsedSeconds = (Date.now() - new Date(createdAtIso).getTime()) / 1000;
+  // Demo speed multiplier — compresses the ~160s timeline for live demos.
+  const speedRaw = Number(import.meta.env.VITE_SECURE_REQUEST_DEMO_SPEED);
+  const speed = Number.isFinite(speedRaw) && speedRaw > 0 ? speedRaw : 5;
+
+  const elapsedSeconds =
+    ((Date.now() - new Date(createdAtIso).getTime()) / 1000) * speed;
   let current: SecureRequestStatusId = 18;
   for (const step of MOCK_TIMELINE) {
     if (elapsedSeconds >= step.afterSeconds) current = step.statusId;
   }
+
+  const previous = lastLoggedStatus.get(requestId);
+  if (previous !== current) {
+    lastLoggedStatus.set(requestId, current);
+    // eslint-disable-next-line no-console
+    console.info(
+      `[SecureRequest • mock] ${requestId} → ${STATUS_LABELS[current]} (id ${current})`,
+      { previous, speed },
+    );
+  }
+
   return buildStatus(requestId, current);
 }
 

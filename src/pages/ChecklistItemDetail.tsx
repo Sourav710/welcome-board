@@ -110,6 +110,7 @@ export default function ChecklistItemDetail() {
       );
       setLastSecureStatus(remote);
       const mapped = mapSecureStatusToItemStatus(remote.requestStatusId);
+      const previousSecureId = secureRequest.secureStatusId;
       setLocalRequests((prev) =>
         prev.map((r) =>
           r.id === secureRequest.id
@@ -124,6 +125,23 @@ export default function ChecklistItemDetail() {
             : r,
         ),
       );
+      // Log every Secure transition for stakeholder demo visibility.
+      if (previousSecureId !== remote.requestStatusId) {
+        addLog({
+          userId: activeUser.id,
+          userName: activeUser.name,
+          userRole: activeUser.role,
+          action: 'SECURE_STATUS_TRANSITION',
+          category: 'access',
+          details: `Secure Request ${secureRequest.secureRequestId} → ${remote.requestStatusValue} (id ${remote.requestStatusId})`,
+          metadata: {
+            itemId: id,
+            requestId: secureRequest.secureRequestId,
+            statusId: String(remote.requestStatusId),
+            mode: 'mock',
+          },
+        });
+      }
       if (mapped !== item.status) {
         updateItem(id, { status: mapped, updatedAt: remote.fetchedAt });
         addLog({
