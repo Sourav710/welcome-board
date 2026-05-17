@@ -141,6 +141,9 @@ export const getManager = async (context?: GraphContext): Promise<string | undef
 
   await delay(150);
   // eslint-disable-next-line no-console
-  console.info('[Graph • mock] /me/manager →', MOCK_MANAGER);
+  console.log('%c[Graph • demo] GET /me/manager (mock)', 'color:#0ea5e9;font-weight:600', {
+    displayName: MOCK_MANAGER,
+    note: 'No MSAL session — returning mock manager.',
+  });
   return MOCK_MANAGER;
 };
