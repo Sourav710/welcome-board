@@ -152,6 +152,20 @@ export default function ChecklistItemDetail() {
     return () => clearInterval(interval);
   }, [isSecureRequest, secureRequest?.secureRequestId, syncSecureStatus]);
 
+  if (!item) {
+    return (
+      <AppLayout user={activeUser}>
+        <div className="max-w-3xl mx-auto px-6 py-12 text-center">
+          <p className="text-muted-foreground">Item not found.</p>
+          <Button variant="outline" className="mt-4" onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  const sectionLabel = item.section === 'Week2Plus' ? 'Week 2+' : item.section === 'Day1' ? 'Day 1' : item.section;
+  const currentStepIndex = statusSteps.findIndex((s) => s.key === status);
+  const daysUntilDue = Math.ceil((new Date(item.dueDate).getTime() - Date.now()) / 86400000);
   const statusLocked = isSecureRequest && !!secureRequest?.secureRequestId;
 
   const addNote = () => {
