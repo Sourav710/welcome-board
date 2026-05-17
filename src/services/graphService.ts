@@ -104,11 +104,12 @@ export const getUserBillingDetails = async (
   await delay(300);
   const result = { ...MOCK_BILLING, ...overrides };
   // eslint-disable-next-line no-console
-  console.info('[Graph • mock] /me →', {
+  console.log('%c[Graph • demo] GET /me (mock)', 'color:#0ea5e9;font-weight:600', {
     employeeId: result.employeeId,
     businessSegment: result.businessSegment,
     glCode: result.glCode,
     costCenter: result.costCenter,
+    note: 'No VITE_AZURE_CLIENT_ID configured — returning mock billing payload.',
   });
   return result;
 };
