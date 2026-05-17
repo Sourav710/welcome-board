@@ -27,6 +27,14 @@ export function SlaNotificationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const allUsers = [...teamMembers, managerUser, adminUser];
 
+    // Demo mode: reset the de-dup ledger on every session so stakeholders
+    // always see the dry-run email logs fire on app load.
+    if (isEmailMock()) {
+      resetLedger();
+      // eslint-disable-next-line no-console
+      console.info('[SLA Email • demo] ledger reset — dry-run will fire on this session');
+    }
+
     const runCheck = async () => {
       const candidates = findSlaCandidates(itemsRef.current, allUsers);
       if (candidates.length === 0) return;
