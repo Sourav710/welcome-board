@@ -102,7 +102,15 @@ export const getUserBillingDetails = async (
 
   // Path 3: mock
   await delay(300);
-  return { ...MOCK_BILLING, ...overrides };
+  const result = { ...MOCK_BILLING, ...overrides };
+  // eslint-disable-next-line no-console
+  console.info('[Graph • mock] /me →', {
+    employeeId: result.employeeId,
+    businessSegment: result.businessSegment,
+    glCode: result.glCode,
+    costCenter: result.costCenter,
+  });
+  return result;
 };
 
 /**
@@ -131,5 +139,7 @@ export const getManager = async (context?: GraphContext): Promise<string | undef
   }
 
   await delay(150);
+  // eslint-disable-next-line no-console
+  console.info('[Graph • mock] /me/manager →', MOCK_MANAGER);
   return MOCK_MANAGER;
 };
