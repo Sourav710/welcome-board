@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { currentUser, accessRequests } from '@/data/mockData';
 import { useAuditLog } from '@/context/AuditLogContext';
 import { useChecklist } from '@/context/ChecklistContext';
@@ -655,11 +655,11 @@ export default function ChecklistItemDetail() {
               <Ticket className="w-5 h-5 text-primary" aria-hidden="true" />
               Capture Ticket ID
             </DialogTitle>
+            <DialogDescription>
+              Enter the ticket ID from ServiceNow or Jira to track this request.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Enter the ticket ID from ServiceNow or Jira to track this request.
-            </p>
             <div className="space-y-1.5">
               <Label htmlFor="ticket-id">Ticket ID *</Label>
               <Input
