@@ -28,9 +28,11 @@ export const BillingDetails: React.FC<Props> = ({ context, overrides, managerNam
       try {
         const [billing, fetchedManager] = await Promise.all([
           getUserBillingDetails(context, overrides),
-          managerName !== undefined ? Promise.resolve(managerName ?? '') : getManager(context),
+          getManager(context),
         ]);
-        if (!cancelled) setData({ ...billing, manager: fetchedManager || '' });
+        const resolvedManager =
+          managerName !== undefined ? managerName ?? '' : fetchedManager ?? '';
+        if (!cancelled) setData({ ...billing, manager: resolvedManager });
       } catch (err) {
         console.error('Error loading billing details:', err);
         if (!cancelled) setError('Unable to load billing details.');
