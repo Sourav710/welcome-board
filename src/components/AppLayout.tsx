@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { User } from '@/types/onboarding';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { DemoModeBadge } from '@/components/DemoModeBadge';
 import { HelpCircle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -61,6 +62,7 @@ export function AppLayout({ children, user, onSwitchRole }: AppLayoutProps) {
           </nav>
         </div>
         <div className="flex items-center gap-2">
+          <DemoModeBadge />
           <ThemeToggle />
           <Link to="/help" aria-label="Help Center">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
